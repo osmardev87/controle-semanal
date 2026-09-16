@@ -1,0 +1,12 @@
+services:
+  controle-semanal:
+    build: .
+    container_name: controle-semanal
+    ports:
+      - "8089:8080"
+    volumes:
+      - controle-semanal-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  controle-semanal-data:
