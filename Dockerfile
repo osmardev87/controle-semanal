@@ -21,7 +21,8 @@ FROM eclipse-temurin:21-jre
 
 WORKDIR /app2
 
-COPY --from=builder /app/target/*.jar app.jar
+# Fixed: changed /app/target/*.jar to /app2/target/*.jar
+COPY --from=builder /app2/target/*.jar app.jar
 
 EXPOSE 8080
 
