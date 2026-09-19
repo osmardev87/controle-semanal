@@ -7,8 +7,7 @@ services:
     volumes:
       - controle-semanal-data:/app/data
     restart: unless-stopped
-
-  deploy:
+    deploy:
       resources:
         limits:
           memory: 450M
