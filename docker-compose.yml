@@ -3,10 +3,15 @@ services:
     build: .
     container_name: controle-semanal
     ports:
-      - "8089:8080"
+      - "8080:8080"
     volumes:
       - controle-semanal-data:/app/data
     restart: unless-stopped
 
+  deploy:
+      resources:
+        limits:
+          memory: 450M
+          
 volumes:
   controle-semanal-data:
