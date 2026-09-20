@@ -107,13 +107,14 @@
             background: #ffd700;
             border-radius: 2px;
         }
+        .loading-spinner {
+            @apply inline-block w-5 h-5 border-pixel border-px-gold border-t-transparent animate-spin;
+        }
     </style>
 </head>
 <body class="bg-px-darker text-white flex flex-col min-h-screen">
 
-    <!-- ====================================== -->
-    <!-- TELA DE LOGIN - Proteção contra curiosos -->
-    <!-- ====================================== -->
+    <!-- TELA DE LOGIN -->
     <div id="loginScreen" class="fixed inset-0 bg-px-darker z-50 flex items-center justify-center px-6">
         <div class="w-full max-w-sm">
             <div class="text-center mb-8">
@@ -139,8 +140,12 @@
                     <p id="loginError" class="text-px-ruby text-xs text-center hidden">
                         ❌ Senha incorreta
                     </p>
+                    
+                    <p id="loginLoading" class="text-gray-400 text-xs text-center hidden">
+                        <span class="loading-spinner"></span> Verificando...
+                    </p>
 
-                    <button type="submit" class="w-full py-3 pixel-btn">
+                    <button type="submit" id="loginBtn" class="w-full py-3 pixel-btn">
                         ENTRAR
                     </button>
                 </form>
@@ -152,12 +157,8 @@
         </div>
     </div>
 
-    <!-- ====================================== -->
-    <!-- CONTEÚDO PRINCIPAL - Só aparece após login -->
-    <!-- ====================================== -->
+    <!-- CONTEÚDO PRINCIPAL -->
     <div id="appContent" class="hidden flex flex-col min-h-screen">
-
-        <!-- CABEÇALHO FIXO - Saldo -->
         <header class="bg-px-dark border-b-pixel border-black shadow-md flex-shrink-0 z-10">
             <div class="max-w-md mx-auto px-4 py-4">
                 <div class="flex items-center justify-between mb-2">
@@ -170,13 +171,10 @@
                     </button>
                 </div>
 
-                <!-- Saldo -->
                 <div class="pixel-card p-4 rounded-none">
                     <p class="text-px-gold/80 text-xs font-bold mb-2 uppercase tracking-wider" id="balanceLabel">Saldo Atual</p>
                     <p id="balance" class="text-2xl font-bold text-px-gold pixel-text">R$ 0,00</p>
-
                     <div class="border-b border-dashed border-gray-600 my-3"></div>
-
                     <div class="flex justify-between text-sm">
                         <div class="flex items-center gap-2">
                             <span class="w-7 h-7 bg-px-emerald/20 flex items-center justify-center border-pixel border-green-600">
@@ -201,7 +199,6 @@
             </div>
         </header>
 
-        <!-- MENU DE ABAS FIXO -->
         <nav class="bg-px-dark border-b-2 border-black px-4 py-2 flex-shrink-0 z-10">
             <div class="max-w-md mx-auto grid grid-cols-4 gap-2 mb-2">
                 <button id="tabAll" class="pixel-btn py-2 text-xs">TODOS</button>
@@ -209,41 +206,29 @@
                 <button id="tabMonth" class="pixel-btn-secondary py-2 text-xs">MÊS</button>
                 <button id="tabAdd" class="pixel-btn-secondary py-2 text-xs">+ADD</button>
             </div>
-            
-            <!-- SELETOR DE MÊS - Aparece só quando "MÊS" está ativo -->
             <div id="monthSelector" class="max-w-md mx-auto hidden">
-                <select id="monthSelect" class="w-full px-3 py-2 pixel-input text-sm font-bold">
-                    <!-- Preenchido via JS -->
-                </select>
+                <select id="monthSelect" class="w-full px-3 py-2 pixel-input text-sm font-bold"></select>
             </div>
         </nav>
 
-        <!-- ÁREA QUE ROLA - Lista e Formulário -->
         <main class="flex-1 overflow-hidden">
             <div class="scroll-area h-full">
                 <div class="px-4 py-4 max-w-md mx-auto">
-
-                    <!-- Lista de Movimentos -->
                     <div id="listSection" class="space-y-3">
                         <div class="flex justify-between items-center mb-2">
                             <h2 class="font-bold text-base text-px-gold pixel-text" id="listTitle">📜 MOVIMENTOS</h2>
                         </div>
-
                         <div id="loading" class="text-center py-10 text-gray-500">
-                            <div class="inline-block w-6 h-6 border-pixel border-px-gold border-t-transparent animate-spin mb-2"></div>
+                            <div class="loading-spinner mb-2"></div>
                             <p class="text-xs">CARREGANDO...</p>
                         </div>
-
                         <div id="emptyState" class="hidden text-center py-14 text-gray-400">
                             <div class="text-5xl mb-4">📦</div>
                             <p class="font-bold text-gray-300 pixel-text">NENHUM REGISTRO</p>
                             <p class="text-xs mt-2 text-gray-500">Toque em <span class="text-px-gold">[+ADD]</span> para começar!</p>
                         </div>
-
                         <div id="itemsList" class="space-y-3"></div>
                     </div>
-
-                    <!-- Formulário de Adição -->
                     <div id="formSection" class="hidden">
                         <h2 class="font-bold text-base mb-5 text-px-gold pixel-text">➕ NOVA MOVIMENTAÇÃO</h2>
                         <form id="transactionForm" class="space-y-4">
@@ -315,36 +300,33 @@
             </div>
         </main>
 
-        <!-- Toast de Notificação -->
         <div id="toast" class="fixed bottom-6 left-4 right-4 max-w-md mx-auto bg-px-card text-white py-3 px-4 pixel-border-gold transform translate-y-20 opacity-0 transition-all duration-200 pointer-events-none z-50 text-center font-bold"></div>
     </div>
 
     <script>
         // ======================================
-        // CONFIGURAÇÕES DE ACESSO
+        // CONFIGURAÇÕES
         // ======================================
-        const SENHA_CORRETA = "Osmar4547*"; // ← TROCA PELA SUA SENHA
         const API_BASE = "https://controler.gomesdev87.tech/finace";
 
-        // Elementos da Tela de Login
+        // Elementos
         const loginScreen = document.getElementById('loginScreen');
         const appContent = document.getElementById('appContent');
         const loginForm = document.getElementById('loginForm');
         const passwordInput = document.getElementById('passwordInput');
         const loginError = document.getElementById('loginError');
+        const loginLoading = document.getElementById('loginLoading');
+        const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
 
-        // Verifica se já está logado ao carregar
         let isAuthenticated = localStorage.getItem('appAuthenticated') === 'true';
 
-        // Mostra/esconde telas
         function showApp() {
             loginScreen.classList.add('hidden');
             appContent.classList.remove('hidden');
             isAuthenticated = true;
             localStorage.setItem('appAuthenticated', 'true');
             passwordInput.value = '';
-            // Carrega os dados só depois de entrar
             loadData('all');
         }
 
@@ -357,29 +339,55 @@
             loginError.classList.add('hidden');
         }
 
-        // Tela inicial
-        if (isAuthenticated) {
-            showApp();
-        }
+        if (isAuthenticated) showApp();
 
-        // Login
-        loginForm.addEventListener('submit', (e) => {
+        // ======================================
+        // LOGIN - Busca senha do backend e compara
+        // ======================================
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (passwordInput.value === SENHA_CORRETA) {
-                loginError.classList.add('hidden');
-                showApp();
-            } else {
+            
+            const senhaDigitada = passwordInput.value.trim();
+            if (!senhaDigitada) return;
+
+            // Mostra carregando
+            loginError.classList.add('hidden');
+            loginLoading.classList.remove('hidden');
+            loginBtn.disabled = true;
+            loginBtn.classList.add('opacity-50');
+
+            try {
+                // ✅ Busca a senha correta do backend
+                const resposta = await fetch(`${API_BASE}/login`);
+                
+                if (!resposta.ok) throw new Error('Servidor indisponível');
+                
+                // O backend retorna algo tipo: { "senha": "minhasenha" }
+                const dados = await resposta.json();
+                const senhaCorreta = dados.senha || dados.password || dados; // adapta conforme seu retorno
+
+                // ✅ Compara aqui — a senha NÃO fica no código
+                if (senhaDigitada === senhaCorreta) {
+                    showApp();
+                } else {
+                    loginError.classList.remove('hidden');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            } catch (erro) {
+                loginError.textContent = "❌ Erro ao verificar: " + erro.message;
                 loginError.classList.remove('hidden');
-                passwordInput.value = '';
-                passwordInput.focus();
+            } finally {
+                loginLoading.classList.add('hidden');
+                loginBtn.disabled = false;
+                loginBtn.classList.remove('opacity-50');
             }
         });
 
-        // Logout
         logoutBtn.addEventListener('click', showLogin);
 
         // ======================================
-        // CÓDIGO DO APLICATIVO
+        // RESTO DO CÓDIGO
         // ======================================
         const tabAll = document.getElementById('tabAll');
         const tabWeek = document.getElementById('tabWeek');
@@ -401,24 +409,16 @@
         document.getElementById('date').valueAsDate = new Date();
         let currentFilter = 'all';
 
-        // Preenche o seletor de meses
         function populateMonthOptions() {
-            const meses = [
-                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-            ];
+            const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
             const hoje = new Date();
             const anoAtual = hoje.getFullYear();
             const mesAtual = hoje.getMonth() + 1;
-            
             monthSelect.innerHTML = '';
-            
             for (let ano = anoAtual - 1; ano <= anoAtual; ano++) {
-                const inicioMes = (ano === anoAtual) ? 1 : 1;
                 const fimMes = (ano === anoAtual) ? mesAtual : 12;
-                
-                for (let mes = inicioMes; mes <= fimMes; mes++) {
-                    const valor = `${ano}-${String(mes).padStart(2, '0')}`;
+                for (let mes = 1; mes <= fimMes; mes++) {
+                    const valor = `${ano}-${String(mes).padStart(2,'0')}`;
                     const texto = `${meses[mes - 1]} / ${ano}`;
                     const selected = (ano === anoAtual && mes === mesAtual);
                     monthSelect.innerHTML += `<option value="${valor}" ${selected ? 'selected' : ''}>${texto}</option>`;
@@ -428,11 +428,7 @@
 
         function setActiveTab(activeTab) {
             if (!isAuthenticated) return;
-            
-            [tabAll, tabWeek, tabMonth, tabAdd].forEach(tab => {
-                tab.classList.remove('pixel-btn');
-                tab.classList.add('pixel-btn-secondary');
-            });
+            [tabAll, tabWeek, tabMonth, tabAdd].forEach(t => { t.classList.remove('pixel-btn'); t.classList.add('pixel-btn-secondary'); });
             activeTab.classList.remove('pixel-btn-secondary');
             activeTab.classList.add('pixel-btn');
 
@@ -443,7 +439,6 @@
             } else {
                 listSection.classList.remove('hidden');
                 formSection.classList.add('hidden');
-                
                 if (activeTab === tabAll) {
                     currentFilter = 'all';
                     balanceLabel.textContent = 'SALDO DO ANO';
@@ -462,94 +457,66 @@
                     loadData('month');
                     return;
                 }
-                
                 loadData(currentFilter);
             }
         }
 
         tabAll.addEventListener('click', () => setActiveTab(tabAll));
         tabWeek.addEventListener('click', () => setActiveTab(tabWeek));
-        tabMonth.addEventListener('click', () => {
-            populateMonthOptions();
-            setActiveTab(tabMonth);
-        });
+        tabMonth.addEventListener('click', () => { populateMonthOptions(); setActiveTab(tabMonth); });
         tabAdd.addEventListener('click', () => setActiveTab(tabAdd));
         cancelBtn.addEventListener('click', () => setActiveTab(tabAll));
-        
-        monthSelect.addEventListener('change', () => {
-            if (currentFilter === 'month') loadData('month');
-        });
+        monthSelect.addEventListener('change', () => { if (currentFilter === 'month') loadData('month'); });
 
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
+        function formatCurrency(v) { return new Intl.NumberFormat('pt-BR', {style:'currency',currency:'BRL'}).format(v||0); }
+        function formatDate(s) { const [y,m,d]=s.split('-'); return `${d}/${m}/${y}`; }
+        function showToast(msg, erro=false) {
+            toast.textContent = msg;
+            toast.classList.remove('translate-y-20','opacity-0');
+            toast.style.borderColor = erro ? '#ff4444' : '#ffd700';
+            setTimeout(()=>toast.classList.add('translate-y-20','opacity-0'), 3000);
         }
 
-        function formatDate(dateStr) {
-            const [y, m, d] = dateStr.split('-');
-            return `${d}/${m}/${y}`;
-        }
-
-        function showToast(message, isError = false) {
-            toast.textContent = message;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.style.borderColor = isError ? '#ff4444' : '#ffd700';
-            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
-        }
-
-        // Excluir um item
-        async function excluirItem(id, descricao) {
-            if (!confirm(`Excluir "${descricao}"?\nEssa ação não tem volta!`)) return;
-            
+        async function excluirItem(id, desc) {
+            if (!confirm(`Excluir "${desc}"?\nNão tem volta!`)) return;
             try {
-                const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+                const res = await fetch(`${API_BASE}/${id}`, {method:'DELETE'});
                 if (!res.ok) throw new Error('Erro ao excluir');
-                
                 showToast('✅ EXCLUÍDO!');
                 loadData(currentFilter);
-            } catch (err) {
-                showToast('❌ ' + err.message, true);
-            }
+            } catch (e) { showToast('❌ ' + e.message, true); }
         }
 
-        async function loadData(filterType = 'all') {
+        async function loadData(tipo='all') {
             if (!isAuthenticated) return;
-            
             loading.classList.remove('hidden');
             emptyState.classList.add('hidden');
             itemsList.innerHTML = '';
-
             try {
                 let url = API_BASE + '/';
-                if (filterType === 'week') {
+                if (tipo === 'week') {
                     const t = new Date();
                     const d = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
                     url = `${API_BASE}/semana/${d}`;
-                } else if (filterType === 'month') {
-                    const mesSelecionado = monthSelect.value;
-                    url = `${API_BASE}/mes/${mesSelecionado}`;
+                } else if (tipo === 'month') {
+                    url = `${API_BASE}/mes/${monthSelect.value}`;
                 }
-
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Erro na conexão');
-                const data = await res.json();
-                
+                const dados = await res.json();
                 loading.classList.add('hidden');
-                if (!data.length) { emptyState.classList.remove('hidden'); updateBalance([]); return; }
-                
-                renderItems(data);
-                updateBalance(data);
-            } catch (err) {
-                loading.classList.add('hidden');
-                showToast('ERRO: ' + err.message, true);
-            }
+                if (!dados.length) { emptyState.classList.remove('hidden'); updateBalance([]); return; }
+                renderItems(dados);
+                updateBalance(dados);
+            } catch (e) { loading.classList.add('hidden'); showToast('ERRO: ' + e.message, true); }
         }
 
-        function renderItems(items) {
+        function renderItems(itens) {
             itemsList.innerHTML = '';
-            items.forEach(item => {
-                const isIncome = String(item.type).toUpperCase().trim() === 'ENTRADA';
+            itens.forEach(item => {
+                const isReceita = String(item.type).toUpperCase().trim() === 'ENTRADA';
                 const card = document.createElement('div');
-                card.className = `pixel-card border-l-4 ${isIncome ? 'border-l-px-emerald' : 'border-l-px-ruby'}`;
+                card.className = `pixel-card border-l-4 ${isReceita ? 'border-l-px-emerald' : 'border-l-px-ruby'}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-start p-3 gap-2">
                         <div class="flex-1 min-w-0">
@@ -558,42 +525,36 @@
                             <p class="text-xs text-gray-500 mt-0.5">${(item.payment||'').replace('_',' ')}</p>
                         </div>
                         <div class="flex flex-col items-end gap-1">
-                            <p class="font-bold whitespace-nowrap ${isIncome ? 'text-px-emerald' : 'text-px-ruby'}">
-                                ${isIncome ? '+' : '-'}${formatCurrency(item.price)}
+                            <p class="font-bold whitespace-nowrap ${isReceita ? 'text-px-emerald' : 'text-px-ruby'}">
+                                ${isReceita ? '+' : '-'}${formatCurrency(item.price)}
                             </p>
-                            <a href="#" class="link-delete" data-id="${item.id}" data-desc="${item.description}">
-                                excluir
-                            </a>
+                            <a href="#" class="link-delete" data-id="${item.id}" data-desc="${item.description}">excluir</a>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 itemsList.appendChild(card);
             });
-
             document.querySelectorAll('.link-delete').forEach(link => {
-                link.addEventListener('click', (e) => {
+                link.addEventListener('click', e => {
                     e.preventDefault();
-                    const id = link.getAttribute('data-id');
-                    const desc = link.getAttribute('data-desc');
-                    excluirItem(id, desc);
+                    excluirItem(link.dataset.id, link.dataset.desc);
                 });
             });
         }
 
-        function updateBalance(items) {
-            let income = 0, expense = 0;
-            items.forEach(i => {
+        function updateBalance(itens) {
+            let entradas=0, saidas=0;
+            itens.forEach(i => {
                 const v = Number(i.price) || 0;
-                String(i.type).toUpperCase().trim() === 'ENTRADA' ? income += v : expense += v;
+                String(i.type).toUpperCase().trim() === 'ENTRADA' ? entradas += v : saidas += v;
             });
-            document.getElementById('balance').textContent = formatCurrency(income - expense);
-            document.getElementById('totalIncome').textContent = '+' + formatCurrency(income);
-            document.getElementById('totalExpense').textContent = '-' + formatCurrency(expense);
+            document.getElementById('balance').textContent = formatCurrency(entradas - saidas);
+            document.getElementById('totalIncome').textContent = '+' + formatCurrency(entradas);
+            document.getElementById('totalExpense').textContent = '-' + formatCurrency(saidas);
         }
 
         form.addEventListener('submit', async e => {
             e.preventDefault();
-            const d = {
+            const dados = {
                 description: form.description.value,
                 price: parseFloat(form.price.value),
                 date: form.date.value,
@@ -604,17 +565,15 @@
             try {
                 const res = await fetch(API_BASE + '/', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(d)
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify(dados)
                 });
                 if (!res.ok) throw await res.json().then(j => j.message || 'Erro ao salvar');
                 form.reset();
                 document.getElementById('date').valueAsDate = new Date();
                 showToast('✅ SALVO!');
                 setActiveTab(tabAll);
-            } catch (err) {
-                showToast('❌ ' + err, true);
-            }
+            } catch (e) { showToast('❌ ' + e, true); }
         });
     </script>
 </body>

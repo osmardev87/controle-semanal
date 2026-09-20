@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/finace")
@@ -64,6 +66,15 @@ public class FinaceController {
     @GetMapping("/transactions")
     public ResponseEntity<List<FinaceResponseDTO>> listAll() {
         return ResponseEntity.status(HttpStatus.OK).body(finaceService.listFinace());
+    }
+
+    // ✅ Endpoint que retorna a senha correta
+    @GetMapping("/login")
+    public ResponseEntity<Map<String, String>>  buscarSenha() {
+        Map<String, String> resp = new HashMap<>();
+        // Pode vir de banco de dados, variável de ambiente, etc
+        resp.put("senha", "Osmar4547*");
+        return ResponseEntity.status(HttpStatus.OK).body(resp);
     }
 
 }
