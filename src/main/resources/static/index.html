@@ -1,466 +1,439 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Semanal - Finance Dashboard</title>
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Controle de Gastos — Pixel Art</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ffd700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        pixel: ['"Press Start 2P"', 'monospace'],
+                    },
                     colors: {
-                        darkbg: '#0f172a',
-                        cardbg: '#1e293b',
+                        px: {
+                            gold: '#ffd700',
+                            goldDark: '#b8860b',
+                            emerald: '#00ff7f',
+                            ruby: '#ff4444',
+                            blue: '#44aaff',
+                            dark: '#1a1c2c',
+                            darker: '#0f0f1a',
+                            card: '#2a2e42',
+                            cardLight: '#3a3f5c',
+                            border: '#555577'
+                        }
+                    },
+                    boxShadow: {
+                        'pixel': '4px 4px 0 rgba(0,0,0,0.6)',
+                        'pixel-sm': '2px 2px 0 rgba(0,0,0,0.5)',
+                        'pixel-gold': '4px 4px 0 #b8860b, 0 0 0 2px #000',
+                        'pixel-emerald': '4px 4px 0 #008844, 0 0 0 2px #000',
+                        'pixel-ruby': '4px 4px 0 #aa2222, 0 0 0 2px #000',
+                    },
+                    borderWidth: {
+                        'pixel': '3px',
                     }
                 }
             }
         }
     </script>
-    <!-- Chart.js for interactive analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .pixel-border {
+                @apply border-pixel border-black shadow-pixel;
+            }
+            .pixel-border-gold {
+                @apply border-pixel border-px-goldDark shadow-pixel-gold;
+            }
+            .pixel-border-emerald {
+                @apply border-pixel border-green-600 shadow-pixel-emerald;
+            }
+            .pixel-border-ruby {
+                @apply border-pixel border-red-700 shadow-pixel-ruby;
+            }
+            .pixel-card {
+                @apply bg-px-card pixel-border border-px-border;
+            }
+            .pixel-btn {
+                @apply bg-px-gold text-px-darker font-bold pixel-border-gold 
+                       hover:brightness-110 active:translate-x-1 active:translate-y-1 active:shadow-none 
+                       transition-all duration-100;
+            }
+            .pixel-btn-secondary {
+                @apply bg-px-card text-white pixel-border
+                       hover:bg-px-cardLight active:translate-x-1 active:translate-y-1 active:shadow-none 
+                       transition-all duration-100;
+            }
+            .pixel-input {
+                @apply bg-px-darker border-pixel border-px-border text-white
+                       focus:border-px-gold focus:outline-none focus:bg-px-card transition-colors;
+            }
+            .pixel-text {
+                text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+                letter-spacing: 0.5px;
+            }
+        }
+        * {
+            image-rendering: pixelated;
+        }
+        body {
+            background-image: 
+                linear-gradient(rgba(26, 28, 44, 0.95), rgba(15, 15, 26, 0.98)),
+                repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(255,255,255,0.02) 4px, rgba(255,255,255,0.02) 8px);
+        }
     </style>
 </head>
-<body class="bg-darkbg text-slate-100 min-h-screen flex flex-col">
 
-<header class="bg-cardbg border-b border-slate-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="bg-emerald-500/10 text-emerald-400 p-2 rounded-xl">
-                <i class="fa-solid fa-wallet text-xl"></i>
+<body class="bg-px-darker text-white min-h-screen">
+    <!-- Cabeçalho Pixel Art -->
+    <header class="bg-px-dark py-6 px-4 border-b-pixel border-black shadow-md">
+        <div class="max-w-md mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="text-3xl">💰</span>
+                <h1 class="text-xl font-bold text-px-gold pixel-text">CONTROLE DE GASTOS</h1>
             </div>
-            <h1 class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
-                Controle Semanal Finance
-            </h1>
+           
+            <!-- Saldo -->
+            <div class="mt-5 pixel-card p-5 rounded-none">
+                <p class="text-px-gold/80 text-xs font-bold mb-2 uppercase tracking-wider">Saldo Atual</p>
+                <p id="balance" class="text-3xl font-bold text-px-gold pixel-text">R$ 0,00</p>
+
+                <div class="border-b border-dashed border-gray-600 my-4"></div>
+
+                <div class="flex justify-between text-sm">
+                    <div class="flex items-center gap-2">
+                        <span
+                            class="w-8 h-8 bg-px-emerald/20 flex items-center justify-center border-pixel border-green-600">
+                            <i class="fa fa-arrow-down text-px-emerald"></i>
+                        </span>
+                        <div>
+                            <p class="text-gray-400 text-xs">ENTRADAS</p>
+                            <p id="totalIncome" class="font-bold text-px-emerald">+ R$ 0,00</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-right">
+                        <span
+                            class="w-8 h-8 bg-px-ruby/20 flex items-center justify-center border-pixel border-red-700">
+                            <i class="fa fa-arrow-up text-px-ruby"></i>
+                        </span>
+                        <div>
+                            <p class="text-gray-400 text-xs">SAÍDAS</p>
+                            <p id="totalExpense" class="font-bold text-px-ruby">- R$ 0,00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <button onclick="openModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl font-medium text-sm transition shadow-lg shadow-emerald-900/20 flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i> Novo Lançamento
+    </header>
+
+    <main class="px-4 py-5 max-w-md mx-auto">
+        <!-- Abas -->
+        <div class="grid grid-cols-4 gap-2 mb-6">
+            <button id="tabAll" class="pixel-btn py-2 text-xs">
+                TODOS
+            </button>
+            <button id="tabWeek" class="pixel-btn-secondary py-2 text-xs">
+                SEMANA
+            </button>
+            <button id="tabMonth" class="pixel-btn-secondary py-2 text-xs">
+                MÊS
+            </button>
+            <button id="tabAdd" class="pixel-btn-secondary py-2 text-xs">
+                +ADD
             </button>
         </div>
-    </div>
-</header>
 
-<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        <!-- Lista de Movimentos -->
+        <div id="listSection" class="space-y-3">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="font-bold text-base text-px-gold pixel-text">📜 MOVIMENTOS</h2>
+                <button id="clearBtn" class="text-gray-400 text-xs hover:text-px-ruby transition-colors pixel-text">
+                    [LIMPAR]
+                </button>
+            </div>
 
-    <!-- Filters & Week Selection -->
-    <div class="bg-cardbg rounded-2xl p-6 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div>
-            <h2 class="text-xl font-semibold text-slate-200">Resumo da Semana</h2>
-            <p class="text-sm text-slate-400" id="weekRangeLabel">Carregando período da semana...</p>
-        </div>
-        <div class="flex items-center gap-3 w-full md:w-auto">
-            <label for="weekDatePicker" class="text-sm text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar"></i> Data Base:</label>
-            <input type="date" id="weekDatePicker" onchange="onDateChange()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 w-full md:w-auto">
-        </div>
-    </div>
+            <div id="loading" class="text-center py-10 text-gray-500">
+                <div class="inline-block w-6 h-6 border-pixel border-px-gold border-t-transparent animate-spin mb-2">
+                </div>
+                <p class="text-xs">CARREGANDO...</p>
+            </div>
 
-    <!-- Metric Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Entradas -->
-        <div class="bg-cardbg rounded-2xl p-6 border border-slate-800 relative overflow-hidden">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Entradas (Semana)</p>
-                    <h3 class="text-2xl font-bold text-emerald-400 mt-1" id="totalIncome">R$ 0,00</h3>
-                </div>
-                <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
-                    <i class="fa-solid fa-arrow-trend-up text-xl"></i>
-                </div>
+            <div id="emptyState" class="hidden text-center py-14 text-gray-400">
+                <div class="text-5xl mb-4">📦</div>
+                <p class="font-bold text-gray-300 pixel-text">NENHUM REGISTRO</p>
+                <p class="text-xs mt-2 text-gray-500">Toque em <span class="text-px-gold">[+ADD]</span> para começar!
+                </p>
             </div>
-        </div>
-        <!-- Saídas -->
-        <div class="bg-cardbg rounded-2xl p-6 border border-slate-800 relative overflow-hidden">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Saídas (Semana)</p>
-                    <h3 class="text-2xl font-bold text-rose-400 mt-1" id="totalExpense">R$ 0,00</h3>
-                </div>
-                <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl">
-                    <i class="fa-solid fa-arrow-trend-down text-xl"></i>
-                </div>
-            </div>
-        </div>
-        <!-- Saldo -->
-        <div class="bg-cardbg rounded-2xl p-6 border border-slate-800 relative overflow-hidden">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Balanço Semanal</p>
-                    <h3 class="text-2xl font-bold text-sky-400 mt-1" id="totalBalance">R$ 0,00</h3>
-                </div>
-                <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl">
-                    <i class="fa-solid fa-scale-balanced text-xl"></i>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Categories breakdown -->
-       
-        <!-- Transactions Table -->
-        <div class="bg-cardbg rounded-2xl p-6 border border-slate-800 lg:col-span-3 flex flex-col">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-base font-semibold text-slate-200">Lançamentos da Semana</h3>
-                <span class="text-xs bg-slate-800 text-slate-400 px-3 py-1 rounded-full" id="txCount">0 registros</span>
-            </div>
-            <div class="overflow-x-auto flex-1">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                    <tr class="border-b border-slate-800 text-xs text-slate-400 uppercase tracking-wider">
-                        <th class="pb-3 font-semibold">Descrição</th>
-                        <th class="pb-3 font-semibold">Categoria</th>
-                        <th class="pb-3 font-semibold">Data</th>
-                        <th class="pb-3 font-semibold">Pagamento</th>
-                        <th class="pb-3 font-semibold text-right">Valor</th>
-                    </tr>
-                    </thead>
-                    <tbody id="transactionTableBody" class="divide-y divide-slate-800/50 text-sm">
-                    <!-- Injected rows via JS -->
-                    </tbody>
-                </table>
-            </div>
+            <div id="itemsList" class="space-y-3"></div>
         </div>
-    </div>
-</main>
 
-<div id="transactionModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-cardbg border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-slate-100">Novo Lançamento (Finace)</h3>
-            <button onclick="closeModal()" class="text-slate-400 hover:text-slate-100"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-        <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-            <div>
-                <label class="block text-xs font-medium text-slate-400 mb-1">Descrição</label>
-                <input type="text" id="formDescription" required placeholder="Ex: Supermercado" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
+        <!-- Formulário de Adição -->
+        <div id="formSection" class="hidden">
+            <h2 class="font-bold text-base mb-5 text-px-gold pixel-text">➕ NOVA MOVIMENTAÇÃO</h2>
+
+            <form id="transactionForm" class="space-y-4">
+                <!-- Tipo -->
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Valor (R$)</label>
-                    <input type="number" step="0.01" id="formPrice" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Tipo</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="ENTRADA" class="sr-only peer">
+                            <div class="pixel-card p-3 text-center transition-colors
+                                        peer-checked:border-px-emerald peer-checked:bg-px-emerald/10">
+                                <span class="text-px-emerald text-lg">⬇</span>
+                                <span class="block mt-1 font-bold text-sm">ENTRADA</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="SAIDA" class="sr-only peer" checked>
+                            <div class="pixel-card p-3 text-center transition-colors
+                                        peer-checked:border-px-ruby peer-checked:bg-px-ruby/10">
+                                <span class="text-px-ruby text-lg">⬆</span>
+                                <span class="block mt-1 font-bold text-sm">DESPESA</span>
+                            </div>
+                        </label>
+                    </div>
                 </div>
+
+                <!-- Descrição -->
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Data</label>
-                    <input type="date" id="formDate" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Descrição</label>
+                    <input type="text" id="description" name="description" class="w-full px-3 py-3 pixel-input"
+                        placeholder="Ex: Supermercado..." maxlength="100" required>
                 </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
+
+                <!-- Valor e Data -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Valor</label>
+                        <input type="number" step="0.01" min="0.01" id="price" name="price"
+                            class="w-full px-3 py-3 pixel-input" placeholder="0,00" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Data</label>
+                        <input type="date" id="date" name="date" class="w-full px-3 py-3 pixel-input" required>
+                    </div>
+                </div>
+
+                <!-- Categoria -->
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Tipo</label>
-                    <select id="formType" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-                        <option value="SAIDA">Gasto (Saída)</option>
-                        <option value="ENTRADA">Receita (Entrada)</option>
+                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Categoria</label>
+                    <select id="category" name="category" class="w-full px-3 py-3 pixel-input" required>
+                        <option value="">Selecione...</option>
+                        <option value="ALIMENTACAO">🍔 Comida</option>
+                        <option value="TRANSPORTE">🚗 Carro</option>
+                        <option value="LAZER">🎮 Diversão</option>
+                        <option value="MORADIA">🏠 Casa</option>
+                        <option value="SAUDE">💊 Saúde</option>
+                        <option value="EDUCACAO">📚 Estudo</option>
+                        <option value="SALARIO">💰 Salário</option>
+                        <option value="OUTROS">📝 Outros</option>
                     </select>
                 </div>
+
+                <!-- Forma de Pagamento -->
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Categoria</label>
-                    <select id="formCategory" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-                        <option value="">Selecione uma categoria</option>
-
-                        <option value="ALIMENTACAO">Alimentação</option>
-                        <option value="TRANSPORTE">Transporte</option>
-                        <option value="MORADIA">Moradia</option>
-                        <option value="SAUDE">Saúde</option>
-                        <option value="EDUCACAO">Educação</option>
-                        <option value="LAZER">Lazer</option>
-                        <option value="COMPRAS">Compras</option>
-                        <option value="SALARIO">Salário</option>
-                        <option value="OUTROS">Outros</option>
+                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Pagamento</label>
+                    <select id="payment" name="payment" class="w-full px-3 py-3 pixel-input" required>
+                        <option value="">Selecione...</option>
+                        <option value="DINHEIRO">💵 Dinheiro</option>
+                        <option value="PIX">⚡ PIX</option>
+                        <option value="CREDITO">💳 Crédito</option>
+                        <option value="DEBITO">💳 Débito</option>
+                        <option value="TRANSFERENCIA">🏦 Transf.</option>
+                        <option value="OUTROS">📝 Outros</option>
                     </select>
-
                 </div>
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-400 mb-1">Forma de Pagamento</label>
-                <select id="formPayment"
-                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
 
-                    <option value="">Selecione o pagamento</option>
+                <!-- Botões -->
+                <div class="flex gap-3 pt-2">
+                    <button type="button" id="cancelBtn" class="flex-1 py-3 pixel-btn-secondary">
+                        CANCELAR
+                    </button>
+                    <button type="submit" class="flex-1 py-3 pixel-btn">
+                        SALVAR
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
 
-                    <option value="PIX">Pix</option>
-                    <option value="DINHEIRO">Dinheiro</option>
-                    <option value="DEBITO">Cartão de Débito</option>
-                    <option value="CREDITO">Cartão de Crédito</option>
-                    <option value="BOLETO">Boleto</option>
-                    <option value="TRANSFERENCIA">Transferência</option>
-                    <option value="OUTROS">Outros</option>
-
-                </select>
-            </div>
-            <div class="flex justify-end gap-3 pt-2">
-                <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl text-sm font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Cancelar</button>
-                <button type="submit" class="px-5 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition">Salvar Lançamento</button>
-            </div>
-        </form>
+    <!-- Toast de Notificação -->
+    <div id="toast"
+        class="fixed bottom-6 left-4 right-4 max-w-md mx-auto bg-px-card text-white py-3 px-4 pixel-border-gold transform translate-y-20 opacity-0 transition-all duration-200 pointer-events-none z-50 text-center font-bold">
     </div>
-</div>
 
-<!-- Notification Toast -->
-<div id="toast" class="fixed bottom-5 right-5 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
-    <i class="fa-solid fa-circle-check"></i>
-    <span id="toastMessage" class="text-sm font-medium">Operação realizada com sucesso!</span>
-</div>
+    <script>
+        const API_BASE = "https://controler.gomesdev87.tech/finace";
 
-<script>
-    // Aligned with your @RestController @RequestMapping("/finace")
-    const API_BASE_URL = 'https://controler.gomesdev87.tech/finace';
-
-    let transactions = [];
-    let categoryChartInstance = null;
-    let isOfflineMode = false;
-
-    // Mock data for offline/preview testing when backend is not running
-    const mockTransactions = [
-        { id: 1, description: 'Salário Mensal', price: 5000.00, date: '2026-09-15', type: 'ENTRADA', category: 'SALARIO', payment: 'TRANSFERENCIA' },
-        { id: 2, description: 'Supermercado Mensal', price: 650.50, date: '2026-09-15', type: 'SAIDA', category: 'ALIMENTACAO', payment: 'PIX' },
-        { id: 3, description: 'Combustível Posto', price: 200.00, date: '2026-09-14', type: 'SAIDA', category: 'TRANSPORTE', payment: 'CREDITO' },
-        { id: 4, description: 'Conta de Internet', price: 120.00, date: '2026-09-13', type: 'SAIDA', category: 'MORADIA', payment: 'BOLETO' }
-    ];
-
-    window.onload = function() {
-        // Set date picker to today
-        const todayStr = new Date().toISOString().split('T')[0];
-        document.getElementById('weekDatePicker').value = todayStr;
-        document.getElementById('formDate').value = todayStr;
-
-        refreshDashboard();
-    }
-
-    window.onDateChange = function() {
-        refreshDashboard();
-    }
-
-    async function refreshDashboard() {
-        const selectedDateVal = document.getElementById('weekDatePicker').value;
-        if (!selectedDateVal) return;
-
-        try {
-            // Calls your FinaceController: @GetMapping("/semana/{date}")
-            const response = await fetch(`${API_BASE_URL}/semana/${selectedDateVal}`);
-            if (!response.ok) {
-                throw new Error('Falha ao carregar os dados da semana do servidor.');
-            }
-            transactions = await response.json();
-            isOfflineMode = false;
-        } catch (error) {
-            console.warn('Backend não acessível, ativando modo demonstração local:', error);
-            isOfflineMode = true;
-            // Fallback to mock data filtered roughly by date or show all in mock mode
-            transactions = mockTransactions;
-            showToast('Modo Offline/Demonstração Ativado (Backend não conectado)', 'error');
-        }
-
-        // Compute local dates for UI display banner based on input
-        const { start, end } = getWeekInterval(selectedDateVal);
-        const startStr = start.toLocaleDateString('pt-BR');
-        const endStr = end.toLocaleDateString('pt-BR');
-        document.getElementById('weekRangeLabel').innerText = `Semana de ${startStr} até ${endStr} ${isOfflineMode ? '(Demonstração)' : ''}`;
-
-        let totalIncome = 0;
-        let totalExpense = 0;
-        const categoryMap = {};
-
-        transactions.forEach(tx => {
-            if (tx.type === 'ENTRADA') {
-                totalIncome += tx.price;
-            } else {
-                totalExpense += tx.price;
-                categoryMap[tx.category] = (categoryMap[tx.category] || 0) + tx.price;
-            }
-        });
-
-        const balance = totalIncome - totalExpense;
-
-        // Render Metrics
-        document.getElementById('totalIncome').innerText = formatCurrency(totalIncome);
-        document.getElementById('totalExpense').innerText = formatCurrency(totalExpense);
-
-        const balanceEl = document.getElementById('totalBalance');
-        balanceEl.innerText = formatCurrency(balance);
-        balanceEl.className = `text-2xl font-bold mt-1 ${balance >= 0 ? 'text-sky-400' : 'text-rose-400'}`;
-
-        document.getElementById('txCount').innerText = `${transactions.length} registros`;
-
-        renderTable(transactions);
-        renderCategoryChart(categoryMap);
-    }
-
-    function getWeekInterval(dateString) {
-        const date = new Date(dateString + 'T00:00:00');
-        const day = date.getDay();
-        const diffToMonday = date.getDate() - day + (day === 0 ? -6 : 1);
-
-        const monday = new Date(date.setDate(diffToMonday));
-        const sunday = new Date(monday);
-        sunday.setDate(monday.getDate() + 6);
-
-        return { start: monday, end: sunday };
-    }
-
-    function renderTable(txList) {
-        const tbody = document.getElementById('transactionTableBody');
-        tbody.innerHTML = '';
-
-        if (!txList || txList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500">Nenhum lançamento encontrado para esta semana.</td></tr>`;
-            return;
-        }
-
-        txList.forEach(tx => {
-            const isIncome = tx.type === 'INCOME';
-            const tr = document.createElement('tr');
-            tr.className = 'hover:bg-slate-800/40 transition';
-            tr.innerHTML = `
-                    <td class="py-3.5 font-medium text-slate-200">${escapeHtml(tx.description)}</td>
-                    <td class="py-3.5 text-slate-400"><span class="bg-slate-800 px-2.5 py-1 rounded-lg text-xs">${escapeHtml(tx.category)}</span></td>
-                    <td class="py-3.5 text-slate-400">${formatDate(tx.date)}</td>
-                    <td class="py-3.5 text-slate-400 text-xs">${escapeHtml(tx.payment)}</td>
-                    <td class="py-3.5 text-right font-semibold ${isIncome ? 'text-emerald-400' : 'text-slate-100'}">
-                        ${isIncome ? '+' : '-'} ${formatCurrency(tx.price)}
-                    </td>
-                `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    function renderCategoryChart(categoryMap) {
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        const labels = Object.keys(categoryMap);
-        const data = Object.values(categoryMap);
-
-        if (categoryChartInstance) {
-            categoryChartInstance.destroy();
-        }
-
-        if (labels.length === 0) {
-            return;
-        }
-
-        categoryChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: ['#10b981', '#38bdf8', '#f43f5e', '#fbbf24', '#a855f7', '#6366f1'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#94a3b8',
-                            font: { family: 'Inter', size: 11 }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    window.openModal = function() {
-        document.getElementById('transactionModal').classList.remove('hidden');
-    }
-
-    window.closeModal = function() {
-        document.getElementById('transactionModal').classList.add('hidden');
-    }
-
-    window.handleFormSubmit = async function(e) {
-        e.preventDefault();
-
-        // Matches FinaceRequestDTO properties
-        const requestDTO = {
-            description: document.getElementById('formDescription').value,
-            price: parseFloat(document.getElementById('formPrice').value),
-            date: document.getElementById('formDate').value,
-            type: document.getElementById('formType').value,
-            category: document.getElementById('formCategory').value,
-            payment: document.getElementById('formPayment').value
-        };
-
-        if (isOfflineMode) {
-            // Simulate saving locally in mock mode
-            mockTransactions.unshift({
-                id: Date.now(),
-                ...requestDTO
-            });
-            closeModal();
-            document.getElementById('transactionForm').reset();
-            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-            refreshDashboard();
-            showToast('Lançamento salvo localmente (Modo Demo)');
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestDTO)
-            });
-
-            if (!response.ok) {
-                throw new Error('Erro ao salvar lançamento no servidor.');
-            }
-
-            closeModal();
-            document.getElementById('transactionForm').reset();
-            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-
-            refreshDashboard();
-            showToast('Lançamento criado com sucesso!');
-        } catch (error) {
-            console.error(error);
-            showToast('Erro ao comunicar com o servidor Spring Boot', 'error');
-        }
-    }
-
-    function formatCurrency(val) {
-        return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    function formatDate(dateStr) {
-        if (!dateStr) return '';
-        const parts = dateStr.split('-');
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    }
-
-    function showToast(msg, type = 'success') {
+        const tabAll = document.getElementById('tabAll');
+        const tabWeek = document.getElementById('tabWeek');
+        const tabMonth = document.getElementById('tabMonth');
+        const tabAdd = document.getElementById('tabAdd');
+        const listSection = document.getElementById('listSection');
+        const formSection = document.getElementById('formSection');
+        const itemsList = document.getElementById('itemsList');
+        const loading = document.getElementById('loading');
+        const emptyState = document.getElementById('emptyState');
+        const form = document.getElementById('transactionForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const clearBtn = document.getElementById('clearBtn');
         const toast = document.getElementById('toast');
-        const messageEl = document.getElementById('toastMessage');
-        messageEl.innerText = msg;
 
-        toast.className = `fixed bottom-5 right-5 text-white px-5 py-3 rounded-xl shadow-xl transform transition-all duration-300 flex items-center gap-3 z-50 ${type === 'error' ? 'bg-rose-600' : 'bg-emerald-600'}`;
+        document.getElementById('date').valueAsDate = new Date();
+        let currentFilter = 'all';
 
-        toast.classList.remove('translate-y-20', 'opacity-0');
-        setTimeout(() => {
-            toast.classList.add('translate-y-20', 'opacity-0');
-        }, 3000);
-    }
+        function setActiveTab(activeTab) {
+            [tabAll, tabWeek, tabMonth, tabAdd].forEach(tab => {
+                tab.classList.remove('pixel-btn');
+                tab.classList.add('pixel-btn-secondary');
+            });
+            activeTab.classList.remove('pixel-btn-secondary');
+            activeTab.classList.add('pixel-btn');
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.toString().replace(/[&<>'"]/g,
-            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-        );
-    }
-</script>
+            if (activeTab === tabAdd) {
+                listSection.classList.add('hidden');
+                formSection.classList.remove('hidden');
+            } else {
+                listSection.classList.remove('hidden');
+                formSection.classList.add('hidden');
+                currentFilter = activeTab === tabAll ? 'all' : activeTab === tabWeek ? 'week' : 'month';
+                loadData(currentFilter);
+            }
+        }
+
+        tabAll.addEventListener('click', () => setActiveTab(tabAll));
+        tabWeek.addEventListener('click', () => setActiveTab(tabWeek));
+        tabMonth.addEventListener('click', () => setActiveTab(tabMonth));
+        tabAdd.addEventListener('click', () => setActiveTab(tabAdd));
+        cancelBtn.addEventListener('click', () => setActiveTab(tabAll));
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
+        }
+
+        function formatDate(dateStr) {
+            const [y, m, d] = dateStr.split('-');
+            return `${d}/${m}/${y}`;
+        }
+
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.style.borderColor = isError ? '#ff4444' : '#ffd700';
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        async function loadData(filterType = 'all') {
+            loading.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            itemsList.innerHTML = '';
+
+            try {
+                let url = API_BASE + '/';
+                if (filterType === 'week') {
+                    const t = new Date();
+                    const d = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
+                    url = `${API_BASE}/semana/${d}`;
+                } else if (filterType === 'month') {
+                    const t = new Date();
+                    const am = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}`;
+                    url = `${API_BASE}/mes/${am}`;
+                }
+
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Erro na conexão');
+                const data = await res.json();
+
+                loading.classList.add('hidden');
+                if (!data.length) { emptyState.classList.remove('hidden'); updateBalance([]); return; }
+
+                renderItems(data);
+                updateBalance(data);
+            } catch (err) {
+                loading.classList.add('hidden');
+                showToast('ERRO: ' + err.message, true);
+            }
+        }
+
+        function renderItems(items) {
+            itemsList.innerHTML = '';
+            items.forEach(item => {
+                const isIncome = String(item.type).toUpperCase().trim() === 'ENTRADA';
+                const card = document.createElement('div');
+                card.className = `pixel-card border-l-4 ${isIncome ? 'border-l-px-emerald' : 'border-l-px-ruby'}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start p-3 gap-3">
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-sm pixel-text">${item.description}</h3>
+                            <p class="text-xs text-gray-400 mt-1">${(item.category || '').replace('_', ' ')} • ${formatDate(item.date)}</p>
+                            <p class="text-xs text-gray-500 mt-0.5">${(item.payment || '').replace('_', ' ')}</p>
+                        </div>
+                        <p class="font-bold whitespace-nowrap ${isIncome ? 'text-px-emerald' : 'text-px-ruby'}">
+                            ${isIncome ? '+' : '-'}${formatCurrency(item.price)}
+                        </p>
+                    </div>
+                `;
+                itemsList.appendChild(card);
+            });
+        }
+
+        function updateBalance(items) {
+            let income = 0, expense = 0;
+            items.forEach(i => {
+                const v = Number(i.price) || 0;
+                String(i.type).toUpperCase().trim() === 'ENTRADA' ? income += v : expense += v;
+            });
+            document.getElementById('balance').textContent = formatCurrency(income - expense);
+            document.getElementById('totalIncome').textContent = '+' + formatCurrency(income);
+            document.getElementById('totalExpense').textContent = '-' + formatCurrency(expense);
+        }
+
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const d = {
+                description: form.description.value,
+                price: parseFloat(form.price.value),
+                date: form.date.value,
+                type: form.type.value,
+                category: form.category.value,
+                payment: form.payment.value
+            };
+            try {
+                const res = await fetch(API_BASE + '/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(d)
+                });
+                if (!res.ok) throw await res.json().then(j => j.message || 'Erro ao salvar');
+                form.reset();
+                document.getElementById('date').valueAsDate = new Date();
+                showToast('✅ SALVO!');
+                setActiveTab(tabAll);
+            } catch (err) {
+                showToast('❌ ' + err, true);
+            }
+        });
+
+        clearBtn.addEventListener('click', async () => {
+            if (!confirm('Apagar TUDO? Não tem volta!')) return;
+            await fetch(API_BASE + '/', { method: 'DELETE' });
+            showToast('🗑️ LIMPO!');
+            loadData();
+        });
+
+        loadData('all');
+    </script>
 </body>
+
 </html>
