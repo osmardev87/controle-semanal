@@ -175,9 +175,7 @@
                 <div id="listSection" class="space-y-3">
                     <div class="flex justify-between items-center mb-2">
                         <h2 class="font-bold text-base text-px-gold pixel-text" id="listTitle">📜 MOVIMENTOS</h2>
-                        <button id="clearBtn" class="text-gray-400 text-xs hover:text-px-ruby transition-colors pixel-text">
-                            [LIMPAR]
-                        </button>
+                       
                     </div>
 
                     <div id="loading" class="text-center py-10 text-gray-500">
@@ -204,7 +202,7 @@
                             <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Tipo</label>
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="cursor-pointer">
-                                    <input type="radio" name="type" value="RECEITA" class="sr-only peer">
+                                    <input type="radio" name="type" value="ENTRADA" class="sr-only peer">
                                     <div class="pixel-card p-3 text-center transition-colors
                                                 peer-checked:border-px-emerald peer-checked:bg-px-emerald/10">
                                         <span class="text-px-emerald text-lg">⬇</span>
@@ -406,7 +404,7 @@
         function renderItems(items) {
             itemsList.innerHTML = '';
             items.forEach(item => {
-                const isIncome = String(item.type).toUpperCase().trim() === 'RECEITA';
+                const isIncome = String(item.type).toUpperCase().trim() === 'ENTRADA';
                 const card = document.createElement('div');
                 card.className = `pixel-card border-l-4 ${isIncome ? 'border-l-px-emerald' : 'border-l-px-ruby'}`;
                 card.innerHTML = `
@@ -429,7 +427,7 @@
             let income = 0, expense = 0;
             items.forEach(i => {
                 const v = Number(i.price) || 0;
-                String(i.type).toUpperCase().trim() === 'RECEITA' ? income += v : expense += v;
+                String(i.type).toUpperCase().trim() === 'ENTRADA' ? income += v : expense += v;
             });
             document.getElementById('balance').textContent = formatCurrency(income - expense);
             document.getElementById('totalIncome').textContent = '+' + formatCurrency(income);
@@ -462,12 +460,7 @@
             }
         });
 
-        clearBtn.addEventListener('click', async () => {
-            if (!confirm('Apagar TUDO? Não tem volta!')) return;
-            await fetch(API_BASE + '/', { method: 'DELETE' });
-            showToast('🗑️ LIMPO!');
-            loadData();
-        });
+       
 
         loadData('all');
     </script>
