@@ -21,10 +21,12 @@ FROM eclipse-temurin:21-jre
 
 WORKDIR /app2
 
-# Fixed: changed /app/target/*.jar to /app2/target/*.jar
 COPY --from=builder /app2/target/*.jar app.jar
+
+# ADICIONADO: Cria a pasta de dados do SQLite para evitar o erro CANTOPEN
+RUN mkdir -p /app/data && chmod 777 /app/data
 
 EXPOSE 8080
 
-# ADICIONADO: -Xms128m -Xmx350m para a JVM não estourar a RAM do servidor
-ENTRYPOINT ["java", "-Xms128m", "-Xmx350m", "-jar", "app.jar"]
+# ADICIONADO: flag de entropia e limites de memória
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Xms128m", "-Xmx350m", "-jar", "app.jar"]
