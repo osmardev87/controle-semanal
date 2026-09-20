@@ -19,14 +19,23 @@ public class FinaceController {
         this.finaceService = finaceService;
     }
 
+    
+
     @PostMapping("/")
     public ResponseEntity<FinaceResponseDTO> create(@RequestBody FinaceRequestDTO requestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(finaceService.create(requestDTO));
     }
 
+
+    // ✅ TODOS = ano atual
     @GetMapping("/")
-    public ResponseEntity<List<FinaceResponseDTO>> listAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(finaceService.listFinace());
+    public ResponseEntity<List<FinaceResponseDTO>> listarTodosDoAnoAtual() {
+        int anoAtual = LocalDate.now().getYear();
+        LocalDate inicioAno = LocalDate.of(anoAtual, 1, 1);
+        LocalDate fimAno = LocalDate.of(anoAtual, 12, 31);
+        
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(finaceService.buscarEntreDatas(inicioAno, fimAno));
     }
 
     @GetMapping("/semana/{date}")
@@ -47,6 +56,11 @@ public class FinaceController {
     @DeleteMapping("/")
     public ResponseEntity<String> limpaBanco() {
         return ResponseEntity.status(HttpStatus.OK).body(finaceService.limpaBanco());
+    }
+
+    @GetMapping("/transactions")
+    public ResponseEntity<List<FinaceResponseDTO>> listAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(finaceService.listFinace());
     }
 
 }

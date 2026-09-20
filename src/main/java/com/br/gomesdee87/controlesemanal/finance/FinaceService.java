@@ -88,5 +88,18 @@ public class FinaceService {
                 .toList();
     }   
 
+    public List<FinaceResponseDTO> buscarEntreDatas(LocalDate inicio, LocalDate fim) {
+        return finaceRepository.findByDateBetween(inicio, fim)
+                .stream()
+                .map(finace -> new FinaceResponseDTO(
+                        finace.getId(),
+                        finace.getDescription(),
+                        finace.getPrice(),
+                        finace.getDate(),
+                        finace.getType(),
+                        finace.getCategory(),
+                        finace.getPayment() ))
+                .toList();
+    }
 
 }
