@@ -24,14 +24,19 @@ public class FinaceController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<FinaceResponseDTO>> listAll(){
+    public ResponseEntity<List<FinaceResponseDTO>> listAll() {
         return ResponseEntity.status(HttpStatus.OK).body(finaceService.listFinace());
     }
 
-
     @GetMapping("/semana/{date}")
-    public ResponseEntity<List<FinaceResponseDTO>> listSemana(@PathVariable("date") LocalDate date){
+    public ResponseEntity<List<FinaceResponseDTO>> listSemana(@PathVariable("date") LocalDate date) {
         return ResponseEntity.status(HttpStatus.OK).body(finaceService.listaGastosDasemana(date));
+    }
+
+    @GetMapping("/mes/{anoMes}")
+    public ResponseEntity<List<FinaceResponseDTO>> listarPorMes(@PathVariable LocalDate anoMes) {
+        // formato: "2026-09"
+        return ResponseEntity.status(HttpStatus.OK).body(finaceService.listarPorMes(anoMes));
     }
 
     @DeleteMapping("/")

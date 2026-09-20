@@ -8,4 +8,5 @@ import java.util.List;
 public interface FinaceRepository extends JpaRepository<Finace, Long> {
 
     List<Finace> findByDateBetween(LocalDate inicio, LocalDate fim);
+    List<Finace> findByDateBetween1(LocalDate inicioDoMes, LocalDate fimDoMes);
 }

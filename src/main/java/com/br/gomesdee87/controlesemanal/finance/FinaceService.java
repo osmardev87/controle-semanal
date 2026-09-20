@@ -74,5 +74,21 @@ public class FinaceService {
         return  "Banco limpo";
     }
 
+    public List<FinaceResponseDTO> listarPorMes(LocalDate date) {
+        LocalDate inicioDoMes = date.withDayOfMonth(1);
+        LocalDate fimDoMes = date.withDayOfMonth(date.lengthOfMonth());
+        return finaceRepository.findByDateBetween1(inicioDoMes, fimDoMes)
+                .stream()
+                .map(finace -> new FinaceResponseDTO(
+                        finace.getId(),
+                        finace.getDescription(),
+                        finace.getPrice(),
+                        finace.getDate(),
+                        finace.getType(),
+                        finace.getCategory(),
+                        finace.getPayment() ))
+                .toList();
+    }   
+
 
 }
