@@ -5,7 +5,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - controle-semanal-data:/app/data
+      - controle-semanal-data:/app2/data
     restart: unless-stopped
     deploy:
       resources:
