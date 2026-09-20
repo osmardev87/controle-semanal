@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
 
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ffd700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Controle de Gastos — Pixel Art</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#ffd700">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <script>
         tailwind.config = {
             theme: {
@@ -85,49 +85,62 @@
         * {
             image-rendering: pixelated;
         }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
         body {
             background-image: 
                 linear-gradient(rgba(26, 28, 44, 0.95), rgba(15, 15, 26, 0.98)),
                 repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(255,255,255,0.02) 4px, rgba(255,255,255,0.02) 8px);
         }
+        .scroll-area {
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+        .scroll-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 2px;
+        }
     </style>
 </head>
+<body class="bg-px-darker text-white flex flex-col min-h-screen">
 
-<body class="bg-px-darker text-white min-h-screen">
-    <!-- Cabeçalho Pixel Art -->
-    <header class="bg-px-dark py-6 px-4 border-b-pixel border-black shadow-md">
-        <div class="max-w-md mx-auto">
+    <!-- ✅ CABEÇALHO FIXO - Saldo -->
+    <header class="bg-px-dark border-b-pixel border-black shadow-md flex-shrink-0 z-10">
+        <div class="max-w-md mx-auto px-4 py-4">
             <div class="flex items-center gap-3 mb-2">
-                <span class="text-3xl">💰</span>
-                <h1 class="text-xl font-bold text-px-gold pixel-text">CONTROLE DE GASTOS</h1>
+                <span class="text-2xl">💰</span>
+                <h1 class="text-lg font-bold text-px-gold pixel-text">CONTROLE DE GASTOS</h1>
             </div>
-           
-            <!-- Saldo -->
-            <div class="mt-5 pixel-card p-5 rounded-none">
-                <p class="text-px-gold/80 text-xs font-bold mb-2 uppercase tracking-wider">Saldo Atual</p>
-                <p id="balance" class="text-3xl font-bold text-px-gold pixel-text">R$ 0,00</p>
 
-                <div class="border-b border-dashed border-gray-600 my-4"></div>
+            <!-- Saldo -->
+            <div class="pixel-card p-4 rounded-none">
+                <p class="text-px-gold/80 text-xs font-bold mb-2 uppercase tracking-wider" id="balanceLabel">Saldo Atual</p>
+                <p id="balance" class="text-2xl font-bold text-px-gold pixel-text">R$ 0,00</p>
+
+                <div class="border-b border-dashed border-gray-600 my-3"></div>
 
                 <div class="flex justify-between text-sm">
                     <div class="flex items-center gap-2">
-                        <span
-                            class="w-8 h-8 bg-px-emerald/20 flex items-center justify-center border-pixel border-green-600">
-                            <i class="fa fa-arrow-down text-px-emerald"></i>
+                        <span class="w-7 h-7 bg-px-emerald/20 flex items-center justify-center border-pixel border-green-600">
+                            <i class="fa fa-arrow-down text-px-emerald text-xs"></i>
                         </span>
                         <div>
-                            <p class="text-gray-400 text-xs">ENTRADAS</p>
-                            <p id="totalIncome" class="font-bold text-px-emerald">+ R$ 0,00</p>
+                            <p class="text-gray-400 text-[10px]">ENTRADAS</p>
+                            <p id="totalIncome" class="font-bold text-px-emerald text-sm">+ R$ 0,00</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 text-right">
-                        <span
-                            class="w-8 h-8 bg-px-ruby/20 flex items-center justify-center border-pixel border-red-700">
-                            <i class="fa fa-arrow-up text-px-ruby"></i>
+                        <span class="w-7 h-7 bg-px-ruby/20 flex items-center justify-center border-pixel border-red-700">
+                            <i class="fa fa-arrow-up text-px-ruby text-xs"></i>
                         </span>
                         <div>
-                            <p class="text-gray-400 text-xs">SAÍDAS</p>
-                            <p id="totalExpense" class="font-bold text-px-ruby">- R$ 0,00</p>
+                            <p class="text-gray-400 text-[10px]">SAÍDAS</p>
+                            <p id="totalExpense" class="font-bold text-px-ruby text-sm">- R$ 0,00</p>
                         </div>
                     </div>
                 </div>
@@ -135,9 +148,9 @@
         </div>
     </header>
 
-    <main class="px-4 py-5 max-w-md mx-auto">
-        <!-- Abas -->
-        <div class="grid grid-cols-4 gap-2 mb-6">
+    <!-- ✅ MENU DE ABAS FIXO -->
+    <nav class="bg-px-dark border-b-2 border-black px-4 py-2 flex-shrink-0 z-10">
+        <div class="max-w-md mx-auto grid grid-cols-4 gap-2">
             <button id="tabAll" class="pixel-btn py-2 text-xs">
                 TODOS
             </button>
@@ -151,118 +164,128 @@
                 +ADD
             </button>
         </div>
+    </nav>
 
-        <!-- Lista de Movimentos -->
-        <div id="listSection" class="space-y-3">
-            <div class="flex justify-between items-center mb-2">
-                <h2 class="font-bold text-base text-px-gold pixel-text">📜 MOVIMENTOS</h2>
-              
-            </div>
+    <!-- ✅ ÁREA QUE ROLA - Lista e Formulário -->
+    <main class="flex-1 overflow-hidden">
+        <div class="scroll-area h-full">
+            <div class="px-4 py-4 max-w-md mx-auto">
 
-            <div id="loading" class="text-center py-10 text-gray-500">
-                <div class="inline-block w-6 h-6 border-pixel border-px-gold border-t-transparent animate-spin mb-2">
+                <!-- Lista de Movimentos -->
+                <div id="listSection" class="space-y-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="font-bold text-base text-px-gold pixel-text" id="listTitle">📜 MOVIMENTOS</h2>
+                        <button id="clearBtn" class="text-gray-400 text-xs hover:text-px-ruby transition-colors pixel-text">
+                            [LIMPAR]
+                        </button>
+                    </div>
+
+                    <div id="loading" class="text-center py-10 text-gray-500">
+                        <div class="inline-block w-6 h-6 border-pixel border-px-gold border-t-transparent animate-spin mb-2"></div>
+                        <p class="text-xs">CARREGANDO...</p>
+                    </div>
+
+                    <div id="emptyState" class="hidden text-center py-14 text-gray-400">
+                        <div class="text-5xl mb-4">📦</div>
+                        <p class="font-bold text-gray-300 pixel-text">NENHUM REGISTRO</p>
+                        <p class="text-xs mt-2 text-gray-500">Toque em <span class="text-px-gold">[+ADD]</span> para começar!</p>
+                    </div>
+
+                    <div id="itemsList" class="space-y-3"></div>
                 </div>
-                <p class="text-xs">CARREGANDO...</p>
-            </div>
 
-            <div id="emptyState" class="hidden text-center py-14 text-gray-400">
-                <div class="text-5xl mb-4">📦</div>
-                <p class="font-bold text-gray-300 pixel-text">NENHUM REGISTRO</p>
-                <p class="text-xs mt-2 text-gray-500">Toque em <span class="text-px-gold">[+ADD]</span> para começar!
-                </p>
-            </div>
+                <!-- Formulário de Adição -->
+                <div id="formSection" class="hidden">
+                    <h2 class="font-bold text-base mb-5 text-px-gold pixel-text">➕ NOVA MOVIMENTAÇÃO</h2>
 
-            <div id="itemsList" class="space-y-3"></div>
-        </div>
-
-        <!-- Formulário de Adição -->
-        <div id="formSection" class="hidden">
-            <h2 class="font-bold text-base mb-5 text-px-gold pixel-text">➕ NOVA MOVIMENTAÇÃO</h2>
-
-            <form id="transactionForm" class="space-y-4">
-                <!-- Tipo -->
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Tipo</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="type" value="ENTRADA" class="sr-only peer">
-                            <div class="pixel-card p-3 text-center transition-colors
-                                        peer-checked:border-px-emerald peer-checked:bg-px-emerald/10">
-                                <span class="text-px-emerald text-lg">⬇</span>
-                                <span class="block mt-1 font-bold text-sm">ENTRADA</span>
+                    <form id="transactionForm" class="space-y-4">
+                        <!-- Tipo -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Tipo</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="type" value="RECEITA" class="sr-only peer">
+                                    <div class="pixel-card p-3 text-center transition-colors
+                                                peer-checked:border-px-emerald peer-checked:bg-px-emerald/10">
+                                        <span class="text-px-emerald text-lg">⬇</span>
+                                        <span class="block mt-1 font-bold text-sm">RECEITA</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="type" value="DESPESA" class="sr-only peer" checked>
+                                    <div class="pixel-card p-3 text-center transition-colors
+                                                peer-checked:border-px-ruby peer-checked:bg-px-ruby/10">
+                                        <span class="text-px-ruby text-lg">⬆</span>
+                                        <span class="block mt-1 font-bold text-sm">DESPESA</span>
+                                    </div>
+                                </label>
                             </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="type" value="SAIDA" class="sr-only peer" checked>
-                            <div class="pixel-card p-3 text-center transition-colors
-                                        peer-checked:border-px-ruby peer-checked:bg-px-ruby/10">
-                                <span class="text-px-ruby text-lg">⬆</span>
-                                <span class="block mt-1 font-bold text-sm">DESPESA</span>
+                        </div>
+
+                        <!-- Descrição -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Descrição</label>
+                            <input type="text" id="description" name="description"
+                                class="w-full px-3 py-3 pixel-input"
+                                placeholder="Ex: Supermercado..." maxlength="100" required>
+                        </div>
+
+                        <!-- Valor e Data -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Valor</label>
+                                <input type="number" step="0.01" min="0.01" id="price" name="price"
+                                    class="w-full px-3 py-3 pixel-input"
+                                    placeholder="0,00" required>
                             </div>
-                        </label>
-                    </div>
-                </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Data</label>
+                                <input type="date" id="date" name="date"
+                                    class="w-full px-3 py-3 pixel-input" required>
+                            </div>
+                        </div>
 
-                <!-- Descrição -->
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Descrição</label>
-                    <input type="text" id="description" name="description" class="w-full px-3 py-3 pixel-input"
-                        placeholder="Ex: Supermercado..." maxlength="100" required>
-                </div>
+                        <!-- Categoria -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Categoria</label>
+                            <select id="category" name="category" class="w-full px-3 py-3 pixel-input" required>
+                                <option value="">Selecione...</option>
+                                <option value="ALIMENTACAO">🍔 Comida</option>
+                                <option value="TRANSPORTE">🚗 Carro</option>
+                                <option value="LAZER">🎮 Diversão</option>
+                                <option value="MORADIA">🏠 Casa</option>
+                                <option value="SAUDE">💊 Saúde</option>
+                                <option value="EDUCACAO">📚 Estudo</option>
+                                <option value="SALARIO">💰 Salário</option>
+                                <option value="OUTROS">📝 Outros</option>
+                            </select>
+                        </div>
 
-                <!-- Valor e Data -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Valor</label>
-                        <input type="number" step="0.01" min="0.01" id="price" name="price"
-                            class="w-full px-3 py-3 pixel-input" placeholder="0,00" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Data</label>
-                        <input type="date" id="date" name="date" class="w-full px-3 py-3 pixel-input" required>
-                    </div>
-                </div>
+                        <!-- Forma de Pagamento -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Pagamento</label>
+                            <select id="payment" name="payment" class="w-full px-3 py-3 pixel-input" required>
+                                <option value="">Selecione...</option>
+                                <option value="DINHEIRO">💵 Dinheiro</option>
+                                <option value="PIX">⚡ PIX</option>
+                                <option value="CARTAO_CREDITO">💳 Crédito</option>
+                                <option value="CARTAO_DEBITO">💳 Débito</option>
+                                <option value="TRANSFERENCIA">🏦 Transf.</option>
+                            </select>
+                        </div>
 
-                <!-- Categoria -->
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Categoria</label>
-                    <select id="category" name="category" class="w-full px-3 py-3 pixel-input" required>
-                        <option value="">Selecione...</option>
-                        <option value="ALIMENTACAO">🍔 Comida</option>
-                        <option value="TRANSPORTE">🚗 Carro</option>
-                        <option value="LAZER">🎮 Diversão</option>
-                        <option value="MORADIA">🏠 Casa</option>
-                        <option value="SAUDE">💊 Saúde</option>
-                        <option value="EDUCACAO">📚 Estudo</option>
-                        <option value="SALARIO">💰 Salário</option>
-                        <option value="OUTROS">📝 Outros</option>
-                    </select>
+                        <!-- Botões -->
+                        <div class="flex gap-3 pt-2">
+                            <button type="button" id="cancelBtn" class="flex-1 py-3 pixel-btn-secondary">
+                                CANCELAR
+                            </button>
+                            <button type="submit" class="flex-1 py-3 pixel-btn">
+                                SALVAR
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <!-- Forma de Pagamento -->
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Pagamento</label>
-                    <select id="payment" name="payment" class="w-full px-3 py-3 pixel-input" required>
-                        <option value="">Selecione...</option>
-                        <option value="DINHEIRO">💵 Dinheiro</option>
-                        <option value="PIX">⚡ PIX</option>
-                        <option value="CREDITO">💳 Crédito</option>
-                        <option value="DEBITO">💳 Débito</option>
-                        <option value="TRANSFERENCIA">🏦 Transf.</option>
-                        <option value="OUTROS">📝 Outros</option>
-                    </select>
-                </div>
-
-                <!-- Botões -->
-                <div class="flex gap-3 pt-2">
-                    <button type="button" id="cancelBtn" class="flex-1 py-3 pixel-btn-secondary">
-                        CANCELAR
-                    </button>
-                    <button type="submit" class="flex-1 py-3 pixel-btn">
-                        SALVAR
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </main>
 
@@ -287,6 +310,8 @@
         const cancelBtn = document.getElementById('cancelBtn');
         const clearBtn = document.getElementById('clearBtn');
         const toast = document.getElementById('toast');
+        const balanceLabel = document.getElementById('balanceLabel');
+        const listTitle = document.getElementById('listTitle');
 
         document.getElementById('date').valueAsDate = new Date();
         let currentFilter = 'all';
@@ -305,7 +330,21 @@
             } else {
                 listSection.classList.remove('hidden');
                 formSection.classList.add('hidden');
-                currentFilter = activeTab === tabAll ? 'all' : activeTab === tabWeek ? 'week' : 'month';
+                
+                if (activeTab === tabAll) {
+                    currentFilter = 'all';
+                    balanceLabel.textContent = 'SALDO DO ANO';
+                    listTitle.innerHTML = '📜 TODOS OS MOVIMENTOS';
+                } else if (activeTab === tabWeek) {
+                    currentFilter = 'week';
+                    balanceLabel.textContent = 'SALDO DA SEMANA';
+                    listTitle.innerHTML = '📅 SEMANA';
+                } else if (activeTab === tabMonth) {
+                    currentFilter = 'month';
+                    balanceLabel.textContent = 'SALDO DO MÊS';
+                    listTitle.innerHTML = '📅 MÊS';
+                }
+                
                 loadData(currentFilter);
             }
         }
@@ -341,21 +380,21 @@
                 let url = API_BASE + '/';
                 if (filterType === 'week') {
                     const t = new Date();
-                    const d = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
+                    const d = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
                     url = `${API_BASE}/semana/${d}`;
                 } else if (filterType === 'month') {
                     const t = new Date();
-                    const am = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}`;
+                    const am = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
                     url = `${API_BASE}/mes/${am}`;
                 }
 
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Erro na conexão');
                 const data = await res.json();
-
+                
                 loading.classList.add('hidden');
                 if (!data.length) { emptyState.classList.remove('hidden'); updateBalance([]); return; }
-
+                
                 renderItems(data);
                 updateBalance(data);
             } catch (err) {
@@ -367,15 +406,15 @@
         function renderItems(items) {
             itemsList.innerHTML = '';
             items.forEach(item => {
-                const isIncome = String(item.type).toUpperCase().trim() === 'ENTRADA';
+                const isIncome = String(item.type).toUpperCase().trim() === 'RECEITA';
                 const card = document.createElement('div');
                 card.className = `pixel-card border-l-4 ${isIncome ? 'border-l-px-emerald' : 'border-l-px-ruby'}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-start p-3 gap-3">
                         <div class="flex-1 min-w-0">
                             <h3 class="font-bold text-sm pixel-text">${item.description}</h3>
-                            <p class="text-xs text-gray-400 mt-1">${(item.category || '').replace('_', ' ')} • ${formatDate(item.date)}</p>
-                            <p class="text-xs text-gray-500 mt-0.5">${(item.payment || '').replace('_', ' ')}</p>
+                            <p class="text-xs text-gray-400 mt-1">${(item.category||'').replace('_',' ')} • ${formatDate(item.date)}</p>
+                            <p class="text-xs text-gray-500 mt-0.5">${(item.payment||'').replace('_',' ')}</p>
                         </div>
                         <p class="font-bold whitespace-nowrap ${isIncome ? 'text-px-emerald' : 'text-px-ruby'}">
                             ${isIncome ? '+' : '-'}${formatCurrency(item.price)}
@@ -390,7 +429,7 @@
             let income = 0, expense = 0;
             items.forEach(i => {
                 const v = Number(i.price) || 0;
-                String(i.type).toUpperCase().trim() === 'ENTRADA' ? income += v : expense += v;
+                String(i.type).toUpperCase().trim() === 'RECEITA' ? income += v : expense += v;
             });
             document.getElementById('balance').textContent = formatCurrency(income - expense);
             document.getElementById('totalIncome').textContent = '+' + formatCurrency(income);
@@ -423,10 +462,14 @@
             }
         });
 
-        
+        clearBtn.addEventListener('click', async () => {
+            if (!confirm('Apagar TUDO? Não tem volta!')) return;
+            await fetch(API_BASE + '/', { method: 'DELETE' });
+            showToast('🗑️ LIMPO!');
+            loadData();
+        });
 
         loadData('all');
     </script>
 </body>
-
 </html>
