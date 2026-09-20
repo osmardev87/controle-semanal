@@ -102,4 +102,8 @@ public class FinaceService {
                 .toList();
     }
 
+    public void deletar(Long id) {
+        finaceRepository.deleteById(id);
+    }
+
 }

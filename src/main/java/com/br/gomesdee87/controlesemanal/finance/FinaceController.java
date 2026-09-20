@@ -19,13 +19,10 @@ public class FinaceController {
         this.finaceService = finaceService;
     }
 
-    
-
     @PostMapping("/")
     public ResponseEntity<FinaceResponseDTO> create(@RequestBody FinaceRequestDTO requestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(finaceService.create(requestDTO));
     }
-
 
     // ✅ TODOS = ano atual
     @GetMapping("/")
@@ -33,7 +30,7 @@ public class FinaceController {
         int anoAtual = LocalDate.now().getYear();
         LocalDate inicioAno = LocalDate.of(anoAtual, 1, 1);
         LocalDate fimAno = LocalDate.of(anoAtual, 12, 31);
-        
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(finaceService.buscarEntreDatas(inicioAno, fimAno));
     }
@@ -51,6 +48,12 @@ public class FinaceController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(finaceService.listarPorMes(inicioDoMes, fimDoMes));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        finaceService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/")

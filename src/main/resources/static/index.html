@@ -80,6 +80,9 @@
                 text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
                 letter-spacing: 0.5px;
             }
+            .link-delete {
+                @apply text-gray-500 text-xs hover:text-px-ruby transition-colors no-underline;
+            }
         }
         * {
             image-rendering: pixelated;
@@ -108,165 +111,276 @@
 </head>
 <body class="bg-px-darker text-white flex flex-col min-h-screen">
 
-    <!-- CABEÇALHO FIXO - Saldo -->
-    <header class="bg-px-dark border-b-pixel border-black shadow-md flex-shrink-0 z-10">
-        <div class="max-w-md mx-auto px-4 py-4">
-            <div class="flex items-center gap-3 mb-2">
-                <span class="text-2xl">💰</span>
-                <h1 class="text-lg font-bold text-px-gold pixel-text">CONTROLE DE GASTOS</h1>
+    <!-- ====================================== -->
+    <!-- TELA DE LOGIN - Proteção contra curiosos -->
+    <!-- ====================================== -->
+    <div id="loginScreen" class="fixed inset-0 bg-px-darker z-50 flex items-center justify-center px-6">
+        <div class="w-full max-w-sm">
+            <div class="text-center mb-8">
+                <span class="text-5xl">🔒</span>
+                <h2 class="mt-4 text-lg font-bold text-px-gold pixel-text">ACESSO RESTRITO</h2>
+                <p class="text-gray-400 text-xs mt-2">Digite a senha para continuar</p>
             </div>
 
-            <!-- Saldo -->
-            <div class="pixel-card p-4 rounded-none">
-                <p class="text-px-gold/80 text-xs font-bold mb-2 uppercase tracking-wider" id="balanceLabel">Saldo Atual</p>
-                <p id="balance" class="text-2xl font-bold text-px-gold pixel-text">R$ 0,00</p>
-
-                <div class="border-b border-dashed border-gray-600 my-3"></div>
-
-                <div class="flex justify-between text-sm">
-                    <div class="flex items-center gap-2">
-                        <span class="w-7 h-7 bg-px-emerald/20 flex items-center justify-center border-pixel border-green-600">
-                            <i class="fa fa-arrow-down text-px-emerald text-xs"></i>
-                        </span>
-                        <div>
-                            <p class="text-gray-400 text-[10px]">ENTRADAS</p>
-                            <p id="totalIncome" class="font-bold text-px-emerald text-sm">+ R$ 0,00</p>
-                        </div>
+            <div class="pixel-card p-6 rounded-none">
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Senha</label>
+                        <input 
+                            type="password" 
+                            id="passwordInput" 
+                            class="w-full px-4 py-3 pixel-input text-lg tracking-widest text-center"
+                            placeholder="••••••"
+                            required
+                            autocomplete="off"
+                        >
                     </div>
-                    <div class="flex items-center gap-2 text-right">
-                        <span class="w-7 h-7 bg-px-ruby/20 flex items-center justify-center border-pixel border-red-700">
-                            <i class="fa fa-arrow-up text-px-ruby text-xs"></i>
-                        </span>
-                        <div>
-                            <p class="text-gray-400 text-[10px]">SAÍDAS</p>
-                            <p id="totalExpense" class="font-bold text-px-ruby text-sm">- R$ 0,00</p>
+                    
+                    <p id="loginError" class="text-px-ruby text-xs text-center hidden">
+                        ❌ Senha incorreta
+                    </p>
+
+                    <button type="submit" class="w-full py-3 pixel-btn">
+                        ENTRAR
+                    </button>
+                </form>
+            </div>
+            
+            <p class="text-center text-gray-600 text-[10px] mt-4">
+                Acesso apenas para uso pessoal
+            </p>
+        </div>
+    </div>
+
+    <!-- ====================================== -->
+    <!-- CONTEÚDO PRINCIPAL - Só aparece após login -->
+    <!-- ====================================== -->
+    <div id="appContent" class="hidden flex flex-col min-h-screen">
+
+        <!-- CABEÇALHO FIXO - Saldo -->
+        <header class="bg-px-dark border-b-pixel border-black shadow-md flex-shrink-0 z-10">
+            <div class="max-w-md mx-auto px-4 py-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💰</span>
+                        <h1 class="text-lg font-bold text-px-gold pixel-text">CONTROLE DE GASTOS</h1>
+                    </div>
+                    <button id="logoutBtn" class="text-gray-500 text-xs hover:text-px-gold transition-colors">
+                        sair
+                    </button>
+                </div>
+
+                <!-- Saldo -->
+                <div class="pixel-card p-4 rounded-none">
+                    <p class="text-px-gold/80 text-xs font-bold mb-2 uppercase tracking-wider" id="balanceLabel">Saldo Atual</p>
+                    <p id="balance" class="text-2xl font-bold text-px-gold pixel-text">R$ 0,00</p>
+
+                    <div class="border-b border-dashed border-gray-600 my-3"></div>
+
+                    <div class="flex justify-between text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 bg-px-emerald/20 flex items-center justify-center border-pixel border-green-600">
+                                <i class="fa fa-arrow-down text-px-emerald text-xs"></i>
+                            </span>
+                            <div>
+                                <p class="text-gray-400 text-[10px]">ENTRADAS</p>
+                                <p id="totalIncome" class="font-bold text-px-emerald text-sm">+ R$ 0,00</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-right">
+                            <span class="w-7 h-7 bg-px-ruby/20 flex items-center justify-center border-pixel border-red-700">
+                                <i class="fa fa-arrow-up text-px-ruby text-xs"></i>
+                            </span>
+                            <div>
+                                <p class="text-gray-400 text-[10px]">SAÍDAS</p>
+                                <p id="totalExpense" class="font-bold text-px-ruby text-sm">- R$ 0,00</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- MENU DE ABAS FIXO -->
-    <nav class="bg-px-dark border-b-2 border-black px-4 py-2 flex-shrink-0 z-10">
-        <div class="max-w-md mx-auto grid grid-cols-4 gap-2 mb-2">
-            <button id="tabAll" class="pixel-btn py-2 text-xs">TODOS</button>
-            <button id="tabWeek" class="pixel-btn-secondary py-2 text-xs">SEMANA</button>
-            <button id="tabMonth" class="pixel-btn-secondary py-2 text-xs">MÊS</button>
-            <button id="tabAdd" class="pixel-btn-secondary py-2 text-xs">+ADD</button>
-        </div>
-        
-        <!-- ✅ SELETOR DE MÊS - Aparece só quando "MÊS" está ativo -->
-        <div id="monthSelector" class="max-w-md mx-auto hidden">
-            <select id="monthSelect" class="w-full px-3 py-2 pixel-input text-sm font-bold">
-                <!-- Preenchido automaticamente via JS -->
-            </select>
-        </div>
-    </nav>
+        <!-- MENU DE ABAS FIXO -->
+        <nav class="bg-px-dark border-b-2 border-black px-4 py-2 flex-shrink-0 z-10">
+            <div class="max-w-md mx-auto grid grid-cols-4 gap-2 mb-2">
+                <button id="tabAll" class="pixel-btn py-2 text-xs">TODOS</button>
+                <button id="tabWeek" class="pixel-btn-secondary py-2 text-xs">SEMANA</button>
+                <button id="tabMonth" class="pixel-btn-secondary py-2 text-xs">MÊS</button>
+                <button id="tabAdd" class="pixel-btn-secondary py-2 text-xs">+ADD</button>
+            </div>
+            
+            <!-- SELETOR DE MÊS - Aparece só quando "MÊS" está ativo -->
+            <div id="monthSelector" class="max-w-md mx-auto hidden">
+                <select id="monthSelect" class="w-full px-3 py-2 pixel-input text-sm font-bold">
+                    <!-- Preenchido via JS -->
+                </select>
+            </div>
+        </nav>
 
-    <!-- ÁREA QUE ROLA - Lista e Formulário -->
-    <main class="flex-1 overflow-hidden">
-        <div class="scroll-area h-full">
-            <div class="px-4 py-4 max-w-md mx-auto">
+        <!-- ÁREA QUE ROLA - Lista e Formulário -->
+        <main class="flex-1 overflow-hidden">
+            <div class="scroll-area h-full">
+                <div class="px-4 py-4 max-w-md mx-auto">
 
-                <!-- Lista de Movimentos -->
-                <div id="listSection" class="space-y-3">
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="font-bold text-base text-px-gold pixel-text" id="listTitle">📜 MOVIMENTOS</h2>       
+                    <!-- Lista de Movimentos -->
+                    <div id="listSection" class="space-y-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 class="font-bold text-base text-px-gold pixel-text" id="listTitle">📜 MOVIMENTOS</h2>
+                        </div>
+
+                        <div id="loading" class="text-center py-10 text-gray-500">
+                            <div class="inline-block w-6 h-6 border-pixel border-px-gold border-t-transparent animate-spin mb-2"></div>
+                            <p class="text-xs">CARREGANDO...</p>
+                        </div>
+
+                        <div id="emptyState" class="hidden text-center py-14 text-gray-400">
+                            <div class="text-5xl mb-4">📦</div>
+                            <p class="font-bold text-gray-300 pixel-text">NENHUM REGISTRO</p>
+                            <p class="text-xs mt-2 text-gray-500">Toque em <span class="text-px-gold">[+ADD]</span> para começar!</p>
+                        </div>
+
+                        <div id="itemsList" class="space-y-3"></div>
                     </div>
 
-                    <div id="loading" class="text-center py-10 text-gray-500">
-                        <div class="inline-block w-6 h-6 border-pixel border-px-gold border-t-transparent animate-spin mb-2"></div>
-                        <p class="text-xs">CARREGANDO...</p>
-                    </div>
-
-                    <div id="emptyState" class="hidden text-center py-14 text-gray-400">
-                        <div class="text-5xl mb-4">📦</div>
-                        <p class="font-bold text-gray-300 pixel-text">NENHUM REGISTRO</p>
-                        <p class="text-xs mt-2 text-gray-500">Toque em <span class="text-px-gold">[+ADD]</span> para começar!</p>
-                    </div>
-
-                    <div id="itemsList" class="space-y-3"></div>
-                </div>
-
-                <!-- Formulário de Adição -->
-                <div id="formSection" class="hidden">
-                    <h2 class="font-bold text-base mb-5 text-px-gold pixel-text">➕ NOVA MOVIMENTAÇÃO</h2>
-                    <form id="transactionForm" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Tipo</label>
+                    <!-- Formulário de Adição -->
+                    <div id="formSection" class="hidden">
+                        <h2 class="font-bold text-base mb-5 text-px-gold pixel-text">➕ NOVA MOVIMENTAÇÃO</h2>
+                        <form id="transactionForm" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Tipo</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="type" value="ENTRADA" class="sr-only peer">
+                                        <div class="pixel-card p-3 text-center transition-colors peer-checked:border-px-emerald peer-checked:bg-px-emerald/10">
+                                            <span class="text-px-emerald text-lg">⬇</span>
+                                            <span class="block mt-1 font-bold text-sm">ENTRADA</span>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="type" value="SAIDA" class="sr-only peer" checked>
+                                        <div class="pixel-card p-3 text-center transition-colors peer-checked:border-px-ruby peer-checked:bg-px-ruby/10">
+                                            <span class="text-px-ruby text-lg">⬆</span>
+                                            <span class="block mt-1 font-bold text-sm">SAIDA</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Descrição</label>
+                                <input type="text" id="description" name="description" class="w-full px-3 py-3 pixel-input" placeholder="Ex: Supermercado..." maxlength="100" required>
+                            </div>
                             <div class="grid grid-cols-2 gap-3">
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="type" value="ENTRADA" class="sr-only peer">
-                                    <div class="pixel-card p-3 text-center transition-colors peer-checked:border-px-emerald peer-checked:bg-px-emerald/10">
-                                        <span class="text-px-emerald text-lg">⬇</span>
-                                        <span class="block mt-1 font-bold text-sm">ENTRADA</span>
-                                    </div>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="type" value="DESPESA" class="sr-only peer" checked>
-                                    <div class="pixel-card p-3 text-center transition-colors peer-checked:border-px-ruby peer-checked:bg-px-ruby/10">
-                                        <span class="text-px-ruby text-lg">⬆</span>
-                                        <span class="block mt-1 font-bold text-sm">DESPESA</span>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Descrição</label>
-                            <input type="text" id="description" name="description" class="w-full px-3 py-3 pixel-input" placeholder="Ex: Supermercado..." maxlength="100" required>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Valor</label>
-                                <input type="number" step="0.01" min="0.01" id="price" name="price" class="w-full px-3 py-3 pixel-input" placeholder="0,00" required>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Valor</label>
+                                    <input type="number" step="0.01" min="0.01" id="price" name="price" class="w-full px-3 py-3 pixel-input" placeholder="0,00" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Data</label>
+                                    <input type="date" id="date" name="date" class="w-full px-3 py-3 pixel-input" required>
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Data</label>
-                                <input type="date" id="date" name="date" class="w-full px-3 py-3 pixel-input" required>
+                                <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Categoria</label>
+                                <select id="category" name="category" class="w-full px-3 py-3 pixel-input" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="ALIMENTACAO">🍔 Comida</option>
+                                    <option value="TRANSPORTE">🚗 Carro</option>
+                                    <option value="LAZER">🎮 Diversão</option>
+                                    <option value="MORADIA">🏠 Casa</option>
+                                    <option value="SAUDE">💊 Saúde</option>
+                                    <option value="EDUCACAO">📚 Estudo</option>
+                                    <option value="SALARIO">💰 Salário</option>
+                                    <option value="OUTROS">📝 Outros</option>
+                                </select>
                             </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Categoria</label>
-                            <select id="category" name="category" class="w-full px-3 py-3 pixel-input" required>
-                                <option value="">Selecione...</option>
-                                <option value="ALIMENTACAO">🍔 Comida</option>
-                                <option value="TRANSPORTE">🚗 Carro</option>
-                                <option value="LAZER">🎮 Diversão</option>
-                                <option value="MORADIA">🏠 Casa</option>
-                                <option value="SAUDE">💊 Saúde</option>
-                                <option value="EDUCACAO">📚 Estudo</option>
-                                <option value="SALARIO">💰 Salário</option>
-                                <option value="OUTROS">📝 Outros</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Pagamento</label>
-                            <select id="payment" name="payment" class="w-full px-3 py-3 pixel-input" required>
-                                <option value="">Selecione...</option>
-                                <option value="DINHEIRO">💵 Dinheiro</option>
-                                <option value="PIX">⚡ PIX</option>
-                                <option value="CARTAO_CREDITO">💳 Crédito</option>
-                                <option value="CARTAO_DEBITO">💳 Débito</option>
-                                <option value="TRANSFERENCIA">🏦 Transf.</option>
-                            </select>
-                        </div>
-                        <div class="flex gap-3 pt-2">
-                            <button type="button" id="cancelBtn" class="flex-1 py-3 pixel-btn-secondary">CANCELAR</button>
-                            <button type="submit" class="flex-1 py-3 pixel-btn">SALVAR</button>
-                        </div>
-                    </form>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Pagamento</label>
+                                <select id="payment" name="payment" class="w-full px-3 py-3 pixel-input" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="DINHEIRO">💵 Dinheiro</option>
+                                    <option value="PIX">⚡ PIX</option>
+                                    <option value="CARTAO_CREDITO">💳 Crédito</option>
+                                    <option value="CARTAO_DEBITO">💳 Débito</option>
+                                    <option value="TRANSFERENCIA">🏦 Transf.</option>
+                                </select>
+                            </div>
+                            <div class="flex gap-3 pt-2">
+                                <button type="button" id="cancelBtn" class="flex-1 py-3 pixel-btn-secondary">CANCELAR</button>
+                                <button type="submit" class="flex-1 py-3 pixel-btn">SALVAR</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <!-- Toast de Notificação -->
-    <div id="toast" class="fixed bottom-6 left-4 right-4 max-w-md mx-auto bg-px-card text-white py-3 px-4 pixel-border-gold transform translate-y-20 opacity-0 transition-all duration-200 pointer-events-none z-50 text-center font-bold"></div>
+        <!-- Toast de Notificação -->
+        <div id="toast" class="fixed bottom-6 left-4 right-4 max-w-md mx-auto bg-px-card text-white py-3 px-4 pixel-border-gold transform translate-y-20 opacity-0 transition-all duration-200 pointer-events-none z-50 text-center font-bold"></div>
+    </div>
 
     <script>
+        // ======================================
+        // CONFIGURAÇÕES DE ACESSO
+        // ======================================
+        const SENHA_CORRETA = "Osmar4547*"; // ← TROCA PELA SUA SENHA
         const API_BASE = "https://controler.gomesdev87.tech/finace";
 
+        // Elementos da Tela de Login
+        const loginScreen = document.getElementById('loginScreen');
+        const appContent = document.getElementById('appContent');
+        const loginForm = document.getElementById('loginForm');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Verifica se já está logado ao carregar
+        let isAuthenticated = localStorage.getItem('appAuthenticated') === 'true';
+
+        // Mostra/esconde telas
+        function showApp() {
+            loginScreen.classList.add('hidden');
+            appContent.classList.remove('hidden');
+            isAuthenticated = true;
+            localStorage.setItem('appAuthenticated', 'true');
+            passwordInput.value = '';
+            // Carrega os dados só depois de entrar
+            loadData('all');
+        }
+
+        function showLogin() {
+            loginScreen.classList.remove('hidden');
+            appContent.classList.add('hidden');
+            isAuthenticated = false;
+            localStorage.removeItem('appAuthenticated');
+            passwordInput.value = '';
+            loginError.classList.add('hidden');
+        }
+
+        // Tela inicial
+        if (isAuthenticated) {
+            showApp();
+        }
+
+        // Login
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (passwordInput.value === SENHA_CORRETA) {
+                loginError.classList.add('hidden');
+                showApp();
+            } else {
+                loginError.classList.remove('hidden');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', showLogin);
+
+        // ======================================
+        // CÓDIGO DO APLICATIVO
+        // ======================================
         const tabAll = document.getElementById('tabAll');
         const tabWeek = document.getElementById('tabWeek');
         const tabMonth = document.getElementById('tabMonth');
@@ -280,7 +394,6 @@
         const emptyState = document.getElementById('emptyState');
         const form = document.getElementById('transactionForm');
         const cancelBtn = document.getElementById('cancelBtn');
-        const clearBtn = document.getElementById('clearBtn');
         const toast = document.getElementById('toast');
         const balanceLabel = document.getElementById('balanceLabel');
         const listTitle = document.getElementById('listTitle');
@@ -288,7 +401,7 @@
         document.getElementById('date').valueAsDate = new Date();
         let currentFilter = 'all';
 
-        // ✅ Preenche o seletor de meses (últimos 24 meses até o atual)
+        // Preenche o seletor de meses
         function populateMonthOptions() {
             const meses = [
                 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -300,7 +413,6 @@
             
             monthSelect.innerHTML = '';
             
-            // Gera dos últimos 2 anos até o mês atual
             for (let ano = anoAtual - 1; ano <= anoAtual; ano++) {
                 const inicioMes = (ano === anoAtual) ? 1 : 1;
                 const fimMes = (ano === anoAtual) ? mesAtual : 12;
@@ -309,13 +421,14 @@
                     const valor = `${ano}-${String(mes).padStart(2, '0')}`;
                     const texto = `${meses[mes - 1]} / ${ano}`;
                     const selected = (ano === anoAtual && mes === mesAtual);
-                    
                     monthSelect.innerHTML += `<option value="${valor}" ${selected ? 'selected' : ''}>${texto}</option>`;
                 }
             }
         }
 
         function setActiveTab(activeTab) {
+            if (!isAuthenticated) return;
+            
             [tabAll, tabWeek, tabMonth, tabAdd].forEach(tab => {
                 tab.classList.remove('pixel-btn');
                 tab.classList.add('pixel-btn-secondary');
@@ -346,7 +459,6 @@
                     balanceLabel.textContent = 'SALDO DO MÊS';
                     listTitle.innerHTML = '📅 MÊS SELECIONADO';
                     monthSelector.classList.remove('hidden');
-                    // Recarrega com o mês selecionado
                     loadData('month');
                     return;
                 }
@@ -364,11 +476,8 @@
         tabAdd.addEventListener('click', () => setActiveTab(tabAdd));
         cancelBtn.addEventListener('click', () => setActiveTab(tabAll));
         
-        // ✅ Carrega dados quando muda o mês no seletor
         monthSelect.addEventListener('change', () => {
-            if (currentFilter === 'month') {
-                loadData('month');
-            }
+            if (currentFilter === 'month') loadData('month');
         });
 
         function formatCurrency(value) {
@@ -387,7 +496,24 @@
             setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
         }
 
+        // Excluir um item
+        async function excluirItem(id, descricao) {
+            if (!confirm(`Excluir "${descricao}"?\nEssa ação não tem volta!`)) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Erro ao excluir');
+                
+                showToast('✅ EXCLUÍDO!');
+                loadData(currentFilter);
+            } catch (err) {
+                showToast('❌ ' + err.message, true);
+            }
+        }
+
         async function loadData(filterType = 'all') {
+            if (!isAuthenticated) return;
+            
             loading.classList.remove('hidden');
             emptyState.classList.add('hidden');
             itemsList.innerHTML = '';
@@ -399,7 +525,6 @@
                     const d = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
                     url = `${API_BASE}/semana/${d}`;
                 } else if (filterType === 'month') {
-                    // ✅ Usa o valor selecionado no seletor
                     const mesSelecionado = monthSelect.value;
                     url = `${API_BASE}/mes/${mesSelecionado}`;
                 }
@@ -426,18 +551,32 @@
                 const card = document.createElement('div');
                 card.className = `pixel-card border-l-4 ${isIncome ? 'border-l-px-emerald' : 'border-l-px-ruby'}`;
                 card.innerHTML = `
-                    <div class="flex justify-between items-start p-3 gap-3">
+                    <div class="flex justify-between items-start p-3 gap-2">
                         <div class="flex-1 min-w-0">
                             <h3 class="font-bold text-sm pixel-text">${item.description}</h3>
                             <p class="text-xs text-gray-400 mt-1">${(item.category||'').replace('_',' ')} • ${formatDate(item.date)}</p>
                             <p class="text-xs text-gray-500 mt-0.5">${(item.payment||'').replace('_',' ')}</p>
                         </div>
-                        <p class="font-bold whitespace-nowrap ${isIncome ? 'text-px-emerald' : 'text-px-ruby'}">
-                            ${isIncome ? '+' : '-'}${formatCurrency(item.price)}
-                        </p>
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-bold whitespace-nowrap ${isIncome ? 'text-px-emerald' : 'text-px-ruby'}">
+                                ${isIncome ? '+' : '-'}${formatCurrency(item.price)}
+                            </p>
+                            <a href="#" class="link-delete" data-id="${item.id}" data-desc="${item.description}">
+                                excluir
+                            </a>
+                        </div>
                     </div>
                 `;
                 itemsList.appendChild(card);
+            });
+
+            document.querySelectorAll('.link-delete').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const id = link.getAttribute('data-id');
+                    const desc = link.getAttribute('data-desc');
+                    excluirItem(id, desc);
+                });
             });
         }
 
@@ -477,10 +616,6 @@
                 showToast('❌ ' + err, true);
             }
         });
-
-       
-
-        loadData('all');
     </script>
 </body>
 </html>
