@@ -10,7 +10,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 450M
+          memory: 650M
           
 volumes:
   controle-semanal-data:
