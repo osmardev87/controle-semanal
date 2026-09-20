@@ -10,7 +10,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: 650M
-          
+          memory: 400M       # ✅ 650M → 400M (-250 MB!)
+        reservations:
+          memory: 320M       # ✅ Adicionado: reserva só o essencial
+
 volumes:
   controle-semanal-data:
