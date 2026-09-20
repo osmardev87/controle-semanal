@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -109,7 +108,7 @@
 </head>
 <body class="bg-px-darker text-white flex flex-col min-h-screen">
 
-    <!-- ✅ CABEÇALHO FIXO - Saldo -->
+    <!-- CABEÇALHO FIXO - Saldo -->
     <header class="bg-px-dark border-b-pixel border-black shadow-md flex-shrink-0 z-10">
         <div class="max-w-md mx-auto px-4 py-4">
             <div class="flex items-center gap-3 mb-2">
@@ -148,25 +147,24 @@
         </div>
     </header>
 
-    <!-- ✅ MENU DE ABAS FIXO -->
+    <!-- MENU DE ABAS FIXO -->
     <nav class="bg-px-dark border-b-2 border-black px-4 py-2 flex-shrink-0 z-10">
-        <div class="max-w-md mx-auto grid grid-cols-4 gap-2">
-            <button id="tabAll" class="pixel-btn py-2 text-xs">
-                TODOS
-            </button>
-            <button id="tabWeek" class="pixel-btn-secondary py-2 text-xs">
-                SEMANA
-            </button>
-            <button id="tabMonth" class="pixel-btn-secondary py-2 text-xs">
-                MÊS
-            </button>
-            <button id="tabAdd" class="pixel-btn-secondary py-2 text-xs">
-                +ADD
-            </button>
+        <div class="max-w-md mx-auto grid grid-cols-4 gap-2 mb-2">
+            <button id="tabAll" class="pixel-btn py-2 text-xs">TODOS</button>
+            <button id="tabWeek" class="pixel-btn-secondary py-2 text-xs">SEMANA</button>
+            <button id="tabMonth" class="pixel-btn-secondary py-2 text-xs">MÊS</button>
+            <button id="tabAdd" class="pixel-btn-secondary py-2 text-xs">+ADD</button>
+        </div>
+        
+        <!-- ✅ SELETOR DE MÊS - Aparece só quando "MÊS" está ativo -->
+        <div id="monthSelector" class="max-w-md mx-auto hidden">
+            <select id="monthSelect" class="w-full px-3 py-2 pixel-input text-sm font-bold">
+                <!-- Preenchido automaticamente via JS -->
+            </select>
         </div>
     </nav>
 
-    <!-- ✅ ÁREA QUE ROLA - Lista e Formulário -->
+    <!-- ÁREA QUE ROLA - Lista e Formulário -->
     <main class="flex-1 overflow-hidden">
         <div class="scroll-area h-full">
             <div class="px-4 py-4 max-w-md mx-auto">
@@ -174,8 +172,7 @@
                 <!-- Lista de Movimentos -->
                 <div id="listSection" class="space-y-3">
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class="font-bold text-base text-px-gold pixel-text" id="listTitle">📜 MOVIMENTOS</h2>
-                       
+                        <h2 class="font-bold text-base text-px-gold pixel-text" id="listTitle">📜 MOVIMENTOS</h2>       
                     </div>
 
                     <div id="loading" class="text-center py-10 text-gray-500">
@@ -195,55 +192,40 @@
                 <!-- Formulário de Adição -->
                 <div id="formSection" class="hidden">
                     <h2 class="font-bold text-base mb-5 text-px-gold pixel-text">➕ NOVA MOVIMENTAÇÃO</h2>
-
                     <form id="transactionForm" class="space-y-4">
-                        <!-- Tipo -->
                         <div>
                             <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Tipo</label>
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="cursor-pointer">
                                     <input type="radio" name="type" value="ENTRADA" class="sr-only peer">
-                                    <div class="pixel-card p-3 text-center transition-colors
-                                                peer-checked:border-px-emerald peer-checked:bg-px-emerald/10">
+                                    <div class="pixel-card p-3 text-center transition-colors peer-checked:border-px-emerald peer-checked:bg-px-emerald/10">
                                         <span class="text-px-emerald text-lg">⬇</span>
-                                        <span class="block mt-1 font-bold text-sm">RECEITA</span>
+                                        <span class="block mt-1 font-bold text-sm">ENTRADA</span>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer">
                                     <input type="radio" name="type" value="DESPESA" class="sr-only peer" checked>
-                                    <div class="pixel-card p-3 text-center transition-colors
-                                                peer-checked:border-px-ruby peer-checked:bg-px-ruby/10">
+                                    <div class="pixel-card p-3 text-center transition-colors peer-checked:border-px-ruby peer-checked:bg-px-ruby/10">
                                         <span class="text-px-ruby text-lg">⬆</span>
                                         <span class="block mt-1 font-bold text-sm">DESPESA</span>
                                     </div>
                                 </label>
                             </div>
                         </div>
-
-                        <!-- Descrição -->
                         <div>
                             <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Descrição</label>
-                            <input type="text" id="description" name="description"
-                                class="w-full px-3 py-3 pixel-input"
-                                placeholder="Ex: Supermercado..." maxlength="100" required>
+                            <input type="text" id="description" name="description" class="w-full px-3 py-3 pixel-input" placeholder="Ex: Supermercado..." maxlength="100" required>
                         </div>
-
-                        <!-- Valor e Data -->
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Valor</label>
-                                <input type="number" step="0.01" min="0.01" id="price" name="price"
-                                    class="w-full px-3 py-3 pixel-input"
-                                    placeholder="0,00" required>
+                                <input type="number" step="0.01" min="0.01" id="price" name="price" class="w-full px-3 py-3 pixel-input" placeholder="0,00" required>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Data</label>
-                                <input type="date" id="date" name="date"
-                                    class="w-full px-3 py-3 pixel-input" required>
+                                <input type="date" id="date" name="date" class="w-full px-3 py-3 pixel-input" required>
                             </div>
                         </div>
-
-                        <!-- Categoria -->
                         <div>
                             <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Categoria</label>
                             <select id="category" name="category" class="w-full px-3 py-3 pixel-input" required>
@@ -258,8 +240,6 @@
                                 <option value="OUTROS">📝 Outros</option>
                             </select>
                         </div>
-
-                        <!-- Forma de Pagamento -->
                         <div>
                             <label class="block text-xs font-bold text-gray-300 mb-2 uppercase">Pagamento</label>
                             <select id="payment" name="payment" class="w-full px-3 py-3 pixel-input" required>
@@ -271,15 +251,9 @@
                                 <option value="TRANSFERENCIA">🏦 Transf.</option>
                             </select>
                         </div>
-
-                        <!-- Botões -->
                         <div class="flex gap-3 pt-2">
-                            <button type="button" id="cancelBtn" class="flex-1 py-3 pixel-btn-secondary">
-                                CANCELAR
-                            </button>
-                            <button type="submit" class="flex-1 py-3 pixel-btn">
-                                SALVAR
-                            </button>
+                            <button type="button" id="cancelBtn" class="flex-1 py-3 pixel-btn-secondary">CANCELAR</button>
+                            <button type="submit" class="flex-1 py-3 pixel-btn">SALVAR</button>
                         </div>
                     </form>
                 </div>
@@ -288,9 +262,7 @@
     </main>
 
     <!-- Toast de Notificação -->
-    <div id="toast"
-        class="fixed bottom-6 left-4 right-4 max-w-md mx-auto bg-px-card text-white py-3 px-4 pixel-border-gold transform translate-y-20 opacity-0 transition-all duration-200 pointer-events-none z-50 text-center font-bold">
-    </div>
+    <div id="toast" class="fixed bottom-6 left-4 right-4 max-w-md mx-auto bg-px-card text-white py-3 px-4 pixel-border-gold transform translate-y-20 opacity-0 transition-all duration-200 pointer-events-none z-50 text-center font-bold"></div>
 
     <script>
         const API_BASE = "https://controler.gomesdev87.tech/finace";
@@ -299,6 +271,8 @@
         const tabWeek = document.getElementById('tabWeek');
         const tabMonth = document.getElementById('tabMonth');
         const tabAdd = document.getElementById('tabAdd');
+        const monthSelector = document.getElementById('monthSelector');
+        const monthSelect = document.getElementById('monthSelect');
         const listSection = document.getElementById('listSection');
         const formSection = document.getElementById('formSection');
         const itemsList = document.getElementById('itemsList');
@@ -314,6 +288,33 @@
         document.getElementById('date').valueAsDate = new Date();
         let currentFilter = 'all';
 
+        // ✅ Preenche o seletor de meses (últimos 24 meses até o atual)
+        function populateMonthOptions() {
+            const meses = [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+            const hoje = new Date();
+            const anoAtual = hoje.getFullYear();
+            const mesAtual = hoje.getMonth() + 1;
+            
+            monthSelect.innerHTML = '';
+            
+            // Gera dos últimos 2 anos até o mês atual
+            for (let ano = anoAtual - 1; ano <= anoAtual; ano++) {
+                const inicioMes = (ano === anoAtual) ? 1 : 1;
+                const fimMes = (ano === anoAtual) ? mesAtual : 12;
+                
+                for (let mes = inicioMes; mes <= fimMes; mes++) {
+                    const valor = `${ano}-${String(mes).padStart(2, '0')}`;
+                    const texto = `${meses[mes - 1]} / ${ano}`;
+                    const selected = (ano === anoAtual && mes === mesAtual);
+                    
+                    monthSelect.innerHTML += `<option value="${valor}" ${selected ? 'selected' : ''}>${texto}</option>`;
+                }
+            }
+        }
+
         function setActiveTab(activeTab) {
             [tabAll, tabWeek, tabMonth, tabAdd].forEach(tab => {
                 tab.classList.remove('pixel-btn');
@@ -325,6 +326,7 @@
             if (activeTab === tabAdd) {
                 listSection.classList.add('hidden');
                 formSection.classList.remove('hidden');
+                monthSelector.classList.add('hidden');
             } else {
                 listSection.classList.remove('hidden');
                 formSection.classList.add('hidden');
@@ -333,14 +335,20 @@
                     currentFilter = 'all';
                     balanceLabel.textContent = 'SALDO DO ANO';
                     listTitle.innerHTML = '📜 TODOS OS MOVIMENTOS';
+                    monthSelector.classList.add('hidden');
                 } else if (activeTab === tabWeek) {
                     currentFilter = 'week';
                     balanceLabel.textContent = 'SALDO DA SEMANA';
                     listTitle.innerHTML = '📅 SEMANA';
+                    monthSelector.classList.add('hidden');
                 } else if (activeTab === tabMonth) {
                     currentFilter = 'month';
                     balanceLabel.textContent = 'SALDO DO MÊS';
-                    listTitle.innerHTML = '📅 MÊS';
+                    listTitle.innerHTML = '📅 MÊS SELECIONADO';
+                    monthSelector.classList.remove('hidden');
+                    // Recarrega com o mês selecionado
+                    loadData('month');
+                    return;
                 }
                 
                 loadData(currentFilter);
@@ -349,9 +357,19 @@
 
         tabAll.addEventListener('click', () => setActiveTab(tabAll));
         tabWeek.addEventListener('click', () => setActiveTab(tabWeek));
-        tabMonth.addEventListener('click', () => setActiveTab(tabMonth));
+        tabMonth.addEventListener('click', () => {
+            populateMonthOptions();
+            setActiveTab(tabMonth);
+        });
         tabAdd.addEventListener('click', () => setActiveTab(tabAdd));
         cancelBtn.addEventListener('click', () => setActiveTab(tabAll));
+        
+        // ✅ Carrega dados quando muda o mês no seletor
+        monthSelect.addEventListener('change', () => {
+            if (currentFilter === 'month') {
+                loadData('month');
+            }
+        });
 
         function formatCurrency(value) {
             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
@@ -381,9 +399,9 @@
                     const d = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
                     url = `${API_BASE}/semana/${d}`;
                 } else if (filterType === 'month') {
-                    const t = new Date();
-                    const am = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
-                    url = `${API_BASE}/mes/${am}`;
+                    // ✅ Usa o valor selecionado no seletor
+                    const mesSelecionado = monthSelect.value;
+                    url = `${API_BASE}/mes/${mesSelecionado}`;
                 }
 
                 const res = await fetch(url);
