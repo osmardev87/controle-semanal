@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @RestController
@@ -34,9 +35,13 @@ public class FinaceController {
     }
 
     @GetMapping("/mes/{anoMes}")
-    public ResponseEntity<List<FinaceResponseDTO>> listarPorMes(@PathVariable LocalDate anoMes) {
-        // formato: "2026-09"
-        return ResponseEntity.status(HttpStatus.OK).body(finaceService.listarPorMes(anoMes));
+    public ResponseEntity<List<FinaceResponseDTO>> listarPorMes(@PathVariable CharSequence anoMes) {
+        YearMonth mesAno = YearMonth.parse(anoMes);
+        LocalDate inicioDoMes = mesAno.atDay(1);
+        LocalDate fimDoMes = mesAno.atEndOfMonth();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(finaceService.listarPorMes(inicioDoMes, fimDoMes));
     }
 
     @DeleteMapping("/")
