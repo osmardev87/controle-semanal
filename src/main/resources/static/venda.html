@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Bolso — Controle suas Finanças de Verdade</title>
+    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#ecfdf5', 100: '#d1fae5', 500: '#10b981', 600: '#059669', 700: '#047857'
+                        },
+                        danger: { 500: '#ef4444', 600: '#dc2626' },
+                        neutral: { 800: '#1f2937', 900: '#111827' }
+                    },
+                    boxShadow: {
+                        'hero': '0 20px 60px rgba(16, 185, 129, 0.25)',
+                        'card': '0 8px 30px rgba(0,0,0,0.12)',
+                        'lift': '0 12px 40px rgba(16, 185, 129, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+        }
+        .phone-frame {
+            border: 10px solid #1f2937;
+            border-radius: 48px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .pulse-btn {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 16px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .fade-up {
+            animation: fadeUp 0.8s ease forwards;
+            opacity: 0; transform: translateY(20px);
+        }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .delay-1 { animation-delay: 0.15s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.45s; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+
+<!-- 🔝 Cabeçalho -->
+<header class="px-6 py-5 max-w-6xl mx-auto flex justify-between items-center">
+    <div class="flex items-center gap-2">
+        <img src="/icons/icon-192.png" alt="Meu Bolso" class="w-9 h-9 rounded-xl">
+        <span class="font-bold text-xl text-neutral-900">Meu Bolso</span>
+    </div>
+    <a href="https://wa.me/5575988477936" target="_blank" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl font-semibold transition-colors">
+        <i class="fa fa-whatsapp mr-1"></i> WhatsApp
+    </a>
+</header>
+
+<!-- 🎯 Seção Principal -->
+<section class="px-6 py-12 max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+        <!-- Texto -->
+        <div class="fade-up">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-neutral-900 leading-tight mb-6">
+                Pare de perder dinheiro.<br>
+                <span class="text-primary-600">Comece a controlar hoje.</span>
+            </h1>
+            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                O <strong>Meu Bolso</strong> é a forma mais simples e rápida de acompanhar suas finanças. 
+                Veja onde entra, onde sai e tome decisões com clareza. Tudo na palma da sua mão.
+            </p>
+            <div class="space-y-4 mb-8">
+                <div class="flex items-center gap-3">
+                    <span class="text-primary-500 text-xl"><i class="fa fa-check-circle"></i></span>
+                    <span class="text-gray-700">Saldo em tempo real — atualizado na hora</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-primary-500 text-xl"><i class="fa fa-check-circle"></i></span>
+                    <span class="text-gray-700">Filtros por dia, semana e mês</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-primary-500 text-xl"><i class="fa fa-check-circle"></i></span>
+                    <span class="text-gray-700">Categorias e formas de pagamento</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-primary-500 text-xl"><i class="fa fa-check-circle"></i></span>
+                    <span class="text-gray-700">Acesso de qualquer lugar — celular ou computador</span>
+                </div>
+            </div>
+            <a href="https://wa.me/5575988477936?text=Olá!%20Quero%20saber%20mais%20sobre%20o%20Meu%20Bolso%20e%20controlar%20minhas%20finanças!" 
+               target="_blank"
+               class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-xl font-bold text-lg pulse-btn transition-all transform hover:scale-105 shadow-lg">
+                <i class="fa fa-whatsapp mr-2"></i> Quero Controlar Minhas Finanças
+            </a>
+            <p class="mt-4 text-sm text-gray-500">
+                <i class="fa fa-lock"></i> Seguro • Gratuito • Resposta rápida
+            </p>
+        </div>
+
+        <!-- Mockup do Celular -->
+        <div class="flex justify-center fade-up delay-2">
+            <div class="phone-frame w-[280px] md:w-[320px]">
+                <img src="/icons/fone.png" alt="Tela do App Meu Bolso" class="w-full h-auto">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ⚖️ Comparação -->
+<section class="px-6 py-16 bg-white/60 backdrop-blur-sm">
+    <div class="max-w-5xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold text-center text-neutral-900 mb-12">
+            Antes vs. Depois do Meu Bolso
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Coluna ANTES -->
+            <div class="bg-red-50 rounded-2xl p-6 border border-red-100 fade-up delay-1">
+                <h3 class="text-xl font-bold text-red-600 mb-5 flex items-center gap-2">
+                    <i class="fa fa-times-circle"></i> Sem Controle
+                </h3>
+                <ul class="space-y-4 text-gray-700">
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">✗</span>
+                        <span>Não sabe exatamente onde gasta</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">✗</span>
+                        <span>Descobre o saldo só quando olha o extrato</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">✗</span>
+                        <span>Conta na cabeça e sempre erra</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">✗</span>
+                        <span>Surpresas negativas no fim do mês</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">✗</span>
+                        <span>Deixa de economizar por não saber</span>
+                    </li>
+                </ul>
+            </div>
+            <!-- Coluna DEPOIS -->
+            <div class="bg-green-50 rounded-2xl p-6 border-2 border-primary-200 shadow-lift fade-up delay-2">
+                <h3 class="text-xl font-bold text-primary-600 mb-5 flex items-center gap-2">
+                    <i class="fa fa-check-circle"></i> Com Meu Bolso
+                </h3>
+                <ul class="space-y-4 text-gray-700">
+                    <li class="flex items-start gap-3">
+                        <span class="text-primary-500 mt-1">✓</span>
+                        <span>Veja cada gasto registrado com descrição e categoria</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-primary-500 mt-1">✓</span>
+                        <span>Saldo atualizado em tempo real, sempre que abrir</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-primary-500 mt-1">✓</span>
+                        <span>Conta automática — você só digita o valor</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-primary-500 mt-1">✓</span>
+                        <span>Saiba exatamente quanto entra e quanto sai</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-primary-500 mt-1">✓</span>
+                        <span>Identifique onde cortar e comece a economizar</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 🎯 Chamada Final -->
+<section class="px-6 py-16 bg-primary-500 text-white rounded-t-3xl mt-8">
+    <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">
+            Pronto para dominar suas finanças?
+        </h2>
+        <p class="text-lg opacity-90 mb-8">
+            Fale comigo agora e comece a controlar seu dinheiro.<br>
+            É gratuito. É simples. É para você.
+        </p>
+        <a href="https://wa.me/5575988477936?text=Olá!%20Quero%20começar%20a%20usar%20o%20Meu%20Bolso%20hoje!" 
+           target="_blank"
+           class="inline-block bg-white text-primary-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-primary-50 transition-colors shadow-lg">
+            <i class="fa fa-whatsapp mr-2"></i> Falar no WhatsApp
+        </a>
+        <p class="mt-6 text-sm opacity-75">
+            Resposta rápida — em minutos
+        </p>
+    </div>
+</section>
+
+<!-- Rodapé -->
+<footer class="bg-neutral-900 text-white/70 py-8 px-6 text-center text-sm">
+    <p class="mb-2">Meu Bolso — Suas finanças sob controle</p>
+    <p>© 2026 · <a href="https://wa.me/5575988477936" target="_blank" class="text-primary-400 hover:underline">Fale pelo WhatsApp</a></p>
+</footer>
+
+</body>
+</html>
