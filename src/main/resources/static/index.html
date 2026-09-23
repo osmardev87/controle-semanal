@@ -3,166 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ✅ Ícone local que JÁ EXISTE no projeto -->
+    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    
+    <!-- ✅ Manifesto local -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#165DFF">
-    <title>Controle de Gastos</title>
+    <meta name="theme-color" content="#10b981">
+    
+    <title>Meu Bolso — Controle Financeiro</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
+                            50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0',
+                            300: '#6ee7b7', 400: '#34d399', 500: '#10b981',
+                            600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b',
                         },
-                        success: {
-                            light: '#d1fae5',
-                            DEFAULT: '#10b981',
-                            dark: '#059665',
-                        },
-                        danger: {
-                            light: '#fee2e2',
-                            DEFAULT: '#ef4444',
-                            dark: '#dc2626',
-                        },
+                        success: { light: '#d1fae5', DEFAULT: '#10b981', dark: '#059665' },
+                        danger: { light: '#fee2e2', DEFAULT: '#ef4444', dark: '#dc2626' },
                         neutral: {
-                            50: '#f9fafb',
-                            100: '#f3f4f6',
-                            200: '#e5e7eb',
-                            300: '#d1d5db',
-                            400: '#9ca3af',
-                            500: '#6b7280',
-                            600: '#4b5563',
-                            700: '#374151',
-                            800: '#1f2937',
-                            900: '#111827',
+                            50: '#f9fafb', 100: '#f3f4f6', 200: '#e5e7eb', 300: '#d1d5db',
+                            400: '#9ca3af', 500: '#6b7280', 600: '#4b5563', 700: '#374151',
+                            800: '#1f2937', 900: '#111827',
                         }
                     },
                     boxShadow: {
                         'card': '0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08)',
-                        'card-hover': '0 4px 16px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06)',
-                        'elevate': '0 8px 24px rgba(22, 93, 255, 0.12)',
+                        'elevate': '0 8px 24px rgba(16, 185, 129, 0.15)',
                     },
                 }
             }
         }
     </script>
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             height: 100%;
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: linear-gradient(180deg, #f0f4f8 0%, #e6edf5 100%);
+            background: linear-gradient(180deg, #f0fdf4 0%, #d1fae5 100%);
         }
         .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-            transition: all 0.25s ease;
+            background: white; border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05); transition: all 0.25s ease;
         }
-        .card:hover {
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-        }
+        .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
         .btn-primary {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: white;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white; border-radius: 12px; border: none;
+            font-weight: 600; transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
         }
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
-        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); }
         .btn-secondary {
-            background: white;
-            color: #4b5563;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            background: white; color: #4b5563; border: 1px solid #e5e7eb;
+            border-radius: 12px; font-weight: 500; transition: all 0.2s ease;
         }
-        .btn-secondary:hover {
-            background: #f3f4f6;
-            border-color: #d1d5db;
-        }
+        .btn-secondary:hover { background: #f3f4f6; border-color: #d1d5db; }
         .tab-active {
-            background: #2563eb;
-            color: white;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+            background: #10b981; color: white;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
         }
-        .tab-inactive {
-            background: white;
-            color: #6b7280;
-            border: 1px solid #e5e7eb;
-        }
-        .tab-inactive:hover {
-            background: #f3f4f6;
-        }
+        .tab-inactive { background: white; color: #6b7280; border: 1px solid #e5e7eb; }
+        .tab-inactive:hover { background: #f3f4f6; }
         .input-field {
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            background: #fcfcfd;
+            border: 1px solid #e5e7eb; border-radius: 10px;
+            padding: 12px 16px; font-size: 15px;
+            transition: all 0.2s ease; background: #fcfcfd;
         }
         .input-field:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-            background: white;
+            outline: none; border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); background: white;
         }
-        .scroll-area {
-            overflow-y: auto;
-        }
-        .scroll-area::-webkit-scrollbar {
-            width: 6px;
-        }
-        .scroll-area::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 3px;
-        }
-        .scroll-area::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .fade-in {
-            animation: fadeIn 0.3s ease forwards;
-        }
+        .fade-in { animation: fadeIn 0.3s ease forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .toast {
-            transition: all 0.3s ease;
+        .hidden { display: none !important; }
+        .toast { transition: all 0.3s ease; }
+        .spinner {
+            width: 24px; height: 24px; border: 2px solid #10b981;
+            border-top-color: transparent; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="text-neutral-800">
+
     <!-- TELA DE LOGIN -->
     <div id="loginScreen" class="fixed inset-0 bg-white/95 backdrop-blur-md z-50 flex items-center justify-center px-6">
         <div class="w-full max-w-sm fade-in">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <span class="text-2xl">🔒</span>
-                </div>
-                <h2 class="text-xl font-bold text-neutral-800">Controle de Gastos</h2>
-                <p class="text-neutral-500 text-sm mt-2">Digite sua senha para acessar</p>
+                <!-- ✅ Ícone local -->
+                <img src="/icons/icon-192.png" alt="Meu Bolso" class="w-20 h-20 mx-auto mb-4">
+                <h2 class="text-xl font-bold text-neutral-800">Meu Bolso</h2>
+                <p class="text-neutral-500 text-sm mt-2">Suas finanças sob controle</p>
             </div>
             <div class="card p-6">
                 <form id="loginForm" class="space-y-4">
@@ -177,14 +121,12 @@
                             autocomplete="off"
                         >
                     </div>
-                    
-                    <p id="loginError" class="text-danger text-sm text-center hidden">
+                    <p id="loginError" class="text-red-500 text-sm text-center hidden">
                         ❌ Senha incorreta
                     </p>
-                    <p id="loginLoading" class="text-neutral-500 text-sm text-center hidden">
+                    <p id="loginLoading" class="text-gray-500 text-sm text-center hidden">
                         Verificando...
                     </p>
-                    
                     <button type="submit" id="loginBtn" class="w-full py-3 btn-primary">
                         Entrar
                     </button>
@@ -195,44 +137,41 @@
 
     <!-- CONTEÚDO PRINCIPAL -->
     <div id="appContent" class="hidden min-h-screen pb-8">
-        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-200">
+        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
             <div class="max-w-md mx-auto px-4 py-5">
                 <div class="flex items-center justify-between mb-5">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center">
-                            <span class="text-lg">💰</span>
-                        </div>
-                        <h1 class="text-lg font-bold text-neutral-800">Controle de Gastos</h1>
+                        <!-- ✅ Ícone local -->
+                        <img src="/icons/icon-192.png" alt="Meu Bolso" class="w-9 h-9 rounded-xl">
+                        <h1 class="text-lg font-bold text-gray-800">Meu Bolso</h1>
                     </div>
-                    <button id="logoutBtn" class="text-neutral-500 text-sm hover:text-primary-600 transition-colors">
+                    <button id="logoutBtn" class="text-gray-500 text-sm hover:text-green-600 transition-colors">
                         Sair
                     </button>
                 </div>
-                
+
                 <!-- Saldo -->
                 <div class="card p-5">
-                    <p class="text-neutral-500 text-sm font-medium" id="balanceLabel">Saldo Atual</p>
-                    <p id="balance" class="text-3xl font-bold text-neutral-900 mt-1">R$ 0,00</p>
-                    
-                    <div class="h-px bg-neutral-100 my-4"></div>
-                    
+                    <p class="text-gray-500 text-sm font-medium" id="balanceLabel">Saldo do Ano</p>
+                    <p id="balance" class="text-3xl font-bold text-gray-900 mt-1">R$ 0,00</p>
+                    <div class="h-px bg-gray-100 my-4"></div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 bg-success-light rounded-lg flex items-center justify-center">
-                                <i class="fa fa-arrow-down text-success"></i>
+                            <div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
+                                <i class="fa fa-arrow-down text-green-500"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-neutral-400 font-medium">Entradas</p>
-                                <p id="totalIncome" class="font-bold text-success">+ R$ 0,00</p>
+                                <p class="text-xs text-gray-400 font-medium">Entradas</p>
+                                <p id="totalIncome" class="font-bold text-green-500">+ R$ 0,00</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 bg-danger-light rounded-lg flex items-center justify-center">
-                                <i class="fa fa-arrow-up text-danger"></i>
+                            <div class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center">
+                                <i class="fa fa-arrow-up text-red-500"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-neutral-400 font-medium">Saídas</p>
-                                <p id="totalExpense" class="font-bold text-danger">- R$ 0,00</p>
+                                <p class="text-xs text-gray-400 font-medium">Saídas</p>
+                                <p id="totalExpense" class="font-bold text-red-500">- R$ 0,00</p>
                             </div>
                         </div>
                     </div>
@@ -253,66 +192,67 @@
         </nav>
 
         <main class="max-w-md mx-auto px-4">
-            <div id="listSection" class="scroll-area" style="max-height: calc(100vh - 320px);">
+            <!-- Lista de Movimentos -->
+            <div id="listSection" style="max-height: calc(100vh - 320px); overflow-y: auto;">
                 <div class="flex justify-between items-center mb-3">
-                    <h2 class="font-bold text-neutral-800">Movimentos</h2>
+                    <h2 class="font-bold text-gray-800">Movimentos</h2>
                 </div>
-                <div id="loading" class="text-center py-12 text-neutral-400">
-                    <div class="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                <div id="loading" class="text-center py-12 text-gray-400">
+                    <div class="spinner mx-auto mb-3"></div>
                     <p>Carregando...</p>
                 </div>
                 <div id="emptyState" class="hidden text-center py-16">
-                    <div class="w-20 h-20 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <span class="text-3xl opacity-40">📭</span>
                     </div>
-                    <p class="font-semibold text-neutral-600">Nenhum registro ainda</p>
-                    <p class="text-sm text-neutral-400 mt-1">Toque em <span class="text-primary-600 font-semibold">+ADD</span> para começar</p>
+                    <p class="font-semibold text-gray-600">Nenhum registro ainda</p>
+                    <p class="text-sm text-gray-400 mt-1">Toque em <span class="text-green-600 font-semibold">+ ADD</span> para começar</p>
                 </div>
                 <div id="itemsList" class="space-y-3"></div>
             </div>
 
+            <!-- Formulário de Nova Movimentação -->
             <div id="formSection" class="hidden fade-in">
-                <h2 class="font-bold text-lg text-neutral-800 mb-5">Nova Movimentação</h2>
+                <h2 class="font-bold text-lg text-gray-800 mb-5">Nova Movimentação</h2>
                 <form id="transactionForm" class="space-y-4">
-                    <!-- Tipo -->
                     <div>
-                        <label class="block text-sm font-medium text-neutral-600 mb-2">Tipo</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Tipo</label>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cursor-pointer">
                                 <input type="radio" name="type" value="ENTRADA" class="sr-only peer">
-                                <div class="card p-4 text-center peer-checked:border-2 peer-checked:border-success peer-checked:bg-success-light/30">
-                                    <span class="text-success text-xl">⬇</span>
+                                <div class="card p-4 text-center peer-checked:border-2 peer-checked:border-green-500 peer-checked:bg-green-50">
+                                    <span class="text-green-500 text-xl">⬇</span>
                                     <span class="block mt-1 font-semibold">Entrada</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="type" value="SAIDA" class="sr-only peer" checked>
-                                <div class="card p-4 text-center peer-checked:border-2 peer-checked:border-danger peer-checked:bg-danger-light/30">
-                                    <span class="text-danger text-xl">⬆</span>
+                                <div class="card p-4 text-center peer-checked:border-2 peer-checked:border-red-500 peer-checked:bg-red-50">
+                                    <span class="text-red-500 text-xl">⬆</span>
                                     <span class="block mt-1 font-semibold">Saída</span>
                                 </div>
                             </label>
                         </div>
                     </div>
-                    
+
                     <div>
-                        <label class="block text-sm font-medium text-neutral-600 mb-2">Descrição</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Descrição</label>
                         <input type="text" id="description" class="w-full input-field" placeholder="Ex: Supermercado" maxlength="100" required>
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-sm font-medium text-neutral-600 mb-2">Valor</label>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Valor</label>
                             <input type="number" step="0.01" min="0.01" id="price" class="w-full input-field" placeholder="0,00" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-neutral-600 mb-2">Data</label>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Data</label>
                             <input type="date" id="date" class="w-full input-field" required>
                         </div>
                     </div>
-                    
+
                     <div>
-                        <label class="block text-sm font-medium text-neutral-600 mb-2">Categoria</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Categoria</label>
                         <select id="category" class="w-full input-field" required>
                             <option value="">Selecione...</option>
                             <option value="ALIMENTACAO">🍔 Alimentação</option>
@@ -325,9 +265,9 @@
                             <option value="OUTROS">📝 Outros</option>
                         </select>
                     </div>
-                    
+
                     <div>
-                        <label class="block text-sm font-medium text-neutral-600 mb-2">Pagamento</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Pagamento</label>
                         <select id="payment" class="w-full input-field" required>
                             <option value="">Selecione...</option>
                             <option value="DINHEIRO">💵 Dinheiro</option>
@@ -337,7 +277,7 @@
                             <option value="TRANSFERENCIA">🏦 Transferência</option>
                         </select>
                     </div>
-                    
+
                     <div class="flex gap-3 pt-2">
                         <button type="button" id="cancelBtn" class="flex-1 py-3 btn-secondary">Cancelar</button>
                         <button type="submit" class="flex-1 py-3 btn-primary">Salvar</button>
@@ -346,75 +286,21 @@
             </div>
         </main>
 
-        <div id="toast" class="toast fixed bottom-6 left-4 right-4 max-w-sm mx-auto bg-neutral-800 text-white py-3 px-5 rounded-xl shadow-elevate text-center font-medium opacity-0 translate-y-4 pointer-events-none z-50">
+        <div id="toast" class="toast fixed bottom-6 left-4 right-4 max-w-sm mx-auto bg-gray-800 text-white py-3 px-5 rounded-xl shadow-elevate text-center font-medium opacity-0 translate-y-4 pointer-events-none z-50">
         </div>
     </div>
 
     <script>
-        const API_BASE = "https://controler.gomesdev87.tech/finace";
-        
+        // ✅ Variáveis declaradas ANTES do uso — resolve o erro de inicialização
         const loginScreen = document.getElementById('loginScreen');
         const appContent = document.getElementById('appContent');
         const loginForm = document.getElementById('loginForm');
         const passwordInput = document.getElementById('passwordInput');
         const loginError = document.getElementById('loginError');
+        const loginLoading = document.getElementById('loginLoading');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         
-        let isAuthenticated = localStorage.getItem('appAuthenticated') === 'true';
-        
-        function showApp() {
-            loginScreen.classList.add('hidden');
-            appContent.classList.remove('hidden');
-            isAuthenticated = true;
-            localStorage.setItem('appAuthenticated', 'true');
-            passwordInput.value = '';
-            loadData('all');
-        }
-        
-        function showLogin() {
-            loginScreen.classList.remove('hidden');
-            appContent.classList.add('hidden');
-            isAuthenticated = false;
-            localStorage.removeItem('appAuthenticated');
-            passwordInput.value = '';
-            loginError.classList.add('hidden');
-        }
-        
-        if (isAuthenticated) showApp();
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const senhaDigitada = passwordInput.value.trim();
-            if (!senhaDigitada) return;
-            
-            loginError.classList.add('hidden');
-            loginBtn.disabled = true;
-            loginBtn.classList.add('opacity-60');
-            
-            try {
-                const resposta = await fetch(`${API_BASE}/login`);
-                if (!resposta.ok) throw new Error('Servidor indisponível');
-                const dados = await resposta.json();
-                const senhaCorreta = dados.senha || dados.password || dados;
-                
-                if (senhaDigitada === senhaCorreta) {
-                    showApp();
-                } else {
-                    loginError.classList.remove('hidden');
-                    passwordInput.value = '';
-                }
-            } catch (erro) {
-                loginError.textContent = "❌ Erro: " + erro.message;
-                loginError.classList.remove('hidden');
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.classList.remove('opacity-60');
-            }
-        });
-        
-        logoutBtn.addEventListener('click', showLogin);
-
         const tabAll = document.getElementById('tabAll');
         const tabWeek = document.getElementById('tabWeek');
         const tabMonth = document.getElementById('tabMonth');
@@ -429,9 +315,67 @@
         const form = document.getElementById('transactionForm');
         const cancelBtn = document.getElementById('cancelBtn');
         const toast = document.getElementById('toast');
-        
-        document.getElementById('date').valueAsDate = new Date();
+
+        // ⚠️ Confirme se essa URL é a correta do seu backend Spring
+        const API_BASE = "/finace";
+        let isAuthenticated = localStorage.getItem('appAuthenticated') === 'true';
         let currentFilter = 'all';
+
+        // Data de hoje no formulário
+        document.getElementById('date').valueAsDate = new Date();
+
+        function showApp() {
+            loginScreen.classList.add('hidden');
+            appContent.classList.remove('hidden');
+            isAuthenticated = true;
+            localStorage.setItem('appAuthenticated', 'true');
+            passwordInput.value = '';
+            loadData('all');
+        }
+
+        function showLogin() {
+            loginScreen.classList.remove('hidden');
+            appContent.classList.add('hidden');
+            isAuthenticated = false;
+            localStorage.removeItem('appAuthenticated');
+            passwordInput.value = '';
+            loginError.classList.add('hidden');
+        }
+
+        // Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const senhaDigitada = passwordInput.value.trim();
+            if (!senhaDigitada) return;
+
+            loginError.classList.add('hidden');
+            loginLoading.classList.remove('hidden');
+            loginBtn.disabled = true;
+            loginBtn.style.opacity = '0.6';
+
+            try {
+                const resposta = await fetch(`${API_BASE}/login`);
+                if (!resposta.ok) throw new Error('Servidor indisponível');
+                const dados = await resposta.json();
+                const senhaCorreta = dados.senha || dados.password || dados;
+
+                if (senhaDigitada === senhaCorreta) {
+                    showApp();
+                } else {
+                    loginError.classList.remove('hidden');
+                    passwordInput.value = '';
+                }
+            } catch (erro) {
+                loginError.textContent = "❌ Erro: " + erro.message;
+                loginError.classList.remove('hidden');
+            } finally {
+                loginLoading.classList.add('hidden');
+                loginBtn.disabled = false;
+                loginBtn.style.opacity = '1';
+            }
+        });
+
+        logoutBtn.addEventListener('click', showLogin);
 
         function populateMonthOptions() {
             const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -457,7 +401,7 @@
             });
             activeTab.classList.remove('tab-inactive');
             activeTab.classList.add('tab-active');
-            
+
             if (activeTab === tabAdd) {
                 listSection.classList.add('hidden');
                 formSection.classList.remove('hidden');
@@ -494,19 +438,19 @@
         function formatCurrency(v) {
             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
         }
-        
+
         function formatDate(s) {
             const [y, m, d] = s.split('-');
             return `${d}/${m}/${y}`;
         }
-        
+
         function showToast(msg, erro = false) {
             toast.textContent = msg;
             toast.style.background = erro ? '#dc2626' : '#1f2937';
             toast.classList.remove('opacity-0', 'translate-y-4');
             setTimeout(() => toast.classList.add('opacity-0', 'translate-y-4'), 3000);
         }
-        
+
         async function excluirItem(id, desc) {
             if (!confirm(`Excluir "${desc}"?`)) return;
             try {
@@ -518,13 +462,13 @@
                 showToast('❌ ' + e.message, true);
             }
         }
-        
+
         async function loadData(tipo = 'all') {
             if (!isAuthenticated) return;
             loading.classList.remove('hidden');
             emptyState.classList.add('hidden');
             itemsList.innerHTML = '';
-            
+
             try {
                 let url = API_BASE + '/';
                 if (tipo === 'week') {
@@ -534,11 +478,11 @@
                 } else if (tipo === 'month') {
                     url = `${API_BASE}/mes/${monthSelect.value}`;
                 }
-                
+
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Erro na conexão');
                 const dados = await res.json();
-                
+
                 loading.classList.add('hidden');
                 if (!dados.length) {
                     emptyState.classList.remove('hidden');
@@ -552,30 +496,30 @@
                 showToast('Erro: ' + e.message, true);
             }
         }
-        
+
         function renderItems(itens) {
             itemsList.innerHTML = '';
             itens.forEach(item => {
                 const isReceita = String(item.type).toUpperCase().trim() === 'ENTRADA';
                 const card = document.createElement('div');
-                card.className = `card p-4 fade-in ${isReceita ? 'border-l-4 border-l-success' : 'border-l-4 border-l-danger'}`;
+                card.className = `card p-4 fade-in ${isReceita ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-start gap-3">
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-semibold text-neutral-800">${item.description}</h3>
-                            <p class="text-xs text-neutral-400 mt-1">${(item.category || '').replace('_', ' ')} • ${formatDate(item.date)}</p>
-                            <p class="text-xs text-neutral-400 mt-0.5">${(item.payment || '').replace('_', ' ')}</p>
+                            <h3 class="font-semibold text-gray-800">${item.description}</h3>
+                            <p class="text-xs text-gray-400 mt-1">${(item.category || '').replace('_', ' ')} • ${formatDate(item.date)}</p>
+                            <p class="text-xs text-gray-400 mt-0.5">${(item.payment || '').replace('_', ' ')}</p>
                         </div>
                         <div class="flex flex-col items-end gap-1">
-                            <p class="font-bold whitespace-nowrap ${isReceita ? 'text-success' : 'text-danger'}">
+                            <p class="font-bold whitespace-nowrap ${isReceita ? 'text-green-500' : 'text-red-500'}">
                                 ${isReceita ? '+' : '-'}${formatCurrency(item.price)}
                             </p>
-                            <a href="#" class="text-xs text-neutral-400 hover:text-danger transition-colors" data-id="${item.id}" data-desc="${item.description}">excluir</a>
+                            <a href="#" class="text-xs text-gray-400 hover:text-red-500 transition-colors" data-id="${item.id}" data-desc="${item.description}">excluir</a>
                         </div>
                     </div>`;
                 itemsList.appendChild(card);
             });
-            
+
             document.querySelectorAll('[data-id]').forEach(link => {
                 link.addEventListener('click', e => {
                     e.preventDefault();
@@ -583,7 +527,7 @@
                 });
             });
         }
-        
+
         function updateBalance(itens) {
             let entradas = 0, saidas = 0;
             itens.forEach(i => {
@@ -594,7 +538,7 @@
             document.getElementById('totalIncome').textContent = '+' + formatCurrency(entradas);
             document.getElementById('totalExpense').textContent = '-' + formatCurrency(saidas);
         }
-        
+
         form.addEventListener('submit', async e => {
             e.preventDefault();
             const dados = {
@@ -605,7 +549,7 @@
                 category: form.category.value,
                 payment: form.payment.value
             };
-            
+
             try {
                 const res = await fetch(API_BASE + '/', {
                     method: 'POST',
@@ -613,7 +557,7 @@
                     body: JSON.stringify(dados)
                 });
                 if (!res.ok) throw await res.json().then(j => j.message || 'Erro ao salvar');
-                
+
                 form.reset();
                 document.getElementById('date').valueAsDate = new Date();
                 showToast('✅ Salvo com sucesso!');
@@ -622,6 +566,9 @@
                 showToast('❌ ' + e, true);
             }
         });
+
+        // ✅ Verifica autenticação só no final
+        if (isAuthenticated) showApp();
     </script>
 </body>
 </html>

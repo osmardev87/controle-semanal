@@ -1,21 +1,26 @@
 {
-  "name": "Controle de Gastos",
-  "short_name": "Gastos",
-  "description": "Controle suas finanças — Estilo Pixel Art",
+  "name": "Meu Bolso",
+  "short_name": "Meu Bolso",
+  "description": "Controle suas finanças com simplicidade",
   "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#0f0f1a",
-  "theme_color": "#ffd700",
+  "background_color": "#f0fdf4",
+  "theme_color": "#10b981",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3059/3059978.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3059/3059978.png",
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
