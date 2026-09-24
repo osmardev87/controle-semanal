@@ -111,12 +111,12 @@
             <div class="card p-6">
                 <form id="loginForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-neutral-600 mb-2">Senha</label>
+                        <label class="block text-sm font-medium text-neutral-600 mb-2">Telefone</label>
                         <input 
-                            type="password" 
-                            id="passwordInput" 
+                            type="Text" 
+                            id="telephoneInput" 
                             class="w-full input-field text-center tracking-widest"
-                            placeholder="••••••"
+                            placeholder="Informe seu telefone para login"
                             required
                             autocomplete="off"
                         >
@@ -295,7 +295,7 @@
         const loginScreen = document.getElementById('loginScreen');
         const appContent = document.getElementById('appContent');
         const loginForm = document.getElementById('loginForm');
-        const passwordInput = document.getElementById('passwordInput');
+        const telephoneInput = document.getElementById('telephoneInput');
         const loginError = document.getElementById('loginError');
         const loginLoading = document.getElementById('loginLoading');
         const loginBtn = document.getElementById('loginBtn');
@@ -329,7 +329,7 @@
             appContent.classList.remove('hidden');
             isAuthenticated = true;
             localStorage.setItem('appAuthenticated', 'true');
-            passwordInput.value = '';
+            telephoneInput.value = '';
             loadData('all');
         }
 
@@ -338,15 +338,15 @@
             appContent.classList.add('hidden');
             isAuthenticated = false;
             localStorage.removeItem('appAuthenticated');
-            passwordInput.value = '';
+            telephoneInput.value = '';
             loginError.classList.add('hidden');
         }
 
         // Login
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const senhaDigitada = passwordInput.value.trim();
-            if (!senhaDigitada) return;
+            const telefoneDigitado = telephoneInput.value.trim();
+            if (!telefoneDigitado) return;
 
             loginError.classList.add('hidden');
             loginLoading.classList.remove('hidden');
@@ -357,13 +357,13 @@
                 const resposta = await fetch(`${API_BASE}/login`);
                 if (!resposta.ok) throw new Error('Servidor indisponível');
                 const dados = await resposta.json();
-                const senhaCorreta = dados.senha || dados.password || dados;
+                const telefone = dados.telefone;
 
-                if (senhaDigitada === senhaCorreta) {
+                if (telefone === "true") {
                     showApp();
                 } else {
                     loginError.classList.remove('hidden');
-                    passwordInput.value = '';
+                    telephoneInput.value = '';
                 }
             } catch (erro) {
                 loginError.textContent = "❌ Erro: " + erro.message;

@@ -2,6 +2,12 @@ package com.br.gomesdee87.controlesemanal.finance;
 
 import com.br.gomesdee87.controlesemanal.finance.dto.FinaceRequestDTO;
 import com.br.gomesdee87.controlesemanal.finance.dto.FinaceResponseDTO;
+import com.br.gomesdee87.controlesemanal.finance.dto.LoginDTO;
+import com.br.gomesdee87.controlesemanal.user.UserService;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +18,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @RequestMapping("/finace")
 public class FinaceController {
     private final FinaceService finaceService;
+    private final UserService userService;
 
-    public FinaceController(FinaceService finaceService) {
+    public FinaceController(FinaceService finaceService, UserService userService) {
         this.finaceService = finaceService;
+        this.userService = userService;
     }
 
     @PostMapping("/")
@@ -70,10 +79,16 @@ public class FinaceController {
 
     // ✅ Endpoint que retorna a senha correta
     @GetMapping("/login")
-    public ResponseEntity<Map<String, String>>  buscarSenha() {
+    public ResponseEntity<Map<String, String>>  buscarSenha(@RequestBody LoginDTO request) {
+
         Map<String, String> resp = new HashMap<>();
         // Pode vir de banco de dados, variável de ambiente, etc
-        resp.put("senha", "Osmar4547*");
+        resp.put("telefone", "false");
+
+        if (userService.buscarPorTelephone(request.telephone()) != null) {
+            resp.put("telefone", "true");
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(resp);
     }
 
