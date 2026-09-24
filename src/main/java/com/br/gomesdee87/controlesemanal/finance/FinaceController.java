@@ -78,16 +78,16 @@ public class FinaceController {
     }
 
     // ✅ Endpoint que retorna a senha correta
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<Map<String, String>>  buscarSenha(@RequestBody LoginDTO request) {
 
         Map<String, String> resp = new HashMap<>();
         // Pode vir de banco de dados, variável de ambiente, etc
-        resp.put("telefone", "false");
+        resp.put("telefone", request.telephone());
 
-        if (userService.buscarPorTelephone(request.telephone()) != null) {
-            resp.put("telefone", "true");
-        }
+        // if (userService.buscarPorTelephone(request.telephone()) != null) {
+        //     resp.put("telefone", request.telephone());
+        // }
 
         return ResponseEntity.status(HttpStatus.OK).body(resp);
     }

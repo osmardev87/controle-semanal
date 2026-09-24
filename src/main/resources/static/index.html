@@ -354,7 +354,11 @@
             loginBtn.style.opacity = '0.6';
 
             try {
-                const resposta = await fetch(`${API_BASE}/login`);
+                const resposta = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telephone: telefoneDigitado })
+                } );
                 if (!resposta.ok) throw new Error('Servidor indisponível');
                 const dados = await resposta.json();
                 const telefone = dados.telefone;
