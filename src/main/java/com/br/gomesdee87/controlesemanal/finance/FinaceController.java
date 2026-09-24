@@ -3,6 +3,7 @@ package com.br.gomesdee87.controlesemanal.finance;
 import com.br.gomesdee87.controlesemanal.finance.dto.FinaceRequestDTO;
 import com.br.gomesdee87.controlesemanal.finance.dto.FinaceResponseDTO;
 import com.br.gomesdee87.controlesemanal.finance.dto.LoginDTO;
+import com.br.gomesdee87.controlesemanal.user.User;
 import com.br.gomesdee87.controlesemanal.user.UserService;
 
 import jakarta.validation.constraints.NotBlank;
@@ -79,17 +80,12 @@ public class FinaceController {
 
     // ✅ Endpoint que retorna a senha correta
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>>  buscarSenha(@RequestBody LoginDTO request) {
-
-        Map<String, String> resp = new HashMap<>();
-        // Pode vir de banco de dados, variável de ambiente, etc
-        resp.put("telefone", "false");
-
-        if (userService.buscarPorTelephone(request.telephone()) != null) {
-            resp.put("telefone", "true");
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(resp);
+    public ResponseEntity<User>  buscarSenha(@RequestBody LoginDTO request) {
+        
+        User user = userService.buscarPorTelephone(request.telephone());
+        return ResponseEntity.ok(user);
     }
+
+        
 
 }

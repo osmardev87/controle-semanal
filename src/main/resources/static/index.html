@@ -98,7 +98,6 @@
     </style>
 </head>
 <body class="text-neutral-800">
-
     <!-- TELA DE LOGIN -->
     <div id="loginScreen" class="fixed inset-0 bg-white/95 backdrop-blur-md z-50 flex items-center justify-center px-6">
         <div class="w-full max-w-sm fade-in">
@@ -113,7 +112,7 @@
                     <div>
                         <label class="block text-sm font-medium text-neutral-600 mb-2">Telefone</label>
                         <input 
-                            type="Text" 
+                            type="tel" 
                             id="telephoneInput" 
                             class="w-full input-field text-center tracking-widest"
                             placeholder="Informe seu telefone para login"
@@ -122,7 +121,7 @@
                         >
                     </div>
                     <p id="loginError" class="text-red-500 text-sm text-center hidden">
-                        ❌ Senha incorreta
+                        ❌ Usuário não encontrado com este telefone
                     </p>
                     <p id="loginLoading" class="text-gray-500 text-sm text-center hidden">
                         Verificando...
@@ -141,7 +140,6 @@
             <div class="max-w-md mx-auto px-4 py-5">
                 <div class="flex items-center justify-between mb-5">
                     <div class="flex items-center gap-3">
-                        <!-- ✅ Ícone local -->
                         <img src="/icons/icon-192.png" alt="Meu Bolso" class="w-9 h-9 rounded-xl">
                         <h1 class="text-lg font-bold text-gray-800">Meu Bolso</h1>
                     </div>
@@ -149,7 +147,6 @@
                         Sair
                     </button>
                 </div>
-
                 <!-- Saldo -->
                 <div class="card p-5">
                     <p class="text-gray-500 text-sm font-medium" id="balanceLabel">Saldo do Ano</p>
@@ -234,12 +231,10 @@
                             </label>
                         </div>
                     </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-2">Descrição</label>
                         <input type="text" id="description" class="w-full input-field" placeholder="Ex: Supermercado" maxlength="100" required>
                     </div>
-
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-600 mb-2">Valor</label>
@@ -250,7 +245,6 @@
                             <input type="date" id="date" class="w-full input-field" required>
                         </div>
                     </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-2">Categoria</label>
                         <select id="category" class="w-full input-field" required>
@@ -265,7 +259,6 @@
                             <option value="OUTROS">📝 Outros</option>
                         </select>
                     </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-2">Pagamento</label>
                         <select id="payment" class="w-full input-field" required>
@@ -277,7 +270,6 @@
                             <option value="TRANSFERENCIA">🏦 Transferência</option>
                         </select>
                     </div>
-
                     <div class="flex gap-3 pt-2">
                         <button type="button" id="cancelBtn" class="flex-1 py-3 btn-secondary">Cancelar</button>
                         <button type="submit" class="flex-1 py-3 btn-primary">Salvar</button>
@@ -291,7 +283,7 @@
     </div>
 
     <script>
-        // ✅ Variáveis declaradas ANTES do uso — resolve o erro de inicialização
+        // ✅ Variáveis
         const loginScreen = document.getElementById('loginScreen');
         const appContent = document.getElementById('appContent');
         const loginForm = document.getElementById('loginForm');
@@ -316,7 +308,7 @@
         const cancelBtn = document.getElementById('cancelBtn');
         const toast = document.getElementById('toast');
 
-        // ⚠️ Confirme se essa URL é a correta do seu backend Spring
+        // ✅ URL base da API
         const API_BASE = "/finace";
         let isAuthenticated = localStorage.getItem('appAuthenticated') === 'true';
         let currentFilter = 'all';
@@ -338,11 +330,12 @@
             appContent.classList.add('hidden');
             isAuthenticated = false;
             localStorage.removeItem('appAuthenticated');
+            localStorage.removeItem('user');
             telephoneInput.value = '';
             loginError.classList.add('hidden');
         }
 
-        // Login
+        // ✅ LOGIN AJUSTADO para o retorno do seu backend
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const telefoneDigitado = telephoneInput.value.trim();
@@ -358,19 +351,34 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ telephone: telefoneDigitado })
-                } );
-                if (!resposta.ok) throw new Error('Servidor indisponível');
-                const dados = await resposta.json();
-                const telefone = dados.telefone;
+                });
 
-                if (telefone === "true") {
+                // ✅ Se não encontrou = mostrar erro amigável
+                if (!resposta.ok) {
+                    if (resposta.status === 404) {
+                        loginError.textContent = "❌ Usuário não encontrado com o telefone: " + telefoneDigitado;
+                    } else {
+                        loginError.textContent = "❌ Erro: Servidor indisponível";
+                    }
+                    loginError.classList.remove('hidden');
+                    telephoneInput.value = '';
+                    return;
+                }
+
+                const dados = await resposta.json();
+                localStorage.setItem('user', JSON.stringify(dados));
+                
+                // ✅ Compara o telefone retornado com o digitado
+                if (dados.telephone === telefoneDigitado) {
                     showApp();
                 } else {
+                    loginError.textContent = "❌ Telefone não confere";
                     loginError.classList.remove('hidden');
                     telephoneInput.value = '';
                 }
+
             } catch (erro) {
-                loginError.textContent = "❌ Erro: " + erro.message;
+                loginError.textContent = "❌ Erro de conexão: " + erro.message;
                 loginError.classList.remove('hidden');
             } finally {
                 loginLoading.classList.add('hidden');
@@ -405,7 +413,7 @@
             });
             activeTab.classList.remove('tab-inactive');
             activeTab.classList.add('tab-active');
-
+            
             if (activeTab === tabAdd) {
                 listSection.classList.add('hidden');
                 formSection.classList.remove('hidden');
@@ -560,7 +568,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
                 });
-                if (!res.ok) throw await res.json().then(j => j.message || 'Erro ao salvar');
+
+                if (!res.ok) {
+                    const erro = await res.json().catch(() => ({ message: 'Erro ao salvar' }));
+                    throw new Error(erro.message || 'Erro ao salvar');
+                }
 
                 form.reset();
                 document.getElementById('date').valueAsDate = new Date();
@@ -571,7 +583,7 @@
             }
         });
 
-        // ✅ Verifica autenticação só no final
+        // ✅ Manter logado se já estava autenticado
         if (isAuthenticated) showApp();
     </script>
 </body>
