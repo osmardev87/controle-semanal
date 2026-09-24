@@ -4,15 +4,19 @@ services:
     container_name: controle-semanal
     ports:
       - "8080:8080"
-    volumes:
-      - controle-semanal-data:/app/data
     restart: unless-stopped
     deploy:
       resources:
         limits:
-          memory: 400M       # ✅ 650M → 400M (-250 MB!)
+          memory: 400M
+          cpus: '0.8'
         reservations:
-          memory: 320M       # ✅ Adicionado: reserva só o essencial
+          memory: 320M
+    # ✅ Aguardar banco iniciar antes de subir
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-volumes:
-  controle-semanal-data:
+# Sem volume de dados — banco está externo!
