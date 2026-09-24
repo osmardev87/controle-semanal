@@ -83,11 +83,11 @@ public class FinaceController {
 
         Map<String, String> resp = new HashMap<>();
         // Pode vir de banco de dados, variável de ambiente, etc
-        resp.put("telefone", request.telephone());
+        resp.put("telefone", "false");
 
-        // if (userService.buscarPorTelephone(request.telephone()) != null) {
-        //     resp.put("telefone", request.telephone());
-        // }
+        if (userService.buscarPorTelephone(request.telephone()) != null) {
+            resp.put("telefone", "true");
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(resp);
     }
