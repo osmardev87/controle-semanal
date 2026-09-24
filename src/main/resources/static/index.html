@@ -2,635 +2,3901 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- ✅ Ícone local que JÁ EXISTE no projeto -->
-    <link rel="icon" type="image/png" href="/icons/icon-192.png">
-    
-    <!-- ✅ Manifesto local -->
-    <link rel="manifest" href="/manifest.json">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
     <meta name="theme-color" content="#10b981">
-    
-    <title>Meu Bolso — Controle Financeiro</title>
-    
+
+    <meta
+        name="description"
+        content="Meu Bolso - Controle financeiro pessoal"
+    >
+
+    <title>Meu Bolso</title>
+
+    <!-- Logo original -->
+    <link rel="icon" href="/icons/icon-192.png">
+
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0',
-                            300: '#6ee7b7', 400: '#34d399', 500: '#10b981',
-                            600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b',
-                        },
-                        success: { light: '#d1fae5', DEFAULT: '#10b981', dark: '#059665' },
-                        danger: { light: '#fee2e2', DEFAULT: '#ef4444', dark: '#dc2626' },
-                        neutral: {
-                            50: '#f9fafb', 100: '#f3f4f6', 200: '#e5e7eb', 300: '#d1d5db',
-                            400: '#9ca3af', 500: '#6b7280', 600: '#4b5563', 700: '#374151',
-                            800: '#1f2937', 900: '#111827',
-                        }
-                    },
-                    boxShadow: {
-                        'card': '0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08)',
-                        'elevate': '0 8px 24px rgba(16, 185, 129, 0.15)',
-                    },
-                }
-            }
-        }
-    </script>
-    
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    >
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            height: 100%;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: linear-gradient(180deg, #f0fdf4 0%, #d1fae5 100%);
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
         }
-        .card {
-            background: white; border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.05); transition: all 0.25s ease;
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
         }
-        .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
-        .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white; border-radius: 12px; border: none;
-            font-weight: 600; transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+
+        body {
+            background: #f8fafc;
+            color: #1e293b;
+            font-family: Arial, Helvetica, sans-serif;
         }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); }
-        .btn-secondary {
-            background: white; color: #4b5563; border: 1px solid #e5e7eb;
-            border-radius: 12px; font-weight: 500; transition: all 0.2s ease;
+
+        button,
+        input,
+        select {
+            font-family: inherit;
         }
-        .btn-secondary:hover { background: #f3f4f6; border-color: #d1d5db; }
-        .tab-active {
-            background: #10b981; color: white;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+
+        button {
+            -webkit-tap-highlight-color: transparent;
         }
-        .tab-inactive { background: white; color: #6b7280; border: 1px solid #e5e7eb; }
-        .tab-inactive:hover { background: #f3f4f6; }
-        .input-field {
-            border: 1px solid #e5e7eb; border-radius: 10px;
-            padding: 12px 16px; font-size: 15px;
-            transition: all 0.2s ease; background: #fcfcfd;
+
+        .hidden {
+            display: none !important;
         }
-        .input-field:focus {
-            outline: none; border-color: #10b981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); background: white;
+
+
+        /* =====================================================
+           LOGIN
+        ===================================================== */
+
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            padding: 20px;
+
+            background:
+                radial-gradient(
+                    circle at 15% 15%,
+                    rgba(16, 185, 129, .18),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 85% 85%,
+                    rgba(5, 150, 105, .14),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f0fdf4 0%,
+                    #f8fafc 48%,
+                    #ecfdf5 100%
+                );
         }
-        .fade-in { animation: fadeIn 0.3s ease forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .login-background-decoration {
+            position: absolute;
+
+            border-radius: 50%;
+
+            pointer-events: none;
         }
-        .hidden { display: none !important; }
-        .toast { transition: all 0.3s ease; }
+
+        .decoration-one {
+            width: 320px;
+            height: 320px;
+
+            top: -150px;
+            left: -100px;
+
+            background: rgba(16, 185, 129, .08);
+
+            filter: blur(1px);
+        }
+
+        .decoration-two {
+            width: 280px;
+            height: 280px;
+
+            right: -100px;
+            bottom: -130px;
+
+            background: rgba(5, 150, 105, .08);
+
+            filter: blur(1px);
+        }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 2;
+
+            width: 100%;
+            max-width: 410px;
+
+            animation: loginEnter .5s ease;
+        }
+
+        @keyframes loginEnter {
+
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(20px)
+                    scale(.98);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+
+        }
+
+        .login-card {
+            width: 100%;
+
+            padding: 34px 30px 26px;
+
+            background: rgba(255, 255, 255, .94);
+
+            border:
+                1px solid
+                rgba(226, 232, 240, .9);
+
+            border-radius: 26px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(15, 23, 42, .10),
+
+                0 5px 20px
+                rgba(16, 185, 129, .05);
+
+            backdrop-filter: blur(15px);
+        }
+
+
+        /* =====================================================
+           LOGIN LOGO
+        ===================================================== */
+
+        .login-logo-wrapper {
+            position: relative;
+
+            width: 82px;
+            height: 82px;
+
+            margin: 0 auto 22px;
+        }
+
+        .login-logo-glow {
+            position: absolute;
+
+            inset: -8px;
+
+            border-radius: 25px;
+
+            background:
+                rgba(16, 185, 129, .12);
+
+            filter: blur(10px);
+        }
+
+        .login-logo {
+            position: relative;
+
+            width: 82px;
+            height: 82px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ecfdf5,
+                    #d1fae5
+                );
+
+            border:
+                1px solid
+                #a7f3d0;
+
+            box-shadow:
+                0 12px 28px
+                rgba(16, 185, 129, .16);
+        }
+
+        .login-logo img {
+            width: 64px;
+            height: 64px;
+
+            object-fit: contain;
+
+            border-radius: 16px;
+        }
+
+
+        /* =====================================================
+           LOGIN HEADER
+        ===================================================== */
+
+        .login-header {
+            text-align: center;
+
+            margin-bottom: 27px;
+        }
+
+        .login-title {
+            color: #0f172a;
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            letter-spacing: -.6px;
+        }
+
+        .login-title span {
+            display: block;
+
+            margin-top: 2px;
+
+            color: #059669;
+        }
+
+        .login-subtitle {
+            max-width: 320px;
+
+            margin: 9px auto 0;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            line-height: 1.55;
+        }
+
+
+        /* =====================================================
+           LOGIN INPUT
+        ===================================================== */
+
+        .login-field {
+            margin-bottom: 17px;
+        }
+
+        .login-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #334155;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .login-input-wrapper {
+            position: relative;
+        }
+
+        .login-input-icon {
+            position: absolute;
+
+            left: 15px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #94a3b8;
+
+            font-size: 15px;
+
+            pointer-events: none;
+
+            transition: .2s;
+        }
+
+        .login-input {
+            width: 100%;
+
+            height: 50px;
+
+            padding:
+                0 15px
+                0 43px;
+
+            border:
+                1px solid
+                #dbe3ea;
+
+            border-radius: 13px;
+
+            outline: none;
+
+            background: #f8fafc;
+
+            color: #0f172a;
+
+            font-size: 13px;
+
+            transition: .2s;
+        }
+
+        .login-input::placeholder {
+            color: #a8b3c2;
+        }
+
+        .login-input:hover {
+            border-color: #cbd5e1;
+
+            background: white;
+        }
+
+        .login-input:focus {
+            border-color: #10b981;
+
+            background: white;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(16, 185, 129, .10);
+        }
+
+        .login-input:focus + .login-input-icon {
+            color: #059669;
+        }
+
+
+        /* =====================================================
+           LOGIN BUTTON
+        ===================================================== */
+
+        .login-submit {
+            position: relative;
+
+            width: 100%;
+            height: 50px;
+
+            border: none;
+
+            border-radius: 13px;
+
+            overflow: hidden;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #10b981,
+                    #059669
+                );
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 10px 22px
+                rgba(5, 150, 105, .20);
+
+            transition:
+                transform .2s,
+                box-shadow .2s;
+        }
+
+        .login-submit::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    120deg,
+                    transparent 20%,
+                    rgba(255,255,255,.18),
+                    transparent 80%
+                );
+
+            transform: translateX(-100%);
+
+            transition: transform .5s;
+        }
+
+        .login-submit:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 14px 28px
+                rgba(5, 150, 105, .25);
+        }
+
+        .login-submit:hover::before {
+            transform: translateX(100%);
+        }
+
+        .login-submit:active {
+            transform: translateY(1px);
+        }
+
+        .login-submit:disabled {
+            opacity: .7;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+        .login-submit-content {
+            position: relative;
+
+            z-index: 1;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+        }
+
+
+        /* =====================================================
+           LOGIN ERROR
+        ===================================================== */
+
+        .login-error {
+            margin-top: 12px;
+
+            padding: 10px 12px;
+
+            border:
+                1px solid
+                #fecaca;
+
+            border-radius: 10px;
+
+            background: #fef2f2;
+
+            color: #b91c1c;
+
+            font-size: 11px;
+
+            line-height: 1.4;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           LOGIN FOOTER
+        ===================================================== */
+
+        .login-footer {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 6px;
+
+            margin-top: 22px;
+
+            padding-top: 18px;
+
+            border-top:
+                1px solid
+                #f1f5f9;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+
+            line-height: 1.4;
+
+            text-align: center;
+        }
+
+        .login-footer i {
+            color: #10b981;
+
+            font-size: 11px;
+        }
+
+        .login-copyright {
+            margin-top: 15px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .app-header {
+            background: white;
+
+            border-bottom:
+                1px solid
+                #e2e8f0;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 50;
+        }
+
+        .header-container {
+            width: 100%;
+            max-width: 1000px;
+
+            margin: auto;
+
+            padding: 14px 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background: #ecfdf5;
+
+            overflow: hidden;
+        }
+
+        .brand-icon img {
+            width: 31px;
+            height: 31px;
+
+            object-fit: contain;
+
+            border-radius: 8px;
+        }
+
+        .brand-name {
+            font-weight: 800;
+
+            color: #0f172a;
+        }
+
+        .brand-subtitle {
+            margin-top: 1px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+        .logout-button {
+            width: 38px;
+            height: 38px;
+
+            border:
+                1px solid
+                #e2e8f0;
+
+            border-radius: 10px;
+
+            background: white;
+
+            color: #64748b;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .logout-button:hover {
+            color: #dc2626;
+
+            border-color: #fecaca;
+
+            background: #fef2f2;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main-container {
+            width: 100%;
+            max-width: 1000px;
+
+            margin: auto;
+
+            padding:
+                20px
+                18px
+                40px;
+        }
+
+        .welcome {
+            margin-bottom: 18px;
+        }
+
+        .welcome-title {
+            font-size: 21px;
+
+            font-weight: 800;
+
+            color: #0f172a;
+        }
+
+        .welcome-text {
+            margin-top: 4px;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           BALANCE
+        ===================================================== */
+
+        .balance-card {
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 22px;
+
+            border-radius: 20px;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #059669,
+                    #10b981
+                );
+
+            box-shadow:
+                0 14px 30px
+                rgba(5, 150, 105, .20);
+        }
+
+        .balance-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            right: -70px;
+            top: -90px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 255, 255, .08);
+        }
+
+        .balance-label {
+            position: relative;
+
+            z-index: 1;
+
+            font-size: 12px;
+
+            opacity: .85;
+        }
+
+        .balance-value {
+            position: relative;
+
+            z-index: 1;
+
+            margin-top: 5px;
+
+            font-size: 30px;
+
+            font-weight: 800;
+
+            letter-spacing: -.5px;
+        }
+
+        .motivation {
+            position: relative;
+
+            z-index: 1;
+
+            margin-top: 8px;
+
+            font-size: 12px;
+
+            opacity: .9;
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 12px;
+
+            margin-top: 14px;
+        }
+
+        .summary-card {
+            padding: 15px;
+
+            background: white;
+
+            border:
+                1px solid
+                #e2e8f0;
+
+            border-radius: 16px;
+        }
+
+        .summary-top {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 11px;
+
+            color: #64748b;
+        }
+
+        .summary-icon {
+            width: 28px;
+            height: 28px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+        }
+
+        .income-icon {
+            background: #ecfdf5;
+
+            color: #059669;
+        }
+
+        .expense-icon {
+            background: #fef2f2;
+
+            color: #dc2626;
+        }
+
+        .summary-value {
+            margin-top: 7px;
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            color: #0f172a;
+        }
+
+        .income {
+            color: #059669;
+        }
+
+        .expense {
+            color: #dc2626;
+        }
+
+
+        /* =====================================================
+           TABS
+        ===================================================== */
+
+        .tabs {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 6px;
+
+            margin-top: 20px;
+
+            padding: 5px;
+
+            background: #e2e8f0;
+
+            border-radius: 13px;
+        }
+
+        .tab {
+            height: 38px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: transparent;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .tab.active {
+            background: white;
+
+            color: #059669;
+
+            box-shadow:
+                0 2px 7px
+                rgba(15, 23, 42, .08);
+        }
+
+
+        /* =====================================================
+           MONTH
+        ===================================================== */
+
+        .month-container {
+            margin-top: 12px;
+        }
+
+        .month-select {
+            width: 100%;
+
+            height: 40px;
+
+            padding: 0 12px;
+
+            border:
+                1px solid
+                #cbd5e1;
+
+            border-radius: 10px;
+
+            background: white;
+
+            color: #334155;
+
+            outline: none;
+        }
+
+        .month-select:focus {
+            border-color: #10b981;
+        }
+
+
+        /* =====================================================
+           SECTION MOVIMENTAÇÕES
+        ===================================================== */
+
+        .section-header {
+            margin-top: 28px;
+
+            margin-bottom: 14px;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 10px;
+        }
+
+        .section-title {
+            margin: 0;
+
+            font-size: 17px;
+
+            font-weight: 800;
+
+            color: #0f172a;
+        }
+
+        .section-subtitle {
+            margin-top: 3px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           BOTÃO ADICIONAR
+        ===================================================== */
+
+        .add-button {
+            flex-shrink: 0;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 6px;
+
+            height: 34px;
+
+            padding: 0 11px;
+
+            border:
+                1px solid
+                #d1fae5;
+
+            border-radius: 9px;
+
+            background: #ecfdf5;
+
+            color: #047857;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .add-button:hover {
+            background: #d1fae5;
+
+            border-color: #a7f3d0;
+        }
+
+        .add-button:active {
+            transform: scale(.97);
+        }
+
+
+        /* =====================================================
+           TRANSAÇÕES
+        ===================================================== */
+
+        #transactionsList {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 9px;
+        }
+
+        .transaction {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 13px;
+
+            background: white;
+
+            border:
+                1px solid
+                #e2e8f0;
+
+            border-radius: 14px;
+
+            transition: .2s;
+        }
+
+        .transaction:hover {
+            border-color: #cbd5e1;
+
+            box-shadow:
+                0 5px 15px
+                rgba(15, 23, 42, .05);
+        }
+
+        .transaction-icon {
+            width: 42px;
+            height: 42px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            font-size: 18px;
+        }
+
+        .transaction-content {
+            min-width: 0;
+
+            flex: 1;
+        }
+
+        .transaction-description {
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #334155;
+        }
+
+        .transaction-info {
+            margin-top: 4px;
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 5px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+        }
+
+        .transaction-value {
+            flex-shrink: 0;
+
+            text-align: right;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+        .delete-button {
+            width: 30px;
+            height: 30px;
+
+            flex-shrink: 0;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: #cbd5e1;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .delete-button:hover {
+            color: #dc2626;
+
+            background: #fef2f2;
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty-state {
+            padding: 42px 20px;
+
+            text-align: center;
+
+            background: white;
+
+            border:
+                1px dashed
+                #cbd5e1;
+
+            border-radius: 16px;
+        }
+
+        .empty-icon {
+            color: #cbd5e1;
+
+            font-size: 30px;
+        }
+
+        .empty-title {
+            margin-top: 10px;
+
+            color: #475569;
+
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+        .empty-text {
+            margin-top: 4px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal-overlay {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 1500;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 18px;
+
+            background:
+                rgba(15, 23, 42, .55);
+
+            backdrop-filter:
+                blur(3px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+
+            max-width: 560px;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            padding: 20px;
+
+            background: white;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(15, 23, 42, .25);
+
+            animation:
+                modalIn .2s ease;
+        }
+
+        @keyframes modalIn {
+
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(15px)
+                    scale(.98);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+
+        }
+
+        .modal-header {
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+
+            color: #0f172a;
+
+            font-size: 18px;
+
+            font-weight: 800;
+        }
+
+        .modal-header p {
+            margin-top: 4px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+        .modal-close {
+            width: 34px;
+            height: 34px;
+
+            flex-shrink: 0;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #f8fafc;
+
+            color: #64748b;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .modal-close:hover {
+            background: #fef2f2;
+
+            color: #dc2626;
+        }
+
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 13px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .input-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .input {
+            width: 100%;
+
+            height: 44px;
+
+            padding: 0 13px;
+
+            border:
+                1px solid
+                #cbd5e1;
+
+            border-radius: 11px;
+
+            outline: none;
+
+            background: white;
+
+            color: #0f172a;
+
+            transition: .2s;
+        }
+
+        .input:focus {
+            border-color: #10b981;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(16, 185, 129, .10);
+        }
+
+        .form-actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            margin-top: 20px;
+
+            padding-top: 16px;
+
+            border-top:
+                1px solid
+                #f1f5f9;
+        }
+
+        .secondary-button {
+            height: 40px;
+
+            padding: 0 15px;
+
+            border:
+                1px solid
+                #cbd5e1;
+
+            border-radius: 10px;
+
+            background: white;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .secondary-button:hover {
+            background: #f8fafc;
+        }
+
+        .save-button {
+            height: 40px;
+
+            padding: 0 18px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #059669;
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background: #047857;
+        }
+
+        .save-button:disabled {
+            opacity: .7;
+
+            cursor: wait;
+        }
+
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        #toast {
+            position: fixed;
+
+            left: 50%;
+            bottom: 20px;
+
+            z-index: 2500;
+
+            min-width: 220px;
+
+            max-width:
+                calc(100% - 30px);
+
+            padding:
+                12px 15px;
+
+            border-radius: 11px;
+
+            background: #0f172a;
+
+            color: white;
+
+            font-size: 12px;
+
+            text-align: center;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transform:
+                translateX(-50%)
+                translateY(20px);
+
+            transition: .25s;
+        }
+
+        #toast.show {
+            opacity: 1;
+
+            transform:
+                translateX(-50%)
+                translateY(0);
+        }
+
+        #toast.success {
+            background: #059669;
+        }
+
+        #toast.error {
+            background: #dc2626;
+        }
+
+
+        /* =====================================================
+           SPINNER
+        ===================================================== */
+
         .spinner {
-            width: 24px; height: 24px; border: 2px solid #10b981;
-            border-top-color: transparent; border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            display: inline-block;
+
+            width: 15px;
+            height: 15px;
+
+            margin-right: 6px;
+
+            vertical-align: middle;
+
+            border:
+                2px solid
+                rgba(255,255,255,.4);
+
+            border-top-color: white;
+
+            border-radius: 50%;
+
+            animation:
+                spin .7s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVO
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            #loginScreen {
+                padding: 15px;
+            }
+
+            .login-card {
+                padding:
+                    28px
+                    21px
+                    23px;
+
+                border-radius: 22px;
+            }
+
+            .login-logo-wrapper,
+            .login-logo {
+                width: 72px;
+                height: 72px;
+            }
+
+            .login-logo img {
+                width: 56px;
+                height: 56px;
+            }
+
+            .login-logo-wrapper {
+                margin-bottom: 18px;
+            }
+
+            .login-title {
+                font-size: 22px;
+            }
+
+            .login-subtitle {
+                font-size: 11px;
+            }
+
+            .login-input,
+            .login-submit {
+                height: 48px;
+            }
+
+            .main-container {
+                padding:
+                    16px
+                    13px
+                    30px;
+            }
+
+            .header-container {
+                padding:
+                    12px
+                    13px;
+            }
+
+            .balance-value {
+                font-size: 27px;
+            }
+
+            .transaction {
+                padding: 11px;
+            }
+
+            .transaction-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .transaction-value {
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .add-button span {
+                display: none;
+            }
+
+            .add-button {
+                width: 34px;
+                padding: 0;
+            }
+
+            .modal-overlay {
+                padding: 10px;
+
+                align-items: flex-end;
+            }
+
+            .modal {
+                max-height: 92vh;
+
+                padding: 18px 16px;
+
+                border-radius:
+                    20px
+                    20px
+                    14px
+                    14px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                display: grid;
+
+                grid-template-columns:
+                    1fr 1.5fr;
+            }
+
+            .secondary-button,
+            .save-button {
+                width: 100%;
+            }
+
+        }
+
     </style>
 </head>
-<body class="text-neutral-800">
-    <!-- TELA DE LOGIN -->
-    <div id="loginScreen" class="fixed inset-0 bg-white/95 backdrop-blur-md z-50 flex items-center justify-center px-6">
-        <div class="w-full max-w-sm fade-in">
-            <div class="text-center mb-8">
-                <!-- ✅ Ícone local -->
-                <img src="/icons/icon-192.png" alt="Meu Bolso" class="w-20 h-20 mx-auto mb-4">
-                <h2 class="text-xl font-bold text-neutral-800">Meu Bolso</h2>
-                <p class="text-neutral-500 text-sm mt-2">Suas finanças sob controle</p>
+
+<body>
+
+
+<!-- =========================================================
+     LOGIN
+========================================================= -->
+
+<div id="loginScreen">
+
+    <div class="login-background-decoration decoration-one"></div>
+
+    <div class="login-background-decoration decoration-two"></div>
+
+
+    <div class="login-wrapper">
+
+        <div class="login-card">
+
+
+            <!-- LOGO -->
+
+            <div class="login-logo-wrapper">
+
+                <div class="login-logo-glow"></div>
+
+                <div class="login-logo">
+
+                    <img
+                        src="/icons/icon-192.png"
+                        alt="Meu Bolso"
+                    >
+
+                </div>
+
             </div>
-            <div class="card p-6">
-                <form id="loginForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-neutral-600 mb-2">Telefone</label>
-                        <input 
-                            type="tel" 
-                            id="telephoneInput" 
-                            class="w-full input-field text-center tracking-widest"
-                            placeholder="Informe seu telefone para login"
+
+
+            <!-- TÍTULO -->
+
+            <div class="login-header">
+
+                <div class="login-title">
+
+                    Bem-vindo ao
+
+                    <span>
+                        Meu Bolso
+                    </span>
+
+                </div>
+
+
+                <div class="login-subtitle">
+
+                    Controle suas finanças de forma simples,
+                    rápida e organizada.
+
+                </div>
+
+            </div>
+
+
+            <!-- FORM LOGIN -->
+
+            <form id="loginForm">
+
+
+                <div class="login-field">
+
+                    <label
+                        class="login-label"
+                        for="telephoneInput"
+                    >
+                        Telefone
+                    </label>
+
+
+                    <div class="login-input-wrapper">
+
+                        <i class="fa fa-phone login-input-icon"></i>
+
+                        <input
+                            id="telephoneInput"
+                            class="login-input"
+                            type="tel"
+                            placeholder="(00) 00000-0000"
+                            autocomplete="tel"
                             required
-                            autocomplete="off"
                         >
+
                     </div>
-                    <p id="loginError" class="text-red-500 text-sm text-center hidden">
-                        ❌ Usuário não encontrado com este telefone
-                    </p>
-                    <p id="loginLoading" class="text-gray-500 text-sm text-center hidden">
-                        Verificando...
-                    </p>
-                    <button type="submit" id="loginBtn" class="w-full py-3 btn-primary">
-                        Entrar
-                    </button>
-                </form>
+
+                </div>
+
+
+                <button
+                    id="loginButton"
+                    class="login-submit"
+                    type="submit"
+                >
+
+                    <span class="login-submit-content">
+
+                        <i class="fa fa-sign-in"></i>
+
+                        Entrar no Meu Bolso
+
+                    </span>
+
+                </button>
+
+
+                <div
+                    id="loginError"
+                    class="login-error hidden"
+                ></div>
+
+
+            </form>
+
+
+            <!-- SEGURANÇA -->
+
+            <div class="login-footer">
+
+                <i class="fa fa-lock"></i>
+
+                Seus dados são utilizados apenas
+                para acessar sua conta.
+
             </div>
+
+
         </div>
+
+
+        <div class="login-copyright">
+
+            Meu Bolso • Controle financeiro pessoal
+
+        </div>
+
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <div id="appContent" class="hidden min-h-screen pb-8">
-        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
-            <div class="max-w-md mx-auto px-4 py-5">
-                <div class="flex items-center justify-between mb-5">
-                    <div class="flex items-center gap-3">
-                        <img src="/icons/icon-192.png" alt="Meu Bolso" class="w-9 h-9 rounded-xl">
-                        <div>
-                            <h1 class="text-lg font-bold text-gray-800">Meu Bolso</h1>
-                            <!-- ✅ SAUDAÇÃO PERSONALIZADA -->
-                            <p id="userGreeting" class="text-sm text-green-600 font-medium">Olá! 👋</p>
-                        </div>
-                    </div>
-                    <button id="logoutBtn" class="text-gray-500 text-sm hover:text-green-600 transition-colors">
-                        Sair
-                    </button>
-                </div>
-                
-                <!-- Saldo -->
-                <div class="card p-5">
-                    <p class="text-gray-500 text-sm font-medium" id="balanceLabel">Saldo do Ano</p>
-                    <p id="balance" class="text-3xl font-bold text-gray-900 mt-1">R$ 0,00</p>
-                    
-                    <!-- ✅ MENSAGEM MOTIVACIONAL -->
-                    <p id="motivationalMsg" class="text-sm text-green-600 mt-3 italic">
-                        "Você está no caminho certo! Continue assim! 🌟"
-                    </p>
-                    
-                    <div class="h-px bg-gray-100 my-4"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
-                                <i class="fa fa-arrow-down text-green-500"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400 font-medium">Entradas</p>
-                                <p id="totalIncome" class="font-bold text-green-500">+ R$ 0,00</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center">
-                                <i class="fa fa-arrow-up text-red-500"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400 font-medium">Saídas</p>
-                                <p id="totalExpense" class="font-bold text-red-500">- R$ 0,00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+</div>
 
-        <nav class="max-w-md mx-auto px-4 py-4">
-            <div class="grid grid-cols-4 gap-2 mb-3">
-                <button id="tabAll" class="py-2.5 rounded-xl text-sm font-semibold tab-active">TODOS</button>
-                <button id="tabWeek" class="py-2.5 rounded-xl text-sm font-medium tab-inactive">SEMANA</button>
-                <button id="tabMonth" class="py-2.5 rounded-xl text-sm font-medium tab-inactive">MÊS</button>
-                <button id="tabAdd" class="py-2.5 rounded-xl text-sm font-medium tab-inactive">+ ADD</button>
-            </div>
-            <div id="monthSelector" class="hidden">
-                <select id="monthSelect" class="w-full input-field"></select>
-            </div>
-        </nav>
 
-        <main class="max-w-md mx-auto px-4">
-            <!-- Lista de Movimentos -->
-            <div id="listSection" style="max-height: calc(100vh - 320px); overflow-y: auto;">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="font-bold text-gray-800">Movimentos</h2>
+<!-- =========================================================
+     APP
+========================================================= -->
+
+<div id="app" class="hidden">
+
+
+    <!-- HEADER -->
+
+    <header class="app-header">
+
+        <div class="header-container">
+
+
+            <div class="brand">
+
+                <div class="brand-icon">
+
+                    <img
+                        src="/icons/icon-192.png"
+                        alt="Meu Bolso"
+                    >
+
                 </div>
-                <div id="loading" class="text-center py-12 text-gray-400">
-                    <div class="spinner mx-auto mb-3"></div>
-                    <p>Carregando...</p>
-                </div>
-                <!-- ✅ TELA VAZIA COM NOME -->
-                <div id="emptyState" class="hidden text-center py-16">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="text-3xl opacity-40">📭</span>
+
+
+                <div>
+
+                    <div class="brand-name">
+                        Meu Bolso
                     </div>
-                    <p class="font-semibold text-gray-600">Ainda sem registros, <span id="emptyName"></span>?</p>
-                    <p class="text-sm text-gray-400 mt-1">Toque em <span class="text-green-600 font-semibold">+ ADD</span> para começar 🚀</p>
+
+                    <div class="brand-subtitle">
+                        Controle financeiro
+                    </div>
+
                 </div>
-                <div id="itemsList" class="space-y-3"></div>
+
             </div>
 
-            <!-- Formulário de Nova Movimentação -->
-            <div id="formSection" class="hidden fade-in">
-                <h2 class="font-bold text-lg text-gray-800 mb-5">Nova Movimentação</h2>
-                <form id="transactionForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-2">Tipo</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <label class="cursor-pointer">
-                                <input type="radio" name="type" value="ENTRADA" class="sr-only peer">
-                                <div class="card p-4 text-center peer-checked:border-2 peer-checked:border-green-500 peer-checked:bg-green-50">
-                                    <span class="text-green-500 text-xl">⬇</span>
-                                    <span class="block mt-1 font-semibold">Entrada</span>
-                                </div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="type" value="SAIDA" class="sr-only peer" checked>
-                                <div class="card p-4 text-center peer-checked:border-2 peer-checked:border-red-500 peer-checked:bg-red-50">
-                                    <span class="text-red-500 text-xl">⬆</span>
-                                    <span class="block mt-1 font-semibold">Saída</span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-2">Descrição</label>
-                        <input type="text" id="description" class="w-full input-field" placeholder="Ex: Supermercado" maxlength="100" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600 mb-2">Valor</label>
-                            <input type="number" step="0.01" min="0.01" id="price" class="w-full input-field" placeholder="0,00" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600 mb-2">Data</label>
-                            <input type="date" id="date" class="w-full input-field" required>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-2">Categoria</label>
-                        <select id="category" class="w-full input-field" required>
-                            <option value="">Selecione...</option>
-                            <option value="ALIMENTACAO">🍔 Alimentação</option>
-                            <option value="TRANSPORTE">🚗 Transporte</option>
-                            <option value="LAZER">🎮 Lazer</option>
-                            <option value="MORADIA">🏠 Moradia</option>
-                            <option value="SAUDE">💊 Saúde</option>
-                            <option value="EDUCACAO">📚 Educação</option>
-                            <option value="SALARIO">💰 Salário</option>
-                            <option value="OUTROS">📝 Outros</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-2">Pagamento</label>
-                        <select id="payment" class="w-full input-field" required>
-                            <option value="">Selecione...</option>
-                            <option value="DINHEIRO">💵 Dinheiro</option>
-                            <option value="PIX">⚡ PIX</option>
-                            <option value="CARTAO_CREDITO">💳 Cartão de Crédito</option>
-                            <option value="CARTAO_DEBITO">💳 Cartão de Débito</option>
-                            <option value="TRANSFERENCIA">🏦 Transferência</option>
-                        </select>
-                    </div>
-                    <div class="flex gap-3 pt-2">
-                        <button type="button" id="cancelBtn" class="flex-1 py-3 btn-secondary">Cancelar</button>
-                        <button type="submit" class="flex-1 py-3 btn-primary">Salvar</button>
-                    </div>
-                </form>
-            </div>
-        </main>
 
-        <div id="toast" class="toast fixed bottom-6 left-4 right-4 max-w-sm mx-auto bg-gray-800 text-white py-3 px-5 rounded-xl shadow-elevate text-center font-medium opacity-0 translate-y-4 pointer-events-none z-50">
+            <button
+                id="logoutButton"
+                class="logout-button"
+                title="Sair"
+                aria-label="Sair"
+            >
+
+                <i class="fa fa-sign-out"></i>
+
+            </button>
+
+
         </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+    ===================================================== -->
+
+    <main class="main-container">
+
+
+        <section class="welcome">
+
+            <div
+                id="welcomeTitle"
+                class="welcome-title"
+            >
+                Olá!
+            </div>
+
+
+            <div
+                id="welcomeText"
+                class="welcome-text"
+            >
+                Veja como estão suas finanças.
+            </div>
+
+        </section>
+
+
+        <!-- SALDO -->
+
+        <section class="balance-card">
+
+            <div class="balance-label">
+                Saldo
+            </div>
+
+
+            <div
+                id="balanceValue"
+                class="balance-value"
+            >
+                R$ 0,00
+            </div>
+
+
+            <div
+                id="motivation"
+                class="motivation"
+            >
+                Organize suas finanças e acompanhe sua evolução.
+            </div>
+
+        </section>
+
+
+        <!-- RESUMO -->
+
+        <section class="summary-grid">
+
+
+            <div class="summary-card">
+
+                <div class="summary-top">
+
+                    <div class="summary-icon income-icon">
+
+                        <i class="fa fa-arrow-up"></i>
+
+                    </div>
+
+                    <span>
+                        Entradas
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="totalIncome"
+                    class="summary-value income"
+                >
+                    R$ 0,00
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-top">
+
+                    <div class="summary-icon expense-icon">
+
+                        <i class="fa fa-arrow-down"></i>
+
+                    </div>
+
+                    <span>
+                        Despesas
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="totalExpense"
+                    class="summary-value expense"
+                >
+                    R$ 0,00
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- TABS -->
+
+        <section class="tabs">
+
+            <button
+                class="tab active"
+                data-tab="TODOS"
+            >
+                Visão geral
+            </button>
+
+
+            <button
+                class="tab"
+                data-tab="SEMANA"
+            >
+                Semana
+            </button>
+
+
+            <button
+                class="tab"
+                data-tab="MES"
+            >
+                Mês
+            </button>
+
+        </section>
+
+
+        <!-- MÊS -->
+
+        <div
+            id="monthContainer"
+            class="month-container hidden"
+        >
+
+            <select
+                id="monthSelect"
+                class="month-select"
+            ></select>
+
+        </div>
+
+
+        <!-- MOVIMENTAÇÕES -->
+
+        <section>
+
+            <div class="section-header">
+
+
+                <div>
+
+                    <h2 class="section-title">
+                        Movimentações
+                    </h2>
+
+
+                    <p class="section-subtitle">
+                        Acompanhe suas entradas e despesas
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="tabAdd"
+                    class="add-button"
+                    type="button"
+                    title="Nova movimentação"
+                    aria-label="Nova movimentação"
+                >
+
+                    <i class="fa fa-plus"></i>
+
+                    <span>
+                        Adicionar
+                    </span>
+
+                </button>
+
+
+            </div>
+
+
+            <div id="transactionsList"></div>
+
+
+            <div
+                id="emptyState"
+                class="empty-state hidden"
+            >
+
+                <div class="empty-icon">
+
+                    <i class="fa fa-file-text-o"></i>
+
+                </div>
+
+
+                <div class="empty-title">
+                    Nenhuma movimentação encontrada
+                </div>
+
+
+                <div class="empty-text">
+                    Adicione seu primeiro lançamento.
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL NOVA MOVIMENTAÇÃO
+========================================================= -->
+
+<div
+    id="financeModal"
+    class="modal-overlay"
+    aria-hidden="true"
+>
+
+    <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+    >
+
+
+        <div class="modal-header">
+
+
+            <div>
+
+                <h2 id="modalTitle">
+                    Nova movimentação
+                </h2>
+
+
+                <p>
+                    Registre uma entrada ou despesa
+                </p>
+
+            </div>
+
+
+            <button
+                id="closeModalButton"
+                class="modal-close"
+                type="button"
+                title="Fechar"
+                aria-label="Fechar"
+            >
+
+                <i class="fa fa-times"></i>
+
+            </button>
+
+
+        </div>
+
+
+        <form id="financeForm">
+
+
+            <div class="form-grid">
+
+
+                <!-- DESCRIÇÃO -->
+
+                <div class="form-group full">
+
+                    <label
+                        class="input-label"
+                        for="description"
+                    >
+                        Descrição
+                    </label>
+
+
+                    <input
+                        id="description"
+                        class="input"
+                        type="text"
+                        maxlength="100"
+                        placeholder="Ex.: Mercado"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- VALOR -->
+
+                <div class="form-group">
+
+                    <label
+                        class="input-label"
+                        for="price"
+                    >
+                        Valor
+                    </label>
+
+
+                    <input
+                        id="price"
+                        class="input"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0,00"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- DATA -->
+
+                <div class="form-group">
+
+                    <label
+                        class="input-label"
+                        for="date"
+                    >
+                        Data
+                    </label>
+
+
+                    <input
+                        id="date"
+                        class="input"
+                        type="date"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- TIPO -->
+
+                <div class="form-group">
+
+                    <label
+                        class="input-label"
+                        for="type"
+                    >
+                        Tipo
+                    </label>
+
+
+                    <select
+                        id="type"
+                        class="input"
+                        required
+                    >
+
+                        <option value="SAIDA">
+                            Despesa
+                        </option>
+
+                        <option value="ENTRADA">
+                            Entrada
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CATEGORIA -->
+
+                <div class="form-group">
+
+                    <label
+                        class="input-label"
+                        for="category"
+                    >
+                        Categoria
+                    </label>
+
+
+                    <select
+                        id="category"
+                        class="input"
+                        required
+                    >
+
+                        <option value="ALIMENTACAO">
+                            Alimentação
+                        </option>
+
+                        <option value="TRANSPORTE">
+                            Transporte
+                        </option>
+
+                        <option value="LAZER">
+                            Lazer
+                        </option>
+
+                        <option value="MORADIA">
+                            Moradia
+                        </option>
+
+                        <option value="SAUDE">
+                            Saúde
+                        </option>
+
+                        <option value="EDUCACAO">
+                            Educação
+                        </option>
+
+                        <option value="SALARIO">
+                            Salário
+                        </option>
+
+                        <option value="OUTROS">
+                            Outros
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- PAGAMENTO -->
+
+                <div class="form-group full">
+
+                    <label
+                        class="input-label"
+                        for="payment"
+                    >
+                        Forma de pagamento
+                    </label>
+
+
+                    <select
+                        id="payment"
+                        class="input"
+                        required
+                    >
+
+                        <option value="PIX">
+                            PIX
+                        </option>
+
+                        <option value="DINHEIRO">
+                            Dinheiro
+                        </option>
+
+                        <option value="CARTAO_CREDITO">
+                            Cartão de crédito
+                        </option>
+
+                        <option value="CARTAO_DEBITO">
+                            Cartão de débito
+                        </option>
+
+                        <option value="TRANSFERENCIA">
+                            Transferência
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-actions">
+
+
+                <button
+                    id="cancelButton"
+                    type="button"
+                    class="secondary-button"
+                >
+                    Cancelar
+                </button>
+
+
+                <button
+                    id="saveButton"
+                    type="submit"
+                    class="save-button"
+                >
+                    Salvar lançamento
+                </button>
+
+
+            </div>
+
+
+        </form>
+
     </div>
 
-    <script>
-        // ✅ Variáveis
-        const loginScreen = document.getElementById('loginScreen');
-        const appContent = document.getElementById('appContent');
-        const loginForm = document.getElementById('loginForm');
-        const telephoneInput = document.getElementById('telephoneInput');
-        const loginError = document.getElementById('loginError');
-        const loginLoading = document.getElementById('loginLoading');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        
-        const tabAll = document.getElementById('tabAll');
-        const tabWeek = document.getElementById('tabWeek');
-        const tabMonth = document.getElementById('tabMonth');
-        const tabAdd = document.getElementById('tabAdd');
-        const monthSelector = document.getElementById('monthSelector');
-        const monthSelect = document.getElementById('monthSelect');
-        const listSection = document.getElementById('listSection');
-        const formSection = document.getElementById('formSection');
-        const itemsList = document.getElementById('itemsList');
-        const loading = document.getElementById('loading');
-        const emptyState = document.getElementById('emptyState');
-        const form = document.getElementById('transactionForm');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const toast = document.getElementById('toast');
+</div>
 
-        // ✅ URL base da API
-        const API_BASE = "/finace";
-        let isAuthenticated = localStorage.getItem('appAuthenticated') === 'true';
-        let currentFilter = 'all';
 
-        // Data de hoje no formulário
-        document.getElementById('date').valueAsDate = new Date();
+<!-- TOAST -->
 
-        // ✅ Pegar nome do usuário salvo
-        function getUserName() {
-            const userData = localStorage.getItem('user');
-            if (!userData) return 'Amigo';
-            try {
-                const user = JSON.parse(userData);
-                return user.name || 'Amigo';
-            } catch {
-                return 'Amigo';
+<div id="toast"></div>
+
+
+<script>
+
+    /* =====================================================
+       CONFIGURAÇÃO
+    ===================================================== */
+
+    const API_BASE = "/finace";
+
+    let currentTab = "TODOS";
+
+
+    /* =====================================================
+       ELEMENTOS
+    ===================================================== */
+
+    const loginScreen =
+        document.getElementById("loginScreen");
+
+    const app =
+        document.getElementById("app");
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const telephoneInput =
+        document.getElementById("telephoneInput");
+
+    const loginButton =
+        document.getElementById("loginButton");
+
+    const loginError =
+        document.getElementById("loginError");
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+    const welcomeTitle =
+        document.getElementById("welcomeTitle");
+
+    const welcomeText =
+        document.getElementById("welcomeText");
+
+    const balanceValue =
+        document.getElementById("balanceValue");
+
+    const totalIncome =
+        document.getElementById("totalIncome");
+
+    const totalExpense =
+        document.getElementById("totalExpense");
+
+    const motivation =
+        document.getElementById("motivation");
+
+    const transactionsList =
+        document.getElementById("transactionsList");
+
+    const emptyState =
+        document.getElementById("emptyState");
+
+    const tabAdd =
+        document.getElementById("tabAdd");
+
+    const financeModal =
+        document.getElementById("financeModal");
+
+    const closeModalButton =
+        document.getElementById("closeModalButton");
+
+    const financeForm =
+        document.getElementById("financeForm");
+
+    const description =
+        document.getElementById("description");
+
+    const price =
+        document.getElementById("price");
+
+    const date =
+        document.getElementById("date");
+
+    const type =
+        document.getElementById("type");
+
+    const category =
+        document.getElementById("category");
+
+    const payment =
+        document.getElementById("payment");
+
+    const cancelButton =
+        document.getElementById("cancelButton");
+
+    const saveButton =
+        document.getElementById("saveButton");
+
+    const monthContainer =
+        document.getElementById("monthContainer");
+
+    const monthSelect =
+        document.getElementById("monthSelect");
+
+    const toast =
+        document.getElementById("toast");
+
+
+    /* =====================================================
+       UTILITÁRIOS
+    ===================================================== */
+
+    function formatCurrency(value) {
+
+        return Number(value || 0).toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
             }
+        );
+
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "-";
         }
 
-        // ✅ Atualizar todas as mensagens personalizadas
-        function carregarMensagensPersonalizadas() {
-            const nome = getUserName();
-            
-            // Saudação no cabeçalho
-            const greeting = document.getElementById('userGreeting');
-            if (greeting) greeting.textContent = `Olá, ${nome}! 👋`;
-            
-            // Frases motivacionais aleatórias
-            const frases = [
-                `"Cada real guardado é um passo mais perto dos seus sonhos, ${nome}!" 💪`,
-                `"Você está no caminho certo, ${nome}! Persista! 🌟`,
-                `"Disciplina = Liberdade, ${nome}! Continue assim! 🚀`,
-                `"O futuro agradece, ${nome}! 💰✨`
-            ];
-            const fraseEscolhida = frases[Math.floor(Math.random() * frases.length)];
-            const motivacional = document.getElementById('motivationalMsg');
-            if (motivacional) motivacional.textContent = fraseEscolhida;
-            
-            // Nome na tela vazia
-            const emptyName = document.getElementById('emptyName');
-            if (emptyName) emptyName.textContent = nome;
+        const parts =
+            String(value).split("-");
+
+        if (parts.length !== 3) {
+            return value;
         }
 
-        function showApp() {
-            loginScreen.classList.add('hidden');
-            appContent.classList.remove('hidden');
-            isAuthenticated = true;
-            localStorage.setItem('appAuthenticated', 'true');
-            carregarMensagensPersonalizadas(); // ✅ Carrega nome e frases
-            loadData('all');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+    }
+
+
+    function getToday() {
+
+        const now = new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                now.getDate()
+            ).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    function getUser() {
+
+        try {
+
+            const user =
+                localStorage.getItem("user");
+
+            return user
+                ? JSON.parse(user)
+                : null;
+
+        } catch (error) {
+
+            console.error(error);
+
+            return null;
+
         }
 
-        function showLogin() {
-            loginScreen.classList.remove('hidden');
-            appContent.classList.add('hidden');
-            isAuthenticated = false;
-            localStorage.removeItem('appAuthenticated');
-            localStorage.removeItem('user');
-            telephoneInput.value = '';
-            loginError.classList.add('hidden');
+    }
+
+
+    function getUserName() {
+
+        const user =
+            getUser();
+
+        if (!user) {
+            return "Usuário";
         }
 
-        // ✅ LOGIN AJUSTADO
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const telefoneDigitado = telephoneInput.value.trim();
-            if (!telefoneDigitado) return;
+        return (
+            user.name ||
+            user.nome ||
+            "Usuário"
+        );
 
-            loginError.classList.add('hidden');
-            loginLoading.classList.remove('hidden');
-            loginBtn.disabled = true;
-            loginBtn.style.opacity = '0.6';
+    }
+
+
+    function showToast(
+        message,
+        type = "success"
+    ) {
+
+        toast.textContent =
+            message;
+
+        toast.className = "";
+
+        toast.classList.add(
+            "show",
+            type
+        );
+
+        setTimeout(
+            () => {
+                toast.classList.remove(
+                    "show"
+                );
+            },
+            2800
+        );
+
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    /* =====================================================
+       CATEGORIAS
+    ===================================================== */
+
+    function getCategoryIcon(category) {
+
+        const icons = {
+
+            ALIMENTACAO: "fa-cutlery",
+
+            TRANSPORTE: "fa-car",
+
+            LAZER: "fa-gamepad",
+
+            MORADIA: "fa-home",
+
+            SAUDE: "fa-heartbeat",
+
+            EDUCACAO: "fa-book",
+
+            SALARIO: "fa-money",
+
+            OUTROS: "fa-tag"
+
+        };
+
+        return icons[category] || "fa-tag";
+
+    }
+
+
+    function getCategoryName(category) {
+
+        const names = {
+
+            ALIMENTACAO: "Alimentação",
+
+            TRANSPORTE: "Transporte",
+
+            LAZER: "Lazer",
+
+            MORADIA: "Moradia",
+
+            SAUDE: "Saúde",
+
+            EDUCACAO: "Educação",
+
+            SALARIO: "Salário",
+
+            OUTROS: "Outros"
+
+        };
+
+        return names[category] || category || "Outros";
+
+    }
+
+
+    function getPaymentName(payment) {
+
+        const names = {
+
+            PIX: "PIX",
+
+            DINHEIRO: "Dinheiro",
+
+            CARTAO_CREDITO:
+                "Cartão crédito",
+
+            CARTAO_DEBITO:
+                "Cartão débito",
+
+            TRANSFERENCIA:
+                "Transferência"
+
+        };
+
+        return names[payment] || payment || "";
+
+    }
+
+
+    /* =====================================================
+       MOTIVAÇÃO
+    ===================================================== */
+
+    function getMotivation(balance) {
+
+        if (balance > 0) {
+
+            return "Muito bem! Seu saldo está positivo. Continue assim.";
+
+        }
+
+        if (balance === 0) {
+
+            return "Seu saldo está zerado. Organize os próximos lançamentos.";
+
+        }
+
+        return "Atenção aos gastos. Organizar é o primeiro passo para melhorar.";
+
+    }
+
+
+    /* =====================================================
+       LOGIN
+    ===================================================== */
+
+    function showApp() {
+
+        loginScreen.classList.add("hidden");
+
+        app.classList.remove("hidden");
+
+        welcomeTitle.textContent =
+            `Olá, ${getUserName()}!`;
+
+        welcomeText.textContent =
+            "Veja como estão suas finanças.";
+
+        date.value =
+            getToday();
+
+        loadMonths();
+
+        loadData();
+
+    }
+
+
+    function showLogin() {
+
+        app.classList.add("hidden");
+
+        loginScreen.classList.remove("hidden");
+
+        telephoneInput.focus();
+
+    }
+
+
+    loginForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const telephone =
+                telephoneInput.value.trim();
+
+
+            if (!telephone) {
+
+                loginError.textContent =
+                    "Digite seu telefone.";
+
+                loginError.classList.remove(
+                    "hidden"
+                );
+
+                return;
+
+            }
+
+
+            loginError.classList.add(
+                "hidden"
+            );
+
+
+            loginButton.disabled =
+                true;
+
+
+            loginButton.innerHTML =
+                '<span class="spinner"></span>Entrando...';
+
 
             try {
-                const resposta = await fetch(`${API_BASE}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telephone: telefoneDigitado })
-                });
 
-                if (!resposta.ok) {
-                    if (resposta.status === 404) {
-                        loginError.textContent = "❌ Usuário não encontrado com o telefone: " + telefoneDigitado;
-                    } else {
-                        loginError.textContent = "❌ Erro: Servidor indisponível";
+                const response =
+                    await fetch(
+                        `${API_BASE}/login`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    telephone:
+                                        telephone
+                                })
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    let message =
+                        "Telefone não encontrado.";
+
+                    try {
+
+                        const data =
+                            await response.json();
+
+                        message =
+                            data.message ||
+                            data.error ||
+                            message;
+
+                    } catch (_) {
+                        // resposta sem JSON
                     }
-                    loginError.classList.remove('hidden');
-                    telephoneInput.value = '';
-                    return;
+
+                    throw new Error(
+                        message
+                    );
+
                 }
 
-                const dados = await resposta.json();
-                localStorage.setItem('user', JSON.stringify(dados));
-                
-                if (dados.telephone === telefoneDigitado) {
-                    showApp();
-                } else {
-                    loginError.textContent = "❌ Telefone não confere";
-                    loginError.classList.remove('hidden');
-                    telephoneInput.value = '';
-                }
 
-            } catch (erro) {
-                loginError.textContent = "❌ Erro de conexão: " + erro.message;
-                loginError.classList.remove('hidden');
+                const user =
+                    await response.json();
+
+
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(user)
+                );
+
+
+                localStorage.setItem(
+                    "appAuthenticated",
+                    "true"
+                );
+
+
+                showApp();
+
+
+            } catch (error) {
+
+                console.error(error);
+
+
+                loginError.textContent =
+                    error.message ||
+                    "Não foi possível realizar o login.";
+
+
+                loginError.classList.remove(
+                    "hidden"
+                );
+
+
             } finally {
-                loginLoading.classList.add('hidden');
-                loginBtn.disabled = false;
-                loginBtn.style.opacity = '1';
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.innerHTML = `
+                    <span class="login-submit-content">
+                        <i class="fa fa-sign-in"></i>
+                        Entrar no Meu Bolso
+                    </span>
+                `;
+
             }
+
+        }
+    );
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    logoutButton.addEventListener(
+        "click",
+        function() {
+
+            closeModal();
+
+            localStorage.removeItem(
+                "user"
+            );
+
+            localStorage.removeItem(
+                "appAuthenticated"
+            );
+
+            financeForm.reset();
+
+            showLogin();
+
+        }
+    );
+
+
+    /* =====================================================
+       MODAL
+    ===================================================== */
+
+    function openModal() {
+
+        financeModal.classList.add(
+            "show"
+        );
+
+        financeModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+
+        date.value =
+            getToday();
+
+
+        setTimeout(
+            () => {
+                description.focus();
+            },
+            100
+        );
+
+    }
+
+
+    function closeModal() {
+
+        financeModal.classList.remove(
+            "show"
+        );
+
+        financeModal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        document.body.style.overflow =
+            "";
+
+        financeForm.reset();
+
+        date.value =
+            getToday();
+
+    }
+
+
+    tabAdd.addEventListener(
+        "click",
+        openModal
+    );
+
+
+    closeModalButton.addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    cancelButton.addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    financeModal.addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target ===
+                financeModal
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Escape" &&
+                financeModal.classList.contains(
+                    "show"
+                )
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       ABAS
+    ===================================================== */
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(tab => {
+
+            tab.addEventListener(
+                "click",
+                function() {
+
+                    document
+                        .querySelectorAll(".tab")
+                        .forEach(item => {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        });
+
+
+                    this.classList.add(
+                        "active"
+                    );
+
+
+                    currentTab =
+                        this.dataset.tab;
+
+
+                    if (
+                        currentTab === "MES"
+                    ) {
+
+                        monthContainer.classList.remove(
+                            "hidden"
+                        );
+
+                    } else {
+
+                        monthContainer.classList.add(
+                            "hidden"
+                        );
+
+                    }
+
+
+                    loadData();
+
+                }
+            );
+
         });
 
-        logoutBtn.addEventListener('click', showLogin);
 
-        function populateMonthOptions() {
-            const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-            const hoje = new Date();
-            const anoAtual = hoje.getFullYear();
-            const mesAtual = hoje.getMonth() + 1;
-            monthSelect.innerHTML = '';
-            for (let ano = anoAtual - 1; ano <= anoAtual; ano++) {
-                const fimMes = (ano === anoAtual) ? mesAtual : 12;
-                for (let mes = 1; mes <= fimMes; mes++) {
-                    const valor = `${ano}-${String(mes).padStart(2,'0')}`;
-                    const texto = `${meses[mes - 1]} / ${ano}`;
-                    monthSelect.innerHTML += `<option value="${valor}" ${ano === anoAtual && mes === mesAtual ? 'selected' : ''}>${texto}</option>`;
-                }
+    /* =====================================================
+       MESES
+    ===================================================== */
+
+    function loadMonths() {
+
+        monthSelect.innerHTML = "";
+
+        const now =
+            new Date();
+
+
+        for (
+            let i = 0;
+            i < 12;
+            i++
+        ) {
+
+            const monthDate =
+                new Date(
+                    now.getFullYear(),
+                    now.getMonth() - i,
+                    1
+                );
+
+
+            const year =
+                monthDate.getFullYear();
+
+
+            const month =
+                String(
+                    monthDate.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const value =
+                `${year}-${month}`;
+
+
+            const label =
+                monthDate.toLocaleDateString(
+                    "pt-BR",
+                    {
+                        month: "long",
+                        year: "numeric"
+                    }
+                );
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                value;
+
+
+            option.textContent =
+                label.charAt(0).toUpperCase() +
+                label.slice(1);
+
+
+            monthSelect.appendChild(
+                option
+            );
+
+        }
+
+    }
+
+
+    monthSelect.addEventListener(
+        "change",
+        function() {
+
+            if (
+                currentTab === "MES"
+            ) {
+
+                loadData();
+
             }
+
+        }
+    );
+
+
+    /* =====================================================
+       CARREGAR DADOS
+    ===================================================== */
+
+    async function loadData() {
+
+        transactionsList.innerHTML =
+            "";
+
+        emptyState.classList.add(
+            "hidden"
+        );
+
+
+        let endpoint =
+            `${API_BASE}/`;
+
+
+        if (
+            currentTab === "SEMANA"
+        ) {
+
+            endpoint =
+                `${API_BASE}/semana/${getToday()}`;
+
         }
 
-        function setActiveTab(activeTab) {
-            if (!isAuthenticated) return;
-            [tabAll, tabWeek, tabMonth, tabAdd].forEach(t => {
-                t.classList.remove('tab-active');
-                t.classList.add('tab-inactive');
-            });
-            activeTab.classList.remove('tab-inactive');
-            activeTab.classList.add('tab-active');
-            
-            if (activeTab === tabAdd) {
-                listSection.classList.add('hidden');
-                formSection.classList.remove('hidden');
-                monthSelector.classList.add('hidden');
-            } else {
-                listSection.classList.remove('hidden');
-                formSection.classList.add('hidden');
-                if (activeTab === tabAll) {
-                    currentFilter = 'all';
-                    document.getElementById('balanceLabel').textContent = 'Saldo do Ano';
-                    monthSelector.classList.add('hidden');
-                } else if (activeTab === tabWeek) {
-                    currentFilter = 'week';
-                    document.getElementById('balanceLabel').textContent = 'Saldo da Semana';
-                    monthSelector.classList.add('hidden');
-                } else if (activeTab === tabMonth) {
-                    currentFilter = 'month';
-                    document.getElementById('balanceLabel').textContent = 'Saldo do Mês';
-                    monthSelector.classList.remove('hidden');
-                    loadData('month');
-                    return;
-                }
-                loadData(currentFilter);
+
+        if (
+            currentTab === "MES"
+        ) {
+
+            endpoint =
+                `${API_BASE}/mes/${monthSelect.value}`;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    endpoint
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Erro ao carregar movimentações."
+                );
+
             }
+
+
+            const data =
+                await response.json();
+
+
+            const transactions =
+                Array.isArray(data)
+                    ? data
+                    : [];
+
+
+            renderTransactions(
+                transactions
+            );
+
+
+            updateSummary(
+                transactions
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            transactionsList.innerHTML =
+                "";
+
+
+            emptyState.classList.remove(
+                "hidden"
+            );
+
+
+            emptyState.querySelector(
+                ".empty-title"
+            ).textContent =
+                "Não foi possível carregar os dados.";
+
+
+            emptyState.querySelector(
+                ".empty-text"
+            ).textContent =
+                "Verifique se a API está funcionando.";
+
+
+            updateSummary([]);
+
         }
 
-        tabAll.addEventListener('click', () => setActiveTab(tabAll));
-        tabWeek.addEventListener('click', () => setActiveTab(tabWeek));
-        tabMonth.addEventListener('click', () => { populateMonthOptions(); setActiveTab(tabMonth); });
-        tabAdd.addEventListener('click', () => setActiveTab(tabAdd));
-        cancelBtn.addEventListener('click', () => setActiveTab(tabAll));
-        monthSelect.addEventListener('change', () => { if (currentFilter === 'month') loadData('month'); });
+    }
 
-        function formatCurrency(v) {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
+
+    /* =====================================================
+       RENDER TRANSAÇÕES
+    ===================================================== */
+
+    function renderTransactions(
+        transactions
+    ) {
+
+        transactionsList.innerHTML =
+            "";
+
+
+        if (!transactions.length) {
+
+            emptyState.classList.remove(
+                "hidden"
+            );
+
+            emptyState.querySelector(
+                ".empty-title"
+            ).textContent =
+                "Nenhuma movimentação encontrada.";
+
+
+            emptyState.querySelector(
+                ".empty-text"
+            ).textContent =
+                "Adicione seu primeiro lançamento.";
+
+
+            return;
+
         }
 
-        function formatDate(s) {
-            const [y, m, d] = s.split('-');
-            return `${d}/${m}/${y}`;
-        }
 
-        function showToast(msg, erro = false) {
-            toast.textContent = msg;
-            toast.style.background = erro ? '#dc2626' : '#1f2937';
-            toast.classList.remove('opacity-0', 'translate-y-4');
-            setTimeout(() => toast.classList.add('opacity-0', 'translate-y-4'), 3000);
-        }
+        emptyState.classList.add(
+            "hidden"
+        );
 
-        async function excluirItem(id, desc) {
-            if (!confirm(`Excluir "${desc}"?`)) return;
-            try {
-                const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-                if (!res.ok) throw new Error('Erro ao excluir');
-                showToast('✅ Excluído com sucesso!');
-                loadData(currentFilter);
-            } catch (e) {
-                showToast('❌ ' + e.message, true);
+
+        transactions.forEach(
+            transaction => {
+
+                transactionsList.appendChild(
+                    createTransactionElement(
+                        transaction
+                    )
+                );
+
             }
-        }
+        );
 
-        async function loadData(tipo = 'all') {
-            if (!isAuthenticated) return;
-            loading.classList.remove('hidden');
-            emptyState.classList.add('hidden');
-            itemsList.innerHTML = '';
+    }
 
-            try {
-                let url = API_BASE + '/';
-                if (tipo === 'week') {
-                    const t = new Date();
-                    const d = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
-                    url = `${API_BASE}/semana/${d}`;
-                } else if (tipo === 'month') {
-                    url = `${API_BASE}/mes/${monthSelect.value}`;
+
+    function createTransactionElement(
+        transaction
+    ) {
+
+        const item =
+            document.createElement(
+                "div"
+            );
+
+
+        item.className =
+            "transaction";
+
+
+        const isIncome =
+            transaction.type ===
+            "ENTRADA";
+
+
+        const icon =
+            getCategoryIcon(
+                transaction.category
+            );
+
+
+        const iconBackground =
+            isIncome
+                ? "#ecfdf5"
+                : "#fef2f2";
+
+
+        const iconColor =
+            isIncome
+                ? "#059669"
+                : "#dc2626";
+
+
+        const valueClass =
+            isIncome
+                ? "income"
+                : "expense";
+
+
+        const signal =
+            isIncome
+                ? "+"
+                : "-";
+
+
+        item.innerHTML = `
+
+            <div
+                class="transaction-icon"
+                style="
+                    background:${iconBackground};
+                    color:${iconColor};
+                "
+            >
+                <i class="fa ${icon}"></i>
+            </div>
+
+
+            <div class="transaction-content">
+
+                <div class="transaction-description">
+
+                    ${escapeHtml(
+                        transaction.description ||
+                        "Sem descrição"
+                    )}
+
+                </div>
+
+
+                <div class="transaction-info">
+
+                    <span>
+                        ${getCategoryName(
+                            transaction.category
+                        )}
+                    </span>
+
+                    <span>•</span>
+
+                    <span>
+                        ${getPaymentName(
+                            transaction.payment
+                        )}
+                    </span>
+
+                    <span>•</span>
+
+                    <span>
+                        ${formatDate(
+                            transaction.date
+                        )}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="
+                    transaction-value
+                    ${valueClass}
+                "
+            >
+
+                ${signal}
+
+                ${formatCurrency(
+                    Math.abs(
+                        Number(
+                            transaction.price ||
+                            0
+                        )
+                    )
+                )}
+
+            </div>
+
+
+            <button
+                class="delete-button"
+                title="Excluir"
+                aria-label="Excluir lançamento"
+            >
+
+                <i class="fa fa-trash-o"></i>
+
+            </button>
+
+        `;
+
+
+        item
+            .querySelector(".delete-button")
+            .addEventListener(
+                "click",
+                function() {
+
+                    deleteTransaction(
+                        transaction.id
+                    );
+
+                }
+            );
+
+
+        return item;
+
+    }
+
+
+    /* =====================================================
+       RESUMO
+    ===================================================== */
+
+    function updateSummary(
+        transactions
+    ) {
+
+        let income = 0;
+
+        let expense = 0;
+
+
+        transactions.forEach(
+            transaction => {
+
+                const value =
+                    Number(
+                        transaction.price ||
+                        0
+                    );
+
+
+                if (
+                    transaction.type ===
+                    "ENTRADA"
+                ) {
+
+                    income += value;
+
+                } else {
+
+                    expense += value;
+
                 }
 
-                const res = await fetch(url);
-                if (!res.ok) throw new Error('Erro na conexão');
-                const dados = await res.json();
-
-                loading.classList.add('hidden');
-                if (!dados.length) {
-                    emptyState.classList.remove('hidden');
-                    updateBalance([]);
-                    return;
-                }
-                renderItems(dados);
-                updateBalance(dados);
-            } catch (e) {
-                loading.classList.add('hidden');
-                showToast('Erro: ' + e.message, true);
             }
-        }
+        );
 
-        function renderItems(itens) {
-            itemsList.innerHTML = '';
-            itens.forEach(item => {
-                const isReceita = String(item.type).toUpperCase().trim() === 'ENTRADA';
-                const card = document.createElement('div');
-                card.className = `card p-4 fade-in ${isReceita ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'}`;
-                card.innerHTML = `
-                    <div class="flex justify-between items-start gap-3">
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-semibold text-gray-800">${item.description}</h3>
-                            <p class="text-xs text-gray-400 mt-1">${(item.category || '').replace('_', ' ')} • ${formatDate(item.date)}</p>
-                            <p class="text-xs text-gray-400 mt-0.5">${(item.payment || '').replace('_', ' ')}</p>
-                        </div>
-                        <div class="flex flex-col items-end gap-1">
-                            <p class="font-bold whitespace-nowrap ${isReceita ? 'text-green-500' : 'text-red-500'}">
-                                ${isReceita ? '+' : '-'}${formatCurrency(item.price)}
-                            </p>
-                            <a href="#" class="text-xs text-gray-400 hover:text-red-500 transition-colors" data-id="${item.id}" data-desc="${item.description}">excluir</a>
-                        </div>
-                    </div>`;
-                itemsList.appendChild(card);
-            });
 
-            document.querySelectorAll('[data-id]').forEach(link => {
-                link.addEventListener('click', e => {
-                    e.preventDefault();
-                    excluirItem(link.dataset.id, link.dataset.desc);
-                });
-            });
-        }
+        const balance =
+            income - expense;
 
-        function updateBalance(itens) {
-            let entradas = 0, saidas = 0;
-            itens.forEach(i => {
-                const v = Number(i.price) || 0;
-                String(i.type).toUpperCase().trim() === 'ENTRADA' ? entradas += v : saidas += v;
-            });
-            document.getElementById('balance').textContent = formatCurrency(entradas - saidas);
-            document.getElementById('totalIncome').textContent = '+' + formatCurrency(entradas);
-            document.getElementById('totalExpense').textContent = '-' + formatCurrency(saidas);
-        }
 
-        form.addEventListener('submit', async e => {
-            e.preventDefault();
-            const dados = {
-                description: form.description.value,
-                price: parseFloat(form.price.value),
-                date: form.date.value,
-                type: form.type.value,
-                category: form.category.value,
-                payment: form.payment.value
+        totalIncome.textContent =
+            formatCurrency(
+                income
+            );
+
+
+        totalExpense.textContent =
+            formatCurrency(
+                expense
+            );
+
+
+        balanceValue.textContent =
+            formatCurrency(
+                balance
+            );
+
+
+        motivation.textContent =
+            getMotivation(
+                balance
+            );
+
+    }
+
+
+    /* =====================================================
+       SALVAR
+    ===================================================== */
+
+    financeForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const payload = {
+
+                description:
+                    description.value.trim(),
+
+                price:
+                    Number(
+                        price.value
+                    ),
+
+                date:
+                    date.value,
+
+                type:
+                    type.value,
+
+                category:
+                    category.value,
+
+                payment:
+                    payment.value
+
             };
 
-            try {
-                const res = await fetch(API_BASE + '/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
 
-                if (!res.ok) {
-                    const erro = await res.json().catch(() => ({ message: 'Erro ao salvar' }));
-                    throw new Error(erro.message || 'Erro ao salvar');
+            if (!payload.description) {
+
+                showToast(
+                    "Informe uma descrição.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !payload.price ||
+                payload.price <= 0
+            ) {
+
+                showToast(
+                    "Informe um valor válido.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (!payload.date) {
+
+                showToast(
+                    "Informe a data.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            saveButton.disabled =
+                true;
+
+
+            saveButton.innerHTML =
+                '<span class="spinner"></span>Salvando...';
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    let message =
+                        "Não foi possível salvar.";
+
+                    try {
+
+                        const data =
+                            await response.json();
+
+                        message =
+                            data.message ||
+                            data.error ||
+                            message;
+
+                    } catch (_) {
+                        // ignora
+                    }
+
+
+                    throw new Error(
+                        message
+                    );
+
                 }
 
-                form.reset();
-                document.getElementById('date').valueAsDate = new Date();
-                showToast('✅ Salvo com sucesso!');
-                setActiveTab(tabAll);
-            } catch (e) {
-                showToast('❌ ' + e, true);
-            }
-        });
 
-        // ✅ Manter logado se já estava autenticado
-        if (isAuthenticated) showApp();
-    </script>
+                showToast(
+                    "Lançamento salvo com sucesso!"
+                );
+
+
+                closeModal();
+
+                await loadData();
+
+
+            } catch (error) {
+
+                console.error(error);
+
+
+                showToast(
+                    error.message ||
+                    "Erro ao salvar lançamento.",
+                    "error"
+                );
+
+
+            } finally {
+
+                saveButton.disabled =
+                    false;
+
+                saveButton.textContent =
+                    "Salvar lançamento";
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       EXCLUIR
+    ===================================================== */
+
+    async function deleteTransaction(id) {
+
+        if (!id) {
+            return;
+        }
+
+
+        const confirmed =
+            confirm(
+                "Deseja realmente excluir este lançamento?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/${id}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Não foi possível excluir."
+                );
+
+            }
+
+
+            showToast(
+                "Lançamento excluído."
+            );
+
+
+            await loadData();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            showToast(
+                error.message ||
+                "Erro ao excluir lançamento.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       INICIALIZAÇÃO
+    ===================================================== */
+
+    function initialize() {
+
+        const authenticated =
+            localStorage.getItem(
+                "appAuthenticated"
+            );
+
+
+        const user =
+            getUser();
+
+
+        if (
+            authenticated === "true" &&
+            user
+        ) {
+
+            showApp();
+
+        } else {
+
+            showLogin();
+
+        }
+
+    }
+
+
+    initialize();
+
+</script>
+
 </body>
 </html>
