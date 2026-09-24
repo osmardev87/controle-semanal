@@ -2,6 +2,9 @@ package com.br.gomesdee87.controlesemanal.finance;
 
 import com.br.gomesdee87.controlesemanal.finance.dto.FinaceRequestDTO;
 import com.br.gomesdee87.controlesemanal.finance.dto.FinaceResponseDTO;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,6 +18,7 @@ public class FinaceService {
         this.finaceRepository = finaceRepository;
     }
 
+    @Transactional
     public FinaceResponseDTO create(FinaceRequestDTO requestDTO) {
 
         Finace openFinace = new Finace();
@@ -38,6 +42,7 @@ public class FinaceService {
         );
     }
 
+    @Transactional
     public List<FinaceResponseDTO> listFinace() {
         return finaceRepository.findAll()
                 .stream()
@@ -51,7 +56,8 @@ public class FinaceService {
                         finace.getPayment()))
                 .toList();
     }
-
+    
+    @Transactional
     public List<FinaceResponseDTO> listaGastosDasemana(LocalDate date) {
         LocalDate inicioSemana = date.with( java.time.DayOfWeek.MONDAY );
         LocalDate fimSemana = inicioSemana.plusDays(6);
@@ -69,11 +75,13 @@ public class FinaceService {
     }
 
 
+    @Transactional // ✅ ESSENCIAL — garante que a operação é segura
     public String limpaBanco() {
-        finaceRepository.deleteAll();
-        return  "Banco limpo";
+        finaceRepository.deleteAllInBatch(); // ✅ Mais rápido e seguro que deleteAll()
+        return "Banco limpo com sucesso!";
     }
 
+    @Transactional
     public List<FinaceResponseDTO> listarPorMes(LocalDate inicio, LocalDate fim) {
         return finaceRepository.findByDateBetween(inicio, fim)
                 .stream()
@@ -88,6 +96,7 @@ public class FinaceService {
                 .toList();
     }   
 
+    @Transactional
     public List<FinaceResponseDTO> buscarEntreDatas(LocalDate inicio, LocalDate fim) {
         return finaceRepository.findByDateBetween(inicio, fim)
                 .stream()
@@ -102,6 +111,7 @@ public class FinaceService {
                 .toList();
     }
 
+    @Transactional
     public void deletar(Long id) {
         finaceRepository.deleteById(id);
     }
