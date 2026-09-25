@@ -1,4 +1,4 @@
-﻿package com.br.gomesdee87.controlesemanal.user;
+package com.br.gomesdee87.controlesemanal.user;
 
 import com.br.gomesdee87.controlesemanal.exception.UserNotFoundException;
 import com.br.gomesdee87.controlesemanal.user.dto.ChangePasswordDTO;

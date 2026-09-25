@@ -1,4 +1,4 @@
-﻿package com.br.gomesdee87.controlesemanal.user;
+package com.br.gomesdee87.controlesemanal.user;
 
 import com.br.gomesdee87.controlesemanal.security.ApiSessionInterceptor;
 import com.br.gomesdee87.controlesemanal.user.dto.ChangePasswordDTO;

@@ -1,4 +1,4 @@
-﻿package com.br.gomesdee87.controlesemanal.security;
+package com.br.gomesdee87.controlesemanal.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
