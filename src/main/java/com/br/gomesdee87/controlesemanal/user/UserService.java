@@ -26,6 +26,15 @@ public class UserService {
         return repository.save(user);
     }
 
+    public User criarContaAdministrada(CreateNewUsers request) {
+        validarTamanhoSenha(request.password());
+        User user = new User();
+        user.setName(request.name());
+        user.setTelephone(request.telephone());
+        user.setPasswordHash(passwordEncoder.encode(request.password()));
+        user.setPasswordChangeRequired(true);
+        return repository.save(user);
+    }
     public User autenticar(String telephone, String password) {
         User user = repository.findByTelephone(telephone);
         if (user == null || user.getPasswordHash() == null ||

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Painel administrativo | Meu Bolso</title>
+<style>
+:root{color-scheme:dark;--bg:#09121f;--panel:#111d2e;--line:#263950;--text:#e8eef7;--muted:#a7b6ca;--green:#58d6a5;--red:#ff9292;--blue:#82b9ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#172c43,var(--bg) 60%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input{font:inherit}button{cursor:pointer}.wrap{width:min(1100px,calc(100% - 32px));margin:36px auto}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 20px 70px #0005}.narrow{width:min(100%,500px);margin:8vh auto}h1{font-size:1.55rem;margin:0 0 8px}h2{font-size:1.12rem;margin:0 0 18px}.muted,.help{color:var(--muted);line-height:1.55}.help{font-size:.88rem;margin:8px 0 18px}label{display:block;font-weight:650;margin:15px 0 7px}input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:#0b1523;color:var(--text)}input:focus{outline:2px solid var(--green);border-color:transparent}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}.full{grid-column:1/-1}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:17px}button{border:0;border-radius:9px;padding:11px 15px;background:var(--green);color:#062016;font-weight:750}button.secondary{background:#23374e;color:var(--text)}button.small{padding:8px 10px;font-size:.84rem}button:disabled{opacity:.55;cursor:wait}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px}.top p{margin:0}.notice{min-height:23px;margin:14px 0 0;line-height:1.45}.notice.error{color:var(--red)}.notice.ok{color:var(--green)}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:26px 0 12px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}th{color:var(--muted);font-size:.83rem}td.actions-cell{white-space:nowrap}.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#253c56;color:#c5d9f1;font-size:.78rem}.badge.pending{background:#4a3920;color:#ffda91}.empty{padding:22px 8px;color:var(--muted)}[hidden]{display:none!important}@media(max-width:650px){.wrap{width:calc(100% - 20px);margin:14px auto}.card{padding:18px}.grid{grid-template-columns:1fr}.full{grid-column:auto}.top{align-items:flex-start}.toolbar{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section id="setupView" class="card narrow" hidden>
+<h1>Configuração inicial do administrador</h1>
+<p class="help">O código de uso único aparece no log de inicialização do servidor. No Docker, consulte com <code>docker compose logs controle-semanal</code>. Depois desta etapa, o código deixa de funcionar.</p>
+<form id="setupForm">
+<label for="setupCode">Código de configuração</label><input id="setupCode" type="password" autocomplete="off" required>
+<label for="setupUsername">Usuário administrador</label><input id="setupUsername" minlength="3" maxlength="64" autocomplete="username" required>
+<label for="setupPassword">Senha administrativa</label><input id="setupPassword" type="password" minlength="6" maxlength="72" autocomplete="new-password" required>
+<div class="actions"><button id="setupButton">Criar administrador</button></div>
+<p id="setupNotice" class="notice" role="status" aria-live="polite"></p>
+</form>
+</section>
+<section id="loginView" class="card narrow" hidden>
+<h1>Painel administrativo</h1><p class="muted">Entre com sua conta de administrador.</p>
+<form id="loginForm">
+<label for="loginUsername">Usuário</label><input id="loginUsername" autocomplete="username" required>
+<label for="loginPassword">Senha</label><input id="loginPassword" type="password" autocomplete="current-password" required>
+<div class="actions"><button id="loginButton">Entrar</button></div>
+<p id="loginNotice" class="notice" role="status" aria-live="polite"></p>
+</form>
+</section>
+<section id="panelView" hidden>
+<header class="top"><div><h1>Gerenciar usuários</h1><p id="adminWelcome" class="muted"></p></div><button id="logoutButton" class="secondary">Sair</button></header>
+<section class="card">
+<h2>Criar conta de usuário</h2>
+<p class="help">A senha informada será temporária. A pessoa deverá escolher uma senha própria no primeiro acesso.</p>
+<form id="createUserForm" class="grid">
+<div><label for="newName">Nome</label><input id="newName" maxlength="100" required></div>
+<div><label for="newTelephone">Telefone</label><input id="newTelephone" maxlength="20" inputmode="tel" required></div>
+<div class="full"><label for="newPassword">Senha temporária (mínimo 6 caracteres)</label><input id="newPassword" type="password" minlength="6" maxlength="72" autocomplete="new-password" required></div>
+<div class="full actions"><button id="createButton">Criar conta</button></div>
+</form>
+<p id="createNotice" class="notice" role="status" aria-live="polite"></p>
+</section>
+<section class="card" style="margin-top:18px">
+<div class="toolbar"><div><h2 style="margin-bottom:4px">Contas cadastradas</h2><span id="userCount" class="muted"></span></div><button id="refreshButton" class="secondary">Atualizar lista</button></div>
+<div class="table-wrap"><table><thead><tr><th>Nome</th><th>Telefone</th><th>Primeiro acesso</th><th>Ações</th></tr></thead><tbody id="usersBody"></tbody></table><div id="emptyState" class="empty" hidden>Nenhuma conta cadastrada.</div></div>
+<p id="listNotice" class="notice" role="status" aria-live="polite"></p>
+</section>
+</section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const setupView=$('setupView'), loginView=$('loginView'), panelView=$('panelView');
+function notice(id,message,error=false){const el=$(id);el.textContent=message;el.className='notice'+(message?(error?' error':' ok'):'');}
+async function api(path,options={}){const response=await fetch(path,{...options,credentials:'same-origin',headers:{...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});let data=null;if(response.status!==204){try{data=await response.json()}catch{}}if(!response.ok){const err=new Error(data?.message||data?.error||'Não foi possível concluir a operação.');err.status=response.status;throw err}return data;}
+function show(view){setupView.hidden=view!=='setup';loginView.hidden=view!=='login';panelView.hidden=view!=='panel';}
+function body(data){return JSON.stringify(data)}
+async function boot(){try{const state=await api('/api/admin/setup/status');if(state.setupRequired){show('setup');return}try{const session=await api('/api/admin/session');$('adminWelcome').textContent='Conectado como '+session.username;show('panel');await loadUsers()}catch{show('login')}}catch{show('login')}}
+$('setupForm').addEventListener('submit',async event=>{event.preventDefault();$('setupButton').disabled=true;notice('setupNotice','Criando conta...');try{await api('/api/admin/setup',{method:'POST',body:body({setupCode:$('setupCode').value,username:$('setupUsername').value.trim(),password:$('setupPassword').value})});$('setupCode').value='';$('setupPassword').value='';await boot()}catch(error){notice('setupNotice',error.message,true)}finally{$('setupButton').disabled=false}});
+$('loginForm').addEventListener('submit',async event=>{event.preventDefault();$('loginButton').disabled=true;notice('loginNotice','Entrando...');try{await api('/api/admin/login',{method:'POST',body:body({username:$('loginUsername').value.trim(),password:$('loginPassword').value})});$('loginPassword').value='';await boot()}catch(error){notice('loginNotice',error.message,true)}finally{$('loginButton').disabled=false}});
+$('logoutButton').addEventListener('click',async()=>{try{await api('/api/admin/logout',{method:'POST'})}catch{}show('login')});
+$('createUserForm').addEventListener('submit',async event=>{event.preventDefault();$('createButton').disabled=true;notice('createNotice','Criando conta...');try{await api('/api/admin/users',{method:'POST',body:body({name:$('newName').value.trim(),telephone:$('newTelephone').value.trim(),password:$('newPassword').value})});$('createUserForm').reset();notice('createNotice','Conta criada. A senha temporária deve ser entregue por um canal seguro.');await loadUsers()}catch(error){notice('createNotice',error.message,true)}finally{$('createButton').disabled=false}});
+$('refreshButton').addEventListener('click',loadUsers);
+async function loadUsers(){notice('listNotice','');try{const users=await api('/api/admin/users');const bodyEl=$('usersBody');bodyEl.replaceChildren();$('userCount').textContent=users.length+' conta(s)';$('emptyState').hidden=users.length!==0;for(const user of users){const row=document.createElement('tr');for(const value of [user.name,user.telephone]){const cell=document.createElement('td');cell.textContent=value;row.appendChild(cell)}const status=document.createElement('td');const badge=document.createElement('span');badge.className='badge'+(user.passwordChangeRequired?' pending':'');badge.textContent=!user.hasPassword?'Senha não configurada':(user.passwordChangeRequired?'Aguardando troca':'Senha pessoal definida');status.appendChild(badge);row.appendChild(status);const actions=document.createElement('td');actions.className='actions-cell';const edit=document.createElement('button');edit.type='button';edit.className='secondary small';edit.textContent='Editar';edit.addEventListener('click',()=>editUser(user));const reset=document.createElement('button');reset.type='button';reset.className='small';reset.style.marginLeft='7px';reset.textContent='Nova senha temporária';reset.addEventListener('click',()=>resetPassword(user));actions.append(edit,reset);row.appendChild(actions);bodyEl.appendChild(row)}}catch(error){notice('listNotice',error.message,true);if(error.status===401)show('login')}}
+async function editUser(user){const name=prompt('Nome da conta:',user.name);if(name===null)return;const telephone=prompt('Telefone da conta:',user.telephone);if(telephone===null)return;try{await api('/api/admin/users/'+user.id,{method:'PUT',body:body({name:name.trim(),telephone:telephone.trim()})});notice('listNotice','Dados da conta atualizados.');await loadUsers()}catch(error){notice('listNotice',error.message,true)}}
+async function resetPassword(user){const password=prompt('Nova senha temporária (mínimo 6 caracteres):');if(password===null)return;if(password.length<6){notice('listNotice','A senha temporária precisa ter pelo menos 6 caracteres.',true);return}try{await api('/api/admin/users/'+encodeURIComponent(user.telephone)+'/temporary-password',{method:'POST',body:body({password})});notice('listNotice','Senha temporária definida. Avise a pessoa por um canal seguro.');await loadUsers()}catch(error){notice('listNotice',error.message,true)}}
+boot();
+</script>
+</body>
+</html>

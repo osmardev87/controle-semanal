@@ -8,7 +8,6 @@ services:
       DB_URL: ${DB_URL:?Defina DB_URL no ambiente}
       DB_USERNAME: ${DB_USERNAME:?Defina DB_USERNAME no ambiente}
       DB_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD no ambiente}
-      PASSWORD_ADMIN_TOKEN: ${PASSWORD_ADMIN_TOKEN:-}
     restart: unless-stopped
     deploy:
       resources:
