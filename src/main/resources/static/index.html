@@ -1827,7 +1827,7 @@
                             type="password"
                             placeholder="Sua senha"
                             autocomplete="current-password"
-                            minlength="12"
+                            minlength="6"
                             maxlength="72"
                             required
                         >
@@ -1901,9 +1901,9 @@
                 <div class="login-field">
                     <label class="login-label" for="newPasswordInput">Nova senha</label>
                     <input id="newPasswordInput" class="login-input password-input" type="password"
-                           autocomplete="new-password" minlength="12" maxlength="72" required>
+                           autocomplete="new-password" minlength="6" maxlength="72" required>
                 </div>
-                <p class="password-hint">Use pelo menos 12 caracteres. Prefira uma frase fácil de lembrar e difícil de adivinhar.</p>
+                <p class="password-hint">Use pelo menos 6 caracteres. Prefira uma frase fácil de lembrar e difícil de adivinhar.</p>
                 <div class="login-field">
                     <label class="login-label" for="confirmPasswordInput">Confirme a nova senha</label>
                     <input id="confirmPasswordInput" class="login-input password-input" type="password"
@@ -2988,8 +2988,8 @@
         const currentPassword = currentPasswordInput.value;
         const newPassword = newPasswordInput.value;
         const confirmation = confirmPasswordInput.value;
-        if (newPassword.length < 12) {
-            passwordChangeError.textContent = "A nova senha precisa ter pelo menos 12 caracteres.";
+        if (newPassword.length < 6) {
+            passwordChangeError.textContent = "A nova senha precisa ter pelo menos 6 caracteres.";
             passwordChangeError.classList.remove("hidden");
             return;
         }

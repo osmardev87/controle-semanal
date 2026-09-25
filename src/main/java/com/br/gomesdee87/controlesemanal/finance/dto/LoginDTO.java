@@ -9,7 +9,7 @@ public record LoginDTO(
         String telephone,
 
         @NotBlank(message = "A senha é obrigatória")
-        @Size(min = 12, max = 72, message = "A senha deve ter entre 12 e 72 caracteres")
+        @Size(min = 6, max = 72, message = "A senha deve ter entre 6 e 72 caracteres")
         String password
 ) {
 }
