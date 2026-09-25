@@ -9,11 +9,11 @@ public record CreateNewUsers(
         String name,
 
         @NotBlank(message = "O telefone é obrigatório")
-        @Size(max = 20, message = "O telefone deve ter no máximo 20 caracteres")
+        @Size(max = 26, message = "O telefone deve ter no máximo 20 caracteres")
         String telephone,
 
         @NotBlank(message = "A senha é obrigatória")
-        @Size(min = 12, max = 72, message = "A senha deve ter entre 12 e 72 caracteres")
+        @Size(min = 6, max = 72, message = "A senha deve ter entre 6 e 72 caracteres")
         String password
 ) {
 }
