@@ -1,5 +1,6 @@
 package com.br.gomesdee87.controlesemanal.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,5 +29,12 @@ public class User {
 
     @Column (nullable = false, unique = true, length = 20)
     private String telephone;
+
+    @JsonIgnore
+    @Column(name = "password_hash", length = 100)
+    private String passwordHash;
+
+    @Column(name = "password_change_required")
+    private Boolean passwordChangeRequired;
 
 }

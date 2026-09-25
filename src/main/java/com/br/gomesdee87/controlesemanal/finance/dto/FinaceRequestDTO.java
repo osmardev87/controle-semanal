@@ -31,7 +31,9 @@ public record FinaceRequestDTO(
         Categoria category,
 
         @NotNull(message = "A forma de pagamento é obrigatória")
-        FormaPagamento payment
+        FormaPagamento payment,
+        @Size(max = 36)
+        String clientId
 ) {
 }
 

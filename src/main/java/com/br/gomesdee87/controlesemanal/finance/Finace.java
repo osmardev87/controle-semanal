@@ -1,5 +1,6 @@
 package com.br.gomesdee87.controlesemanal.finance;
 
+import com.br.gomesdee87.controlesemanal.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,14 +11,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "finance")
+@Table(name = "finance", uniqueConstraints = @UniqueConstraint(name = "uk_finance_user_client_id", columnNames = {"user_id", "client_id"}))
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Finace {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,4 +42,10 @@ public class Finace {
     @Column(nullable = false, length = 20)
     private FormaPagamento payment;
 
+    @Column(name = "client_id", length = 36)
+    private String clientId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

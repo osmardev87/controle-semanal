@@ -1695,6 +1695,30 @@
 
         }
 
+            .password-setup-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+            background: linear-gradient(135deg, #f0fdf4, #f8fafc 55%, #ecfdf5);
+        }
+        .password-input { padding-left: 15px !important; }
+        .password-setup-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .password-secondary {
+            min-height: 44px;
+            padding: 10px 15px;
+            border: 1px solid #dbe3ea;
+            border-radius: 12px;
+            background: white;
+            color: #475569;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .password-hint { margin: -7px 0 16px; color: #64748b; font-size: 11px; line-height: 1.5; }
     </style>
 </head>
 
@@ -1793,6 +1817,22 @@
                 </div>
 
 
+                <div class="login-field">
+                    <label class="login-label" for="passwordInput">Senha</label>
+                    <div class="login-input-wrapper">
+                        <i class="fa fa-lock login-input-icon"></i>
+                        <input
+                            id="passwordInput"
+                            class="login-input"
+                            type="password"
+                            placeholder="Sua senha"
+                            autocomplete="current-password"
+                            minlength="12"
+                            maxlength="72"
+                            required
+                        >
+                    </div>
+                </div>
                 <button
                     id="loginButton"
                     class="login-submit"
@@ -1845,6 +1885,41 @@
 </div>
 
 
+<div id="passwordSetupScreen" class="password-setup-screen hidden">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-title">Crie sua <span>senha pessoal</span></div>
+                <p class="login-subtitle">Por segurança, troque a senha temporária para continuar.</p>
+            </div>
+            <form id="passwordChangeForm">
+                <div class="login-field">
+                    <label class="login-label" for="currentPasswordInput">Senha temporária</label>
+                    <input id="currentPasswordInput" class="login-input password-input" type="password"
+                           autocomplete="current-password" required>
+                </div>
+                <div class="login-field">
+                    <label class="login-label" for="newPasswordInput">Nova senha</label>
+                    <input id="newPasswordInput" class="login-input password-input" type="password"
+                           autocomplete="new-password" minlength="12" maxlength="72" required>
+                </div>
+                <p class="password-hint">Use pelo menos 12 caracteres. Prefira uma frase fácil de lembrar e difícil de adivinhar.</p>
+                <div class="login-field">
+                    <label class="login-label" for="confirmPasswordInput">Confirme a nova senha</label>
+                    <input id="confirmPasswordInput" class="login-input password-input" type="password"
+                           autocomplete="new-password" minlength="12" maxlength="72" required>
+                </div>
+                <button id="passwordChangeButton" class="login-submit" type="submit">
+                    <span class="login-submit-content">Salvar nova senha</span>
+                </button>
+                <div id="passwordChangeError" class="login-error hidden" role="alert"></div>
+                <div class="password-setup-actions">
+                    <button id="passwordSetupLogout" class="password-secondary" type="button">Sair</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- =========================================================
      APP
 ========================================================= -->
@@ -2436,6 +2511,7 @@
 <div id="toast"></div>
 
 
+<script src="/offline-store.js"></script>
 <script>
 
     /* =====================================================
@@ -2445,6 +2521,9 @@
     const API_BASE = "/finace";
 
     let currentTab = "TODOS";
+    let syncPromise = null;
+    let syncRetryTimer = null;
+    let syncRetryDelay = 2000;
 
 
     /* =====================================================
@@ -2462,6 +2541,15 @@
 
     const telephoneInput =
         document.getElementById("telephoneInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const passwordSetupScreen = document.getElementById("passwordSetupScreen");
+    const passwordChangeForm = document.getElementById("passwordChangeForm");
+    const currentPasswordInput = document.getElementById("currentPasswordInput");
+    const newPasswordInput = document.getElementById("newPasswordInput");
+    const confirmPasswordInput = document.getElementById("confirmPasswordInput");
+    const passwordChangeButton = document.getElementById("passwordChangeButton");
+    const passwordChangeError = document.getElementById("passwordChangeError");
+    const passwordSetupLogout = document.getElementById("passwordSetupLogout");
 
     const loginButton =
         document.getElementById("loginButton");
@@ -2791,6 +2879,7 @@
     function showApp() {
 
         loginScreen.classList.add("hidden");
+        passwordSetupScreen.classList.add("hidden");
 
         app.classList.remove("hidden");
 
@@ -2810,8 +2899,17 @@
     }
 
 
+    function showPasswordSetup() {
+        app.classList.add("hidden");
+        loginScreen.classList.add("hidden");
+        passwordSetupScreen.classList.remove("hidden");
+        currentPasswordInput.focus();
+    }
+
     function showLogin() {
 
+        passwordSetupScreen.classList.add("hidden");
+        passwordInput.value = "";
         app.classList.add("hidden");
 
         loginScreen.classList.remove("hidden");
@@ -2821,152 +2919,133 @@
     }
 
 
-    loginForm.addEventListener(
-        "submit",
-        async function(event) {
+    async function fetchApi(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            credentials: "same-origin"
+        });
 
-            event.preventDefault();
-
-
-            const telephone =
-                telephoneInput.value.trim();
-
-
-            if (!telephone) {
-
-                loginError.textContent =
-                    "Digite seu telefone.";
-
-                loginError.classList.remove(
-                    "hidden"
-                );
-
-                return;
-
-            }
-
-
-            loginError.classList.add(
-                "hidden"
-            );
-
-
-            loginButton.disabled =
-                true;
-
-
-            loginButton.innerHTML =
-                '<span class="spinner"></span>Entrando...';
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_BASE}/login`,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-                                    telephone:
-                                        telephone
-                                })
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    let message =
-                        "Telefone não encontrado.";
-
-                    try {
-
-                        const data =
-                            await response.json();
-
-                        message =
-                            data.message ||
-                            data.error ||
-                            message;
-
-                    } catch (_) {
-                        // resposta sem JSON
-                    }
-
-                    throw new Error(
-                        message
-                    );
-
-                }
-
-
-                const user =
-                    await response.json();
-
-
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(user)
-                );
-
-
-                localStorage.setItem(
-                    "appAuthenticated",
-                    "true"
-                );
-
-
-                showApp();
-
-
-            } catch (error) {
-
-                console.error(error);
-
-
-                loginError.textContent =
-                    error.message ||
-                    "Não foi possível realizar o login.";
-
-
-                loginError.classList.remove(
-                    "hidden"
-                );
-
-
-            } finally {
-
-                loginButton.disabled =
-                    false;
-
-                loginButton.innerHTML = `
-                    <span class="login-submit-content">
-                        <i class="fa fa-sign-in"></i>
-                        Entrar no Meu Bolso
-                    </span>
-                `;
-
-            }
-
+        if (response.status === 401) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("appAuthenticated");
+            showLogin();
+            loginError.textContent = "Sua sessão expirou. Entre novamente.";
+            loginError.classList.remove("hidden");
         }
-    );
 
+        return response;
+    }
 
-    /* =====================================================
-       LOGOUT
-    ===================================================== */
+    loginForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const telephone = telephoneInput.value.trim();
+        const password = passwordInput.value;
+        if (!telephone || !password) {
+            loginError.textContent = "Informe telefone e senha.";
+            loginError.classList.remove("hidden");
+            return;
+        }
 
+        loginError.classList.add("hidden");
+        loginButton.disabled = true;
+        loginButton.innerHTML = '<span class="spinner"></span>Entrando...';
+        try {
+            const response = await fetchApi(API_BASE + "/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ telephone, password })
+            });
+            if (!response.ok) {
+                let message = response.status === 401
+                    ? "Telefone ou senha incorretos."
+                    : "Não foi possível entrar.";
+                try {
+                    const data = await response.json();
+                    message = data.message || data.error || message;
+                } catch (_) {}
+                throw new Error(message);
+            }
+
+            const user = await response.json();
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("appAuthenticated", "true");
+            passwordInput.value = "";
+            if (user.passwordChangeRequired) showPasswordSetup();
+            else showApp();
+        } catch (error) {
+            console.error(error);
+            loginError.textContent = error.message || "Não foi possível realizar o login.";
+            loginError.classList.remove("hidden");
+        } finally {
+            passwordInput.value = "";
+            loginButton.disabled = false;
+            loginButton.innerHTML = '<span class="login-submit-content"><i class="fa fa-sign-in"></i> Entrar no Meu Bolso</span>';
+        }
+    });
+    passwordChangeForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        passwordChangeError.classList.add("hidden");
+        const currentPassword = currentPasswordInput.value;
+        const newPassword = newPasswordInput.value;
+        const confirmation = confirmPasswordInput.value;
+        if (newPassword.length < 12) {
+            passwordChangeError.textContent = "A nova senha precisa ter pelo menos 12 caracteres.";
+            passwordChangeError.classList.remove("hidden");
+            return;
+        }
+        if (newPassword !== confirmation) {
+            passwordChangeError.textContent = "As senhas novas não conferem.";
+            passwordChangeError.classList.remove("hidden");
+            return;
+        }
+
+        passwordChangeButton.disabled = true;
+        passwordChangeButton.textContent = "Salvando...";
+        try {
+            const response = await fetch("/api/users/me/password", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+            if (!response.ok) {
+                let message = "Não foi possível trocar a senha.";
+                try {
+                    const data = await response.json();
+                    message = data.message || data.error || message;
+                } catch (_) {}
+                throw new Error(message);
+            }
+
+            const user = getUser();
+            if (user) {
+                user.passwordChangeRequired = false;
+                localStorage.setItem("user", JSON.stringify(user));
+            }
+            currentPasswordInput.value = "";
+            newPasswordInput.value = "";
+            confirmPasswordInput.value = "";
+            showApp();
+            showToast("Senha atualizada com sucesso.");
+        } catch (error) {
+            passwordChangeError.textContent = error.message || "Não foi possível trocar a senha.";
+            passwordChangeError.classList.remove("hidden");
+        } finally {
+            passwordChangeButton.disabled = false;
+            passwordChangeButton.textContent = "Salvar nova senha";
+        }
+    });
+
+    passwordSetupLogout.addEventListener("click", async () => {
+        try { await fetch(API_BASE + "/logout", { method: "POST", credentials: "same-origin" }); } catch (_) {}
+        localStorage.removeItem("user");
+        localStorage.removeItem("appAuthenticated");
+        showLogin();
+    });
     logoutButton.addEventListener(
         "click",
-        function() {
-
+        async function() {
+            try { await fetchApi(`${API_BASE}/logout`, { method: "POST" }); } catch (_) {}
             closeModal();
 
             localStorage.removeItem(
@@ -3244,110 +3323,112 @@
        CARREGAR DADOS
     ===================================================== */
 
-    async function loadData() {
+    async function syncPending(owner) {
+        if (!navigator.onLine || syncPromise) return syncPromise;
+        syncPromise = (async () => {
+            let pendingRows;
+            do {
+                const rows = await OfflineStore.all(owner);
+                pendingRows = rows.filter(row =>
+                    row.status === "pending-create" || row.status === "pending-delete");
+                for (const row of pendingRows) {
+                    if (row.status === "pending-create") {
+                        const response = await fetchApi(API_BASE + "/", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify((({ id, ...payload }) => payload)(row.item))
+                        });
+                        if (!response.ok) throw new Error("Não foi possível sincronizar um lançamento.");
+                        const saved = await response.json();
+                        await OfflineStore.update({ ...row, status: "synced", item: saved });
+                    } else {
+                        const response = await fetchApi(API_BASE + "/" + row.item.id, { method: "DELETE" });
+                        if (!response.ok) throw new Error("Não foi possível sincronizar uma exclusão.");
+                        await OfflineStore.remove(owner, row.item.id);
+                    }
+                }
+            } while (pendingRows.length > 0);
 
-        transactionsList.innerHTML =
-            "";
-
-        emptyState.classList.add(
-            "hidden"
-        );
-
-
-        let endpoint =
-            `${API_BASE}/`;
-
-
-        if (
-            currentTab === "SEMANA"
-        ) {
-
-            endpoint =
-                `${API_BASE}/semana/${getToday()}`;
-
+            const response = await fetchApi(API_BASE + "/transactions", { cache: "no-store" });
+            if (!response.ok) throw new Error("Não foi possível atualizar os lançamentos.");
+            const transactions = await response.json();
+            await OfflineStore.replaceSnapshot(owner, Array.isArray(transactions) ? transactions : []);
+        })();
+        try { return await syncPromise; } finally { syncPromise = null; }
+    }
+    function getVisibleTransactions(transactions) {
+        if (currentTab === "SEMANA") {
+            const today = new Date(getToday() + "T00:00:00");
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+            const start = monday.toISOString().slice(0, 10);
+            const endDate = new Date(monday);
+            endDate.setDate(monday.getDate() + 6);
+            const end = endDate.toISOString().slice(0, 10);
+            return transactions.filter(item => item.date >= start && item.date <= end);
         }
-
-
-        if (
-            currentTab === "MES"
-        ) {
-
-            endpoint =
-                `${API_BASE}/mes/${monthSelect.value}`;
-
+        if (currentTab === "MES") {
+            return transactions.filter(item => item.date && item.date.slice(0, 7) === monthSelect.value);
         }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    endpoint
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Erro ao carregar movimentações."
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            const transactions =
-                Array.isArray(data)
-                    ? data
-                    : [];
-
-
-            renderTransactions(
-                transactions
-            );
-
-
-            updateSummary(
-                transactions
-            );
-
-
-        } catch (error) {
-
-            console.error(error);
-
-
-            transactionsList.innerHTML =
-                "";
-
-
-            emptyState.classList.remove(
-                "hidden"
-            );
-
-
-            emptyState.querySelector(
-                ".empty-title"
-            ).textContent =
-                "Não foi possível carregar os dados.";
-
-
-            emptyState.querySelector(
-                ".empty-text"
-            ).textContent =
-                "Verifique se a API está funcionando.";
-
-
-            updateSummary([]);
-
-        }
-
+        const year = String(new Date().getFullYear());
+        return transactions.filter(item => item.date && item.date.slice(0, 4) === year);
     }
 
+    function scheduleSyncRetry() {
+        if (!navigator.onLine || !getUser() || syncRetryTimer) return;
+        const delay = syncRetryDelay;
+        syncRetryDelay = Math.min(syncRetryDelay * 2, 30000);
+        syncRetryTimer = setTimeout(() => {
+            syncRetryTimer = null;
+            if (navigator.onLine && getUser()) loadData();
+        }, delay);
+    }
+    async function loadData() {
+        const user = getUser();
+        if (!user || user.id == null) return;
+        const owner = String(user.id);
+        let rows = [];
+        let onlineFresh = false;
 
+        try {
+            if (navigator.onLine) {
+                await syncPending(owner);
+                onlineFresh = true;
+                syncRetryDelay = 2000;
+                if (syncRetryTimer) clearTimeout(syncRetryTimer);
+                syncRetryTimer = null;
+            }
+        } catch (error) {
+            console.warn("Sincronização adiada:", error);
+            scheduleSyncRetry();
+        }
+
+        try {
+            rows = await OfflineStore.all(owner);
+        } catch (error) {
+            console.error("Não foi possível abrir os dados locais:", error);
+        }
+
+        const transactions = rows
+            .filter(row => row.status !== "pending-delete")
+            .map(row => row.item)
+            .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || String(b.id || "").localeCompare(String(a.id || ""), undefined, { numeric: true }));
+        const visible = getVisibleTransactions(transactions);
+        renderTransactions(visible);
+        updateSummary(visible);
+
+        const pending = rows.filter(row => row.status === "pending-create" || row.status === "pending-delete").length;
+        if (!navigator.onLine) {
+            welcomeText.textContent = "Offline: exibindo dados guardados neste aparelho." +
+                (pending ? " " + pending + " alteração(ões) aguardando sincronização." : "");
+        } else if (pending) {
+            welcomeText.textContent = pending + " alteração(ões) aguardando sincronização. Tentando novamente automaticamente...";
+        } else if (!onlineFresh) {
+            welcomeText.textContent = "Exibindo dados guardados neste aparelho; a sincronização será tentada novamente.";
+        } else {
+            welcomeText.textContent = "Veja como estão suas finanças.";
+        }
+    }
     /* =====================================================
        RENDER TRANSAÇÕES
     ===================================================== */
@@ -3633,267 +3714,152 @@
        SALVAR
     ===================================================== */
 
-    financeForm.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-
-            const payload = {
-
-                description:
-                    description.value.trim(),
-
-                price:
-                    Number(
-                        price.value
-                    ),
-
-                date:
-                    date.value,
-
-                type:
-                    type.value,
-
-                category:
-                    category.value,
-
-                payment:
-                    payment.value
-
-            };
-
-
-            if (!payload.description) {
-
-                showToast(
-                    "Informe uma descrição.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            if (
-                !payload.price ||
-                payload.price <= 0
-            ) {
-
-                showToast(
-                    "Informe um valor válido.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            if (!payload.date) {
-
-                showToast(
-                    "Informe a data.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            saveButton.disabled =
-                true;
-
-
-            saveButton.innerHTML =
-                '<span class="spinner"></span>Salvando...';
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_BASE}/`,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    payload
-                                )
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    let message =
-                        "Não foi possível salvar.";
-
-                    try {
-
-                        const data =
-                            await response.json();
-
-                        message =
-                            data.message ||
-                            data.error ||
-                            message;
-
-                    } catch (_) {
-                        // ignora
-                    }
-
-
-                    throw new Error(
-                        message
-                    );
-
-                }
-
-
-                showToast(
-                    "Lançamento salvo com sucesso!"
-                );
-
-
-                closeModal();
-
-                await loadData();
-
-
-            } catch (error) {
-
-                console.error(error);
-
-
-                showToast(
-                    error.message ||
-                    "Erro ao salvar lançamento.",
-                    "error"
-                );
-
-
-            } finally {
-
-                saveButton.disabled =
-                    false;
-
-                saveButton.textContent =
-                    "Salvar lançamento";
-
-            }
-
+    financeForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const payload = {
+            description: description.value.trim(),
+            price: Number(price.value),
+            date: date.value,
+            type: type.value,
+            category: category.value,
+            payment: payment.value
+        };
+        if (!payload.description || !payload.price || payload.price <= 0 || !payload.date) {
+            showToast("Preencha descrição, valor e data corretamente.", "error");
+            return;
         }
-    );
 
-
+        saveButton.disabled = true;
+        saveButton.textContent = "Salvando...";
+        try {
+            const user = getUser();
+            if (!user || user.id == null) throw new Error("Entre novamente para salvar lançamentos.");
+            await OfflineStore.enqueue(String(user.id), payload);
+            closeModal();
+            await loadData();
+            const rows = await OfflineStore.all(String(user.id));
+            const pending = rows.some(row => row.status === "pending-create");
+            showToast(pending
+                ? "Salvo neste aparelho. Será enviado quando a conexão voltar."
+                : "Lançamento salvo.");
+        } catch (error) {
+            console.error(error);
+            showToast(error.message || "Erro ao guardar lançamento neste aparelho.", "error");
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = "Salvar lançamento";
+        }
+    });
     /* =====================================================
        EXCLUIR
     ===================================================== */
 
     async function deleteTransaction(id) {
-
-        if (!id) {
+        if (id == null || !confirm("Deseja realmente excluir este lançamento?")) return;
+        const user = getUser();
+        if (!user || user.id == null) {
+            showToast("Entre novamente para excluir lançamentos.", "error");
             return;
         }
 
-
-        const confirmed =
-            confirm(
-                "Deseja realmente excluir este lançamento?"
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
+        const owner = String(user.id);
         try {
-
-            const response =
-                await fetch(
-                    `${API_BASE}/${id}`,
-                    {
-                        method: "DELETE"
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Não foi possível excluir."
-                );
-
+            const cachedRows = await OfflineStore.all(owner);
+            const cached = cachedRows.find(row => row.item.id === id || row.item.clientId === id);
+            if (cached && cached.status === "pending-create") {
+                await OfflineStore.enqueueDelete(owner, id);
+                await loadData();
+                showToast("Lançamento local removido.");
+                return;
+            }
+            if (!navigator.onLine) {
+                await OfflineStore.enqueueDelete(owner, id);
+                await loadData();
+                showToast("Exclusão guardada neste aparelho; será enviada quando voltar a conexão.");
+                return;
             }
 
+            let response;
+            try {
+                response = await fetchApi(API_BASE + "/" + encodeURIComponent(id), { method: "DELETE" });
+            } catch (networkError) {
+                await OfflineStore.enqueueDelete(owner, id);
+                await loadData();
+                showToast("Sem resposta do servidor. A exclusão ficou guardada para nova tentativa.");
+                return;
+            }
 
-            showToast(
-                "Lançamento excluído."
-            );
+            if (!response.ok) {
+                let detail = "";
+                try {
+                    const body = await response.json();
+                    detail = body.message || body.error || "";
+                } catch (_) {}
+                throw new Error(detail || "O servidor recusou a exclusão (HTTP " + response.status + ").");
+            }
 
-
+            await OfflineStore.remove(owner, id);
             await loadData();
-
-
+            showToast("Lançamento excluído.");
         } catch (error) {
-
-            console.error(error);
-
-
-            showToast(
-                error.message ||
-                "Erro ao excluir lançamento.",
-                "error"
-            );
-
+            console.error("Falha ao excluir lançamento:", error);
+            showToast(error.message || "Não foi possível excluir o lançamento.", "error");
         }
-
     }
-
-
     /* =====================================================
        INICIALIZAÇÃO
     ===================================================== */
 
-    function initialize() {
+    async function initialize() {
+        const user = getUser();
+        const authenticated = localStorage.getItem("appAuthenticated") === "true";
 
-        const authenticated =
-            localStorage.getItem(
-                "appAuthenticated"
-            );
-
-
-        const user =
-            getUser();
-
-
-        if (
-            authenticated === "true" &&
-            user
-        ) {
-
-            showApp();
-
-        } else {
-
+        if (!authenticated || !user) {
             showLogin();
-
+            return;
         }
 
+        try {
+            const response = await fetchApi(API_BASE + "/session", {
+                method: "GET",
+                cache: "no-store",
+                credentials: "same-origin"
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem("user");
+                localStorage.removeItem("appAuthenticated");
+                showLogin();
+                loginError.textContent = "Sua sessão expirou. Entre novamente.";
+                loginError.classList.remove("hidden");
+                return;
+            }
+
+            if (!response.ok) throw new Error("Não foi possível validar a sessão.");
+            const session = await response.json();
+            if (session.passwordChangeRequired || user.passwordChangeRequired) showPasswordSetup();
+            else showApp();
+        } catch (error) {
+            showApp();
+        }
     }
 
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/service-worker.js")
+                .catch(error => console.error("Falha ao registrar Service Worker:", error));
+        });
+    }
 
+    window.addEventListener("online", () => {
+        if (getUser()) loadData();
+    });
+    window.addEventListener("focus", () => {
+        if (navigator.onLine && getUser()) loadData();
+    });
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && navigator.onLine && getUser()) loadData();
+    });
     initialize();
 
 </script>

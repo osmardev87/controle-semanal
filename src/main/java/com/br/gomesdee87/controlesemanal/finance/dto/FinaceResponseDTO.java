@@ -21,6 +21,7 @@ public record FinaceResponseDTO(
 
         Categoria category,
 
-        FormaPagamento payment
+        FormaPagamento payment,
+        String clientId
 ) {
 }
